@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日志 | Whitefir</title>
+    <meta name="description" content="记录开发历程、思考与感悟的个人日志">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #050505; color: white; scroll-behavior: smooth; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease-in-out;
+        }
+        .glass-card:hover {
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Mobile menu animation */
+        #mobile-menu {
+            transition: all 0.3s ease-in-out;
+        }
+        #mobile-menu.hidden {
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+        }
+        #mobile-menu:not(.hidden) {
+            opacity: 1;
+            max-height: 500px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-md border-b border-white/10">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <!-- Logo -->
+                <a href="/" class="text-2xl font-bold tracking-tighter hover:text-white/80 transition-colors duration-300">
+                    WHITEFIR
+                </a>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex space-x-8">
+                    <a href="/#home" class="nav-link text-white/70 hover:text-white transition-colors duration-300">首页</a>
+                    <a href="/#projects" class="nav-link text-white/70 hover:text-white transition-colors duration-300">项目</a>
+                    <a href="/calendar.html" class="nav-link text-white/70 hover:text-white transition-colors duration-300">心情日历</a>
+                    <a href="/journal.html" class="nav-link text-white/70 hover:text-white transition-colors duration-300">日志</a>
+                </div>
+                
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" class="md:hidden text-white/70 hover:text-white transition-colors duration-300 p-2" aria-label="Toggle menu">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+            
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden mt-4 pb-4 space-y-4">
+                <a href="/#home" class="block text-white/70 hover:text-white transition-colors duration-300 py-2">首页</a>
+                <a href="/#projects" class="block text-white/70 hover:text-white transition-colors duration-300 py-2">项目</a>
+                <a href="/calendar.html" class="block text-white/70 hover:text-white transition-colors duration-300 py-2">心情日历</a>
+                <a href="/journal.html" class="block text-white/70 hover:text-white transition-colors duration-300 py-2">日志</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="pt-24 min-h-screen">
+        <div class="container mx-auto px-6 py-12">
+            <h1 class="text-4xl md:text-5xl font-bold tracking-tighter mb-4 text-center">开发日志</h1>
+            <p class="text-gray-400 text-center leading-relaxed mb-12">记录开发历程与思考</p>
+            
+            <!-- Journal entries will be rendered here -->
+            <div id="journal-container" class="max-w-4xl mx-auto">
+                <div class="glass-card rounded-2xl p-8">
+                    <p class="text-gray-400 text-center">日志系统即将上线...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="py-12 border-t border-white/5 text-center text-gray-600 text-xs tracking-widest uppercase">
+        &copy; 2026 Whitefir Studio. All Rights Reserved.
+    </footer>
+
+    <!-- Navigation Component Script -->
+    <script src="/js/navigation.js"></script>
+
+</body>
+</html>

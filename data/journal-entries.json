@@ -1,0 +1,54 @@
+{
+  "entries": [
+    {
+      "id": "my-first-post",
+      "title": "开启个人网站之旅",
+      "date": "2024-01-20",
+      "excerpt": "今天开始构建我的个人网站，记录这段充满挑战和乐趣的开发旅程。",
+      "content": "<h2>为什么要建立个人网站？</h2><p>在这个数字时代，拥有一个属于自己的空间来展示作品、分享想法变得越来越重要。作为一名游戏开发者，我希望通过这个网站来...</p><h2>技术选型</h2><p>我选择了简洁的技术栈：Tailwind CSS + 原生 JavaScript。这样可以保持网站的轻量级，同时获得出色的性能表现。</p><h2>设计理念</h2><p>遵循 60-30-10 设计原则，60% 纯黑背景营造专业感，30% 玻璃拟态效果增添现代感，10% 强调色点缀关键元素。</p>",
+      "tags": ["web-development", "personal", "design"],
+      "readTime": 5,
+      "detailPage": "/journal/my-first-post.html"
+    },
+    {
+      "id": "game-dev-insights",
+      "title": "游戏开发的思考与感悟",
+      "date": "2024-01-18",
+      "excerpt": "分享我在开发 Magic Tower Wars 过程中的一些经验和教训。",
+      "content": "<h2>从想法到实现</h2><p>每个游戏都始于一个简单的想法。Magic Tower Wars 的灵感来自经典的魔塔游戏，但我想加入更多策略元素...</p><h2>技术挑战</h2><p>使用 Unity 和 WebGL 开发网页游戏面临诸多挑战，特别是性能优化和资源加载方面。</p><h2>用户反馈</h2><p>上线后收到了很多玩家的反馈，有赞美也有批评。这些都是宝贵的财富，帮助我不断改进游戏。</p>",
+      "tags": ["game-development", "unity", "lessons-learned"],
+      "readTime": 8,
+      "detailPage": "/journal/game-dev-insights.html"
+    },
+    {
+      "id": "design-system-thoughts",
+      "title": "构建一致的设计系统",
+      "date": "2024-01-15",
+      "excerpt": "探讨如何在个人项目中建立和维护一套统一的设计系统。",
+      "content": "<h2>什么是设计系统？</h2><p>设计系统是一套可复用的组件、样式指南和设计原则的集合。即使是个人项目，也应该有清晰的设计规范。</p><h2>核心组件</h2><p>我定义了几个核心组件：玻璃拟态卡片、渐变按钮、导航栏等。每个组件都有明确的使用场景和样式规范。</p><h2>保持一致性</h2><p>通过 CSS 变量和 Tailwind 的配置，确保整个网站的颜色、间距、字体等保持一致。</p>",
+      "tags": ["design", "web-development", "ui-ux"],
+      "readTime": 6,
+      "detailPage": "/journal/design-system-thoughts.html"
+    },
+    {
+      "id": "animation-magic",
+      "title": "动画的魔力：让网站活起来",
+      "date": "2024-01-12",
+      "excerpt": "深入探讨如何通过精心设计的动画提升用户体验。",
+      "content": "<h2>为什么动画很重要？</h2><p>动画不仅仅是装饰，它是用户体验的重要组成部分。恰当的动画可以引导用户注意力，提供视觉反馈，让交互更加自然。</p><h2>动画原则</h2><p>遵循 300ms 的黄金时间，使用 ease-in-out 缓动函数。所有交互都应该有即时的视觉反馈。</p><h2>性能考虑</h2><p>使用 CSS transform 和 opacity 属性来实现动画，避免触发重排和重绘，确保 60fps 的流畅体验。</p>",
+      "tags": ["animation", "web-development", "performance"],
+      "readTime": 7,
+      "detailPage": "/journal/animation-magic.html"
+    },
+    {
+      "id": "indie-game-journey",
+      "title": "独立游戏开发者的日常",
+      "date": "2024-01-08",
+      "excerpt": "记录作为独立游戏开发者的日常工作和心路历程。",
+      "content": "<h2>一个人的战斗</h2><p>作为独立开发者，你需要身兼数职：程序员、设计师、测试员、市场营销人员。这既是挑战也是机遇。</p><h2>时间管理</h2><p>如何在有限的时间内平衡开发、学习和生活？我的方法是制定清晰的优先级，专注于核心功能。</p><h2>保持动力</h2><p>开发过程中会遇到很多困难和挫折。保持动力的关键是设定小目标，庆祝每一个小胜利。</p>",
+      "tags": ["indie-game", "personal", "productivity"],
+      "readTime": 5,
+      "detailPage": "/journal/indie-game-journey.html"
+    }
+  ]
+}

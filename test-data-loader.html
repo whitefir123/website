@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DataLoader 测试页面</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="/assets/css/custom.css" rel="stylesheet">
+</head>
+<body class="p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-4xl font-bold mb-8 text-center">DataLoader 功能测试</h1>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            <button onclick="testProjects()" class="btn-primary">
+                <i class="fas fa-gamepad mr-2"></i>
+                加载项目数据
+            </button>
+            <button onclick="testMoods()" class="btn-primary">
+                <i class="fas fa-smile mr-2"></i>
+                加载心情数据
+            </button>
+            <button onclick="testJournal()" class="btn-primary">
+                <i class="fas fa-book mr-2"></i>
+                加载日志数据
+            </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+            <button onclick="testCache()" class="btn-secondary">
+                <i class="fas fa-database mr-2"></i>
+                测试缓存功能
+            </button>
+            <button onclick="testError()" class="btn-secondary">
+                <i class="fas fa-exclamation-triangle mr-2"></i>
+                测试错误处理
+            </button>
+        </div>
+
+        <div id="results" class="glass-card p-6 rounded-xl">
+            <h2 class="text-2xl font-bold mb-4">测试结果</h2>
+            <pre id="output" class="text-sm text-gray-300 overflow-auto max-h-96 leading-relaxed"></pre>
+        </div>
+
+        <div class="mt-8 glass-card p-6 rounded-xl">
+            <h2 class="text-2xl font-bold mb-4">缓存统计</h2>
+            <div id="cache-stats" class="text-sm text-gray-300"></div>
+        </div>
+    </div>
+
+    <script src="/js/data-loader.js"></script>
+    <script>
+        const output = document.getElementById('output');
+        const cacheStats = document.getElementById('cache-stats');
+
+        function log(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            output.textContent += `[${timestamp}] ${message}\n`;
+            output.scrollTop = output.scrollHeight;
+        }
+
+        function updateCacheStats() {
+            const stats = dataLoader.getCacheStats();
+            cacheStats.innerHTML = `
+                <p><strong>缓存项数量：</strong>${stats.size}</p>
+                <p><strong>缓存的 URL：</strong></p>
+                <ul class="list-disc list-inside ml-4">
+                    ${stats.keys.map(key => `<li>${key}</li>`).join('')}
+                </ul>
+            `;
+        }
+
+        async function testProjects() {
+            log('开始加载项目数据...');
+            try {
+                const data = await dataLoader.fetchJSON('/data/projects.json');
+                log(`成功加载 ${data.projects.length} 个项目`);
+                log(JSON.stringify(data.projects[0], null, 2));
+                updateCacheStats();
+            } catch (error) {
+                log(`错误: ${error.message}`);
+            }
+        }
+
+        async function testMoods() {
+            log('开始加载心情数据...');
+            try {
+                const data = await dataLoader.fetchJSON('/data/moods.json');
+                log(`成功加载 ${data.moods.length} 条心情记录`);
+                log(`心情类型数量: ${Object.keys(data.moodTypes).length}`);
+                updateCacheStats();
+            } catch (error) {
+                log(`错误: ${error.message}`);
+            }
+        }
+
+        async function testJournal() {
+            log('开始加载日志数据...');
+            try {
+                const data = await dataLoader.fetchJSON('/data/journal-entries.json');
+                log(`成功加载 ${data.entries.length} 篇日志`);
+                log(JSON.stringify(data.entries[0], null, 2));
+                updateCacheStats();
+            } catch (error) {
+                log(`错误: ${error.message}`);
+            }
+        }
+
+        async function testCache() {
+            log('测试缓存功能...');
+            
+            // 第一次加载（从网络）
+            const start1 = performance.now();
+            await dataLoader.fetchJSON('/data/projects.json');
+            const time1 = (performance.now() - start1).toFixed(2);
+            log(`第一次加载耗时: ${time1}ms（从网络）`);
+            
+            // 第二次加载（从缓存）
+            const start2 = performance.now();
+            await dataLoader.fetchJSON('/data/projects.json');
+            const time2 = (performance.now() - start2).toFixed(2);
+            log(`第二次加载耗时: ${time2}ms（从缓存）`);
+            
+            log(`性能提升: ${((time1 - time2) / time1 * 100).toFixed(1)}%`);
+            updateCacheStats();
+        }
+
+        async function testError() {
+            log('测试错误处理（加载不存在的文件）...');
+            try {
+                const data = await dataLoader.fetchJSON('/data/nonexistent.json');
+                log('返回了默认数据结构:');
+                log(JSON.stringify(data, null, 2));
+            } catch (error) {
+                log(`捕获到错误: ${error.message}`);
+            }
+        }
+
+        // 初始化
+        log('DataLoader 测试页面已加载');
+        log('点击上方按钮开始测试');
+        updateCacheStats();
+    </script>
+</body>
+</html>

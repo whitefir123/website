@@ -1,0 +1,50 @@
+{
+  "projects": [
+    {
+      "id": "magic-tower-wars",
+      "title": "Magic Tower Wars",
+      "description": "经典的策略魔塔玩法与现代战争元素的完美融合。在这款游戏中，玩家需要运用智慧和策略，在充满挑战的魔塔中战斗并生存。",
+      "thumbnail": "/assets/images/magic-tower-wars-thumb.webp",
+      "screenshots": [
+        "/assets/images/mtw-screenshot-1.webp",
+        "/assets/images/mtw-screenshot-2.webp",
+        "/assets/images/mtw-screenshot-3.webp"
+      ],
+      "techStack": ["Unity", "C#", "Photon", "WebGL"],
+      "liveUrl": "https://magictowerwars.netlify.app/",
+      "detailPage": "/projects/magic-tower-wars.html",
+      "featured": true,
+      "status": "已上线",
+      "statusColor": "indigo"
+    },
+    {
+      "id": "project-x",
+      "title": "未知领域 (Project X)",
+      "description": "正在打磨的一款神秘新作，融合了创新的游戏机制和引人入胜的叙事体验。敬请期待更多消息。",
+      "thumbnail": "/assets/images/project-x-thumb.webp",
+      "screenshots": [],
+      "techStack": ["Unity", "C#", "Shader Graph"],
+      "liveUrl": null,
+      "detailPage": "/projects/project-x.html",
+      "featured": true,
+      "status": "开发中",
+      "statusColor": "orange"
+    },
+    {
+      "id": "pixel-adventure",
+      "title": "像素冒险",
+      "description": "一款充满怀旧气息的像素风格平台跳跃游戏，带你重温经典游戏的乐趣。探索精心设计的关卡，收集宝藏，击败敌人。",
+      "thumbnail": "/assets/images/pixel-adventure-thumb.webp",
+      "screenshots": [
+        "/assets/images/pa-screenshot-1.webp",
+        "/assets/images/pa-screenshot-2.webp"
+      ],
+      "techStack": ["Godot", "GDScript", "Aseprite"],
+      "liveUrl": "https://pixel-adventure-demo.netlify.app/",
+      "detailPage": "/projects/pixel-adventure.html",
+      "featured": false,
+      "status": "已上线",
+      "statusColor": "green"
+    }
+  ]
+}
