@@ -51,24 +51,66 @@ body {
 }
 
 /* ==================== 排版系统 ==================== */
+/* Requirements: 1.5, 1.6, 2.4 */
 
-/* 标题使用紧凑字间距 */
-h1, h2, h3, h4, h5, h6 {
-  letter-spacing: -0.05em; /* tracking-tighter */
+/* Requirement 1.5: 标题使用紧凑字间距 (tracking-tighter) */
+h1, h2, h3, h4, h5, h6,
+.heading,
+.title {
+  letter-spacing: -0.05em; /* tracking-tighter = -0.05em */
   font-weight: 700;
 }
 
-/* 正文使用宽松行高 */
-p, li, span.body-text {
-  line-height: 1.625; /* leading-relaxed */
+/* Requirement 1.6: 正文使用宽松行高 (leading-relaxed) */
+p, 
+li, 
+span:not(.heading):not(.title),
+div.body-text,
+article,
+.content,
+.description,
+.text-content {
+  line-height: 1.625; /* leading-relaxed = 1.625 */
 }
 
-/* 确保最小字体大小 */
+/* Requirement 2.4: 确保最小字体大小为 16px */
 body {
-  font-size: 16px;
+  font-size: 16px; /* 最小字体大小 */
+}
+
+/* 确保所有正文文本至少 16px */
+p, li, span, div, article {
+  font-size: inherit; /* 继承 body 的 16px */
+  min-font-size: 16px;
+}
+
+/* 标题字体大小层级 */
+h1 {
+  font-size: 3rem; /* 48px */
+}
+
+h2 {
+  font-size: 2.25rem; /* 36px */
+}
+
+h3 {
+  font-size: 1.875rem; /* 30px */
+}
+
+h4 {
+  font-size: 1.5rem; /* 24px */
+}
+
+h5 {
+  font-size: 1.25rem; /* 20px */
+}
+
+h6 {
+  font-size: 1.125rem; /* 18px */
 }
 
 /* ==================== 动画系统 ==================== */
+/* Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 1.4 */
 
 /* 淡入并向上滑动动画 */
 @keyframes fadeInUp {
@@ -90,15 +132,86 @@ body {
   opacity: 0;
 }
 
-/* 交互元素的过渡效果 */
-a, button, .interactive {
+/* ==================== 全局过渡样式 ==================== */
+/* Requirements: 3.1, 3.2, 3.5, 1.4 */
+
+/* Requirement 3.1 & 3.2: 所有状态变化应用 300ms ease-in-out 过渡 */
+a, 
+button, 
+input,
+select,
+textarea,
+.interactive,
+.clickable,
+.hoverable,
+.glass-card,
+.nav-link,
+.btn-primary,
+.btn-secondary {
   transition: all 0.3s ease-in-out;
 }
 
-/* Hover 效果 */
-a:hover, button:hover, .interactive:hover {
+/* Requirement 3.3: 平滑滚动行为 */
+html {
+  scroll-behavior: smooth;
+}
+
+/* ==================== Hover 效果 ==================== */
+/* Requirements: 3.5, 1.4 */
+
+/* Requirement 3.5 & 1.4: Hover 时缩放到 1.05x 或增加亮度 */
+a:not(.no-hover):hover, 
+button:not(:disabled):hover, 
+.interactive:hover,
+.clickable:hover,
+.hoverable:hover {
   transform: scale(1.05);
+}
+
+/* 链接的亮度增加效果 */
+a:not(.no-hover):hover {
   filter: brightness(1.2);
+}
+
+/* 按钮的特殊 hover 效果（保持现有样式） */
+button:not(:disabled):hover {
+  cursor: pointer;
+}
+
+/* 禁用状态的按钮不应有 hover 效果 */
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  transition: none;
+}
+
+button:disabled:hover {
+  transform: none;
+  filter: none;
+}
+
+/* ==================== 输入框过渡效果 ==================== */
+/* Requirements: 3.1, 3.2 */
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: rgba(139, 92, 246, 0.5);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+  transition: all 0.3s ease-in-out;
+}
+
+/* ==================== 卡片过渡效果增强 ==================== */
+/* Requirements: 3.1, 3.2, 3.5 */
+
+.glass-card {
+  transition: all 0.3s ease-in-out;
+}
+
+.glass-card:hover {
+  /* 已在上面定义，这里确保一致性 */
+  transform: scale(1.05);
 }
 
 /* ==================== 英雄区域渐变 ==================== */
@@ -178,46 +291,127 @@ a:hover, button:hover, .interactive:hover {
 }
 
 /* ==================== 响应式设计 ==================== */
+/* Requirements: 2.1, 2.2, 2.3, 2.4, 2.5 */
 
 /* 移动设备 (< 640px) */
+/* Requirement 2.1: 移动优化布局 */
 @media (max-width: 639px) {
+  /* Requirement 2.4: 确保最小 16px 字体 */
   body {
     font-size: 16px;
   }
   
+  /* 移动端标题字体大小 */
   h1 {
-    font-size: 2.5rem;
+    font-size: 2.5rem; /* 40px */
   }
   
-  /* 确保触摸目标至少 44x44px */
-  a, button, .interactive {
+  h2 {
+    font-size: 2rem; /* 32px */
+  }
+  
+  h3 {
+    font-size: 1.5rem; /* 24px */
+  }
+  
+  h4 {
+    font-size: 1.25rem; /* 20px */
+  }
+  
+  h5 {
+    font-size: 1.125rem; /* 18px */
+  }
+  
+  h6 {
+    font-size: 1rem; /* 16px */
+  }
+  
+  /* Requirement 2.5: 确保触摸目标至少 44x44px */
+  a:not(.no-touch-target), 
+  button:not(.no-touch-target), 
+  .interactive:not(.no-touch-target),
+  .clickable:not(.no-touch-target) {
     min-width: 44px;
     min-height: 44px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    padding: 0.5rem;
+  }
+  
+  /* 导航链接在移动端的触摸目标 */
+  .nav-link {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
   }
 }
 
 /* 平板设备 (640px - 1024px) */
+/* Requirement 2.2: 平板优化布局 */
 @media (min-width: 640px) and (max-width: 1023px) {
+  /* Requirement 2.4: 确保最小 16px 字体 */
   body {
     font-size: 16px;
   }
   
+  /* 平板端标题字体大小 */
   h1 {
-    font-size: 3.5rem;
+    font-size: 3.5rem; /* 56px */
+  }
+  
+  h2 {
+    font-size: 2.5rem; /* 40px */
+  }
+  
+  h3 {
+    font-size: 2rem; /* 32px */
+  }
+  
+  h4 {
+    font-size: 1.5rem; /* 24px */
+  }
+  
+  h5 {
+    font-size: 1.25rem; /* 20px */
+  }
+  
+  h6 {
+    font-size: 1.125rem; /* 18px */
   }
 }
 
 /* 桌面设备 (> 1024px) */
+/* Requirement 2.3: 桌面优化布局 */
 @media (min-width: 1024px) {
+  /* Requirement 2.4: 确保最小 16px 字体 */
   body {
     font-size: 16px;
   }
   
+  /* 桌面端标题字体大小 */
   h1 {
-    font-size: 4.5rem;
+    font-size: 4.5rem; /* 72px */
+  }
+  
+  h2 {
+    font-size: 3rem; /* 48px */
+  }
+  
+  h3 {
+    font-size: 2.25rem; /* 36px */
+  }
+  
+  h4 {
+    font-size: 1.875rem; /* 30px */
+  }
+  
+  h5 {
+    font-size: 1.5rem; /* 24px */
+  }
+  
+  h6 {
+    font-size: 1.25rem; /* 20px */
   }
 }
 

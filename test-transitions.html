@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>全局过渡样式测试 | Whitefir Studio</title>
+    <meta name="description" content="测试全局过渡样式和 Hover 效果">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link href="/assets/css/custom.css" rel="stylesheet">
+</head>
+<body class="min-h-screen">
+
+    <!-- 导航栏 -->
+    <nav class="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-md border-b border-white/10">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <a href="/" class="text-2xl font-bold tracking-tighter">
+                    WHITEFIR
+                </a>
+                <div class="flex space-x-6">
+                    <a href="#buttons" class="nav-link">按钮测试</a>
+                    <a href="#cards" class="nav-link">卡片测试</a>
+                    <a href="#forms" class="nav-link">表单测试</a>
+                    <a href="#links" class="nav-link">链接测试</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="pt-32 pb-16 px-6 hero-gradient">
+        <div class="container mx-auto text-center">
+            <h1 class="text-5xl md:text-7xl font-bold mb-6 glow-text tracking-tighter">
+                全局过渡样式测试
+            </h1>
+            <p class="text-white/70 text-lg leading-relaxed max-w-2xl mx-auto">
+                验证所有交互元素的 300ms ease-in-out 过渡效果和 1.05x Hover 缩放
+            </p>
+            <div class="mt-8">
+                <a href="#buttons" class="inline-block">
+                    <i class="fas fa-chevron-down text-2xl text-white/50 animate-bounce"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 按钮测试区域 -->
+    <section id="buttons" class="py-16 px-6">
+        <div class="container mx-auto max-w-6xl">
+            <h2 class="text-3xl font-bold mb-8 tracking-tighter">
+                <i class="fas fa-mouse-pointer mr-3 text-purple-500"></i>
+                按钮过渡效果测试
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- 主要按钮 -->
+                <div class="glass-card">
+                    <h3 class="text-xl font-bold mb-4 tracking-tighter">主要按钮</h3>
+                    <button class="btn-primary w-full">
+                        <i class="fas fa-rocket mr-2"></i>
+                        立即体验
+                    </button>
+                    <p class="text-white/50 text-sm mt-3 leading-relaxed">
+                        Hover 时应有向上移动和阴影增强效果
+                    </p>
+                </div>
+
+                <!-- 次要按钮 -->
+                <div class="glass-card">
+                    <h3 class="text-xl font-bold mb-4 tracking-tighter">次要按钮</h3>
+                    <button class="btn-secondary w-full">
+                        <i class="fas fa-info-circle mr-2"></i>
+                        了解更多
+                    </button>
+                    <p class="text-white/50 text-sm mt-3 leading-relaxed">
+                        Hover 时应有背景和边框颜色变化
+                    </p>
+                </div>
+
+                <!-- 禁用按钮 -->
+                <div class="glass-card">
+                    <h3 class="text-xl font-bold mb-4 tracking-tighter">禁用按钮</h3>
+                    <button class="btn-primary w-full" disabled>
+                        <i class="fas fa-lock mr-2"></i>
+                        即将推出
+                    </button>
+                    <p class="text-white/50 text-sm mt-3 leading-relaxed">
+                        禁用状态不应有 Hover 效果
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 卡片测试区域 -->
+    <section id="cards" class="py-16 px-6 bg-black/30">
+        <div class="container mx-auto max-w-6xl">
+            <h2 class="text-3xl font-bold mb-8 tracking-tighter">
+                <i class="fas fa-layer-group mr-3 text-indigo-500"></i>
+                玻璃拟态卡片过渡测试
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- 项目卡片 1 -->
+                <div class="glass-card cursor-pointer">
+                    <div class="h-40 bg-gradient-to-br from-purple-900 to-indigo-900 rounded-lg mb-4 flex items-center justify-center">
+                        <i class="fas fa-gamepad text-5xl text-white/30"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 tracking-tighter">Magic Tower Wars</h3>
+                    <p class="text-white/60 text-sm leading-relaxed">
+                        经典策略魔塔玩法与现代战争元素的完美融合
+                    </p>
+                    <div class="mt-4 flex gap-2">
+                        <span class="px-3 py-1 bg-purple-500/20 text-purple-300 text-xs rounded-full">Unity</span>
+                        <span class="px-3 py-1 bg-blue-500/20 text-blue-300 text-xs rounded-full">C#</span>
+                    </div>
+                </div>
+
+                <!-- 项目卡片 2 -->
+                <div class="glass-card cursor-pointer">
+                    <div class="h-40 bg-gradient-to-br from-blue-900 to-cyan-900 rounded-lg mb-4 flex items-center justify-center">
+                        <i class="fas fa-code text-5xl text-white/30"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 tracking-tighter">个人网站重设计</h3>
+                    <p class="text-white/60 text-sm leading-relaxed">
+                        采用玻璃拟态设计语言的现代化个人网站
+                    </p>
+                    <div class="mt-4 flex gap-2">
+                        <span class="px-3 py-1 bg-cyan-500/20 text-cyan-300 text-xs rounded-full">HTML</span>
+                        <span class="px-3 py-1 bg-blue-500/20 text-blue-300 text-xs rounded-full">Tailwind</span>
+                    </div>
+                </div>
+
+                <!-- 项目卡片 3 -->
+                <div class="glass-card cursor-pointer">
+                    <div class="h-40 bg-gradient-to-br from-pink-900 to-rose-900 rounded-lg mb-4 flex items-center justify-center">
+                        <i class="fas fa-heart text-5xl text-white/30"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 tracking-tighter">心情日历</h3>
+                    <p class="text-white/60 text-sm leading-relaxed">
+                        记录每日心情，可视化情绪变化趋势
+                    </p>
+                    <div class="mt-4 flex gap-2">
+                        <span class="px-3 py-1 bg-pink-500/20 text-pink-300 text-xs rounded-full">JavaScript</span>
+                        <span class="px-3 py-1 bg-rose-500/20 text-rose-300 text-xs rounded-full">JSON</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 glass-card">
+                <p class="text-white/70 leading-relaxed">
+                    <i class="fas fa-info-circle mr-2 text-blue-400"></i>
+                    <strong>测试说明：</strong>Hover 卡片时应有 1.05x 缩放效果，边框从 white/10 变为 white/30，并增强阴影效果。所有过渡应在 300ms 内完成，使用 ease-in-out 缓动函数。
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 表单测试区域 -->
+    <section id="forms" class="py-16 px-6">
+        <div class="container mx-auto max-w-4xl">
+            <h2 class="text-3xl font-bold mb-8 tracking-tighter">
+                <i class="fas fa-edit mr-3 text-green-500"></i>
+                表单元素过渡测试
+            </h2>
+            
+            <div class="glass-card">
+                <form class="space-y-6">
+                    <!-- 文本输入 -->
+                    <div>
+                        <label class="block text-sm font-bold mb-2 tracking-tighter">
+                            用户名
+                        </label>
+                        <input 
+                            type="text" 
+                            placeholder="请输入用户名"
+                            class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-white/30 focus:border-purple-500/50 focus:ring-2 focus:ring-purple-500/20"
+                        >
+                        <p class="text-white/50 text-xs mt-2 leading-relaxed">
+                            Focus 时应有边框颜色变化和光晕效果
+                        </p>
+                    </div>
+
+                    <!-- 邮箱输入 -->
+                    <div>
+                        <label class="block text-sm font-bold mb-2 tracking-tighter">
+                            邮箱地址
+                        </label>
+                        <input 
+                            type="email" 
+                            placeholder="your@email.com"
+                            class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-white/30 focus:border-purple-500/50 focus:ring-2 focus:ring-purple-500/20"
+                        >
+                    </div>
+
+                    <!-- 下拉选择 -->
+                    <div>
+                        <label class="block text-sm font-bold mb-2 tracking-tighter">
+                            选择分类
+                        </label>
+                        <select class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white focus:border-purple-500/50 focus:ring-2 focus:ring-purple-500/20">
+                            <option value="" class="bg-gray-900">请选择...</option>
+                            <option value="game" class="bg-gray-900">游戏开发</option>
+                            <option value="web" class="bg-gray-900">网页设计</option>
+                            <option value="other" class="bg-gray-900">其他</option>
+                        </select>
+                    </div>
+
+                    <!-- 文本域 -->
+                    <div>
+                        <label class="block text-sm font-bold mb-2 tracking-tighter">
+                            留言内容
+                        </label>
+                        <textarea 
+                            rows="4"
+                            placeholder="请输入您的留言..."
+                            class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-white/30 focus:border-purple-500/50 focus:ring-2 focus:ring-purple-500/20 resize-none"
+                        ></textarea>
+                    </div>
+
+                    <!-- 提交按钮 -->
+                    <div class="flex gap-4">
+                        <button type="submit" class="btn-primary flex-1">
+                            <i class="fas fa-paper-plane mr-2"></i>
+                            提交表单
+                        </button>
+                        <button type="reset" class="btn-secondary flex-1">
+                            <i class="fas fa-redo mr-2"></i>
+                            重置
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- 链接测试区域 -->
+    <section id="links" class="py-16 px-6 bg-black/30">
+        <div class="container mx-auto max-w-4xl">
+            <h2 class="text-3xl font-bold mb-8 tracking-tighter">
+                <i class="fas fa-link mr-3 text-yellow-500"></i>
+                链接过渡测试
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- 文本链接 -->
+                <div class="glass-card">
+                    <h3 class="text-xl font-bold mb-4 tracking-tighter">文本链接</h3>
+                    <div class="space-y-3">
+                        <p class="leading-relaxed">
+                            这是一段包含
+                            <a href="#" class="text-purple-400 underline">内联链接</a>
+                            的文本，Hover 时应有缩放和亮度提升效果。
+                        </p>
+                        <p class="leading-relaxed">
+                            访问
+                            <a href="#" class="text-blue-400 font-bold">官方网站</a>
+                            了解更多信息。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 图标链接 -->
+                <div class="glass-card">
+                    <h3 class="text-xl font-bold mb-4 tracking-tighter">图标链接</h3>
+                    <div class="flex gap-4">
+                        <a href="#" class="w-12 h-12 flex items-center justify-center bg-white/5 rounded-full border border-white/10 hover:bg-white/10 hover:border-white/30">
+                            <i class="fab fa-github text-xl"></i>
+                        </a>
+                        <a href="#" class="w-12 h-12 flex items-center justify-center bg-white/5 rounded-full border border-white/10 hover:bg-white/10 hover:border-white/30">
+                            <i class="fab fa-twitter text-xl"></i>
+                        </a>
+                        <a href="#" class="w-12 h-12 flex items-center justify-center bg-white/5 rounded-full border border-white/10 hover:bg-white/10 hover:border-white/30">
+                            <i class="fab fa-linkedin text-xl"></i>
+                        </a>
+                        <a href="#" class="w-12 h-12 flex items-center justify-center bg-white/5 rounded-full border border-white/10 hover:bg-white/10 hover:border-white/30">
+                            <i class="fas fa-envelope text-xl"></i>
+                        </a>
+                    </div>
+                    <p class="text-white/50 text-sm mt-4 leading-relaxed">
+                        所有图标链接应有统一的 Hover 效果
+                    </p>
+                </div>
+            </div>
+
+            <!-- 平滑滚动测试 -->
+            <div class="glass-card mt-6">
+                <h3 class="text-xl font-bold mb-4 tracking-tighter">
+                    <i class="fas fa-arrows-alt-v mr-2 text-cyan-400"></i>
+                    平滑滚动测试
+                </h3>
+                <p class="text-white/70 leading-relaxed mb-4">
+                    点击下方链接测试锚点跳转的平滑滚动效果：
+                </p>
+                <div class="flex flex-wrap gap-3">
+                    <a href="#buttons" class="px-4 py-2 bg-purple-500/20 text-purple-300 rounded-full hover:bg-purple-500/30">
+                        跳转到按钮区域
+                    </a>
+                    <a href="#cards" class="px-4 py-2 bg-indigo-500/20 text-indigo-300 rounded-full hover:bg-indigo-500/30">
+                        跳转到卡片区域
+                    </a>
+                    <a href="#forms" class="px-4 py-2 bg-green-500/20 text-green-300 rounded-full hover:bg-green-500/30">
+                        跳转到表单区域
+                    </a>
+                    <a href="#" class="px-4 py-2 bg-yellow-500/20 text-yellow-300 rounded-full hover:bg-yellow-500/30">
+                        返回顶部
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 测试总结 -->
+    <section class="py-16 px-6">
+        <div class="container mx-auto max-w-4xl">
+            <div class="glass-card border-green-500/30">
+                <h2 class="text-2xl font-bold mb-4 tracking-tighter text-green-400">
+                    <i class="fas fa-check-circle mr-2"></i>
+                    测试要求总结
+                </h2>
+                <div class="space-y-3 text-white/70 leading-relaxed">
+                    <p>
+                        <i class="fas fa-check text-green-400 mr-2"></i>
+                        <strong>Requirement 3.1 & 3.2:</strong> 所有状态变化应用 300ms duration 和 ease-in-out 缓动函数
+                    </p>
+                    <p>
+                        <i class="fas fa-check text-green-400 mr-2"></i>
+                        <strong>Requirement 3.3:</strong> 锚点链接跳转使用平滑滚动行为
+                    </p>
+                    <p>
+                        <i class="fas fa-check text-green-400 mr-2"></i>
+                        <strong>Requirement 3.5:</strong> 可点击元素 Hover 时缩放到 1.05x
+                    </p>
+                    <p>
+                        <i class="fas fa-check text-green-400 mr-2"></i>
+                        <strong>Requirement 1.4:</strong> 所有交互元素在 Hover 时有视觉反馈（300ms 内）
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-8 border-t border-white/5 text-center">
+        <p class="text-white/40 text-sm tracking-wider">
+            &copy; 2024 Whitefir Studio. All Rights Reserved.
+        </p>
+    </footer>
+
+</body>
+</html>

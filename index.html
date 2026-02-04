@@ -6,24 +6,9 @@
     <title>Whitefir | 游戏作品集</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="/assets/css/custom.css" rel="stylesheet">
     <style>
-        body { background-color: #050505; color: white; scroll-behavior: smooth; }
-        .glass-card {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        .glass-card:hover {
-            transform: translateY(-10px);
-            border-color: rgba(255, 255, 255, 0.3);
-            background: rgba(255, 255, 255, 0.06);
-        }
-        .hero-gradient {
-            background: radial-gradient(circle at 50% 50%, #1a1a1a 0%, #050505 100%);
-        }
-        .glow-text { text-shadow: 0 0 20px rgba(255,255,255,0.3); }
-        
+        /* 内联样式仅保留页面特定的样式，全局样式已移至 custom.css */
         /* Mobile menu animation */
         #mobile-menu {
             transition: all 0.3s ease-in-out;
@@ -85,40 +70,14 @@
     </section>
 
     <section id="projects" class="py-24 px-8 max-w-7xl mx-auto">
-        <h2 class="text-3xl font-bold mb-16 text-center italic tracking-widest">SELECTED PROJECTS</h2>
+        <h2 class="text-3xl font-bold mb-16 text-center italic tracking-tighter">SELECTED PROJECTS</h2>
         
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
-            <div class="glass-card rounded-3xl overflow-hidden group">
-                <div class="h-64 bg-gradient-to-br from-indigo-900 to-purple-800 relative">
-                    <div class="absolute inset-0 flex items-center justify-center text-5xl opacity-20 group-hover:opacity-40 transition">
-                        <i class="fa-solid fa-chess-rook"></i>
-                    </div>
-                </div>
-                <div class="p-8">
-                    <span class="text-xs text-indigo-400 font-bold tracking-widest uppercase">已上线</span>
-                    <h3 class="text-2xl font-bold mt-2">Magic Tower Wars</h3>
-                    <p class="text-gray-400 mt-4 font-light">经典的策略魔塔玩法与现代战争元素的完美融合。</p>
-                    <div class="mt-8 flex gap-4">
-                        <a href="https://magictowerwars.netlify.app/" target="_blank" class="px-6 py-2 bg-white text-black text-sm font-bold rounded-full hover:bg-gray-200 transition">立即玩</a>
-                        <a href="#" class="px-6 py-2 border border-white/20 text-sm font-bold rounded-full hover:bg-white/10 transition">详情</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="glass-card rounded-3xl overflow-hidden group">
-                <div class="h-64 bg-gradient-to-br from-gray-800 to-gray-900 relative">
-                    <div class="absolute inset-0 flex items-center justify-center text-5xl opacity-10">
-                        <i class="fa-solid fa-gear fa-spin"></i>
-                    </div>
-                </div>
-                <div class="p-8">
-                    <span class="text-xs text-orange-400 font-bold tracking-widest uppercase">开发中...</span>
-                    <h3 class="text-2xl font-bold mt-2">未知领域 (Project X)</h3>
-                    <p class="text-gray-400 mt-4 font-light">正在打磨的一款神秘新作，敬请期待更多消息。</p>
-                    <div class="mt-8">
-                        <button disabled class="px-6 py-2 bg-white/5 text-gray-500 text-sm font-bold rounded-full cursor-not-allowed">即将推出</button>
-                    </div>
-                </div>
+        <!-- 项目展示容器 - 由 ProjectShowcase 组件动态填充 -->
+        <div id="projects-container" class="grid grid-cols-1 md:grid-cols-2 gap-12">
+            <!-- 加载中提示 -->
+            <div class="col-span-full text-center py-12">
+                <i class="fas fa-spinner fa-spin text-4xl text-white/30 mb-4"></i>
+                <p class="text-white/50">正在加载项目...</p>
             </div>
         </div>
     </section>
@@ -127,8 +86,27 @@
         &copy; 2026 Whitefir Studio. All Rights Reserved.
     </footer>
 
-    <!-- Navigation Component Script -->
-    <script src="/js/navigation.js"></script>
+    <!-- Core Scripts -->
+    <script src="/js/data-loader.js"></script>
+    <script src="/js/animations.js"></script>
+    <script src="/js/project-showcase.js"></script>
+    <script src="/js/main.js"></script>
+    
+    <!-- Initialize Project Showcase -->
+    <script>
+        // 等待 DOM 加载完成后初始化项目展示组件
+        document.addEventListener('DOMContentLoaded', async () => {
+            console.log('[Index] 初始化项目展示组件...');
+            
+            // 创建 ProjectShowcase 实例
+            const projectShowcase = new ProjectShowcase('projects-container', '/data/projects.json');
+            
+            // 加载并渲染项目
+            await projectShowcase.loadProjects();
+            
+            console.log('[Index] 项目展示组件初始化完成');
+        });
+    </script>
 
 </body>
 </html>
