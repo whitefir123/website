@@ -18,6 +18,7 @@ class MoodCalendar {
     this.currentMonth = new Date();
     this.moods = [];
     this.moodTypes = {};
+    this.emotionStatistics = null; // EmotionStatistics 组件实例
     
     if (!this.container) {
       console.error(`[MoodCalendar] 找不到容器元素: ${containerId}`);
@@ -27,6 +28,8 @@ class MoodCalendar {
   /**
    * 加载心情数据
    * Requirements: 5.2, 5.5
+   * Feature: mood-journal-enhancement
+   * Requirements: 3.8 - 初始化 EmotionStatistics 组件
    */
   async loadMoods() {
     try {
@@ -49,6 +52,10 @@ class MoodCalendar {
       // 渲染日历
       this.render();
       
+      // Feature: mood-journal-enhancement
+      // Requirements: 3.8 - 初始化 EmotionStatistics 组件
+      this.initEmotionStatistics();
+      
     } catch (error) {
       console.error('[MoodCalendar] 加载心情数据失败:', error);
       this.moods = [];
@@ -60,8 +67,9 @@ class MoodCalendar {
   /**
    * 渲染日历
    * Requirements: 5.1, 5.6
+   * 提示词 3: 跨数据关联 - 显示日志图标
    */
-  render() {
+  async render() {
     if (!this.container) {
       console.error('[MoodCalendar] 容器不存在，无法渲染');
       return;
@@ -102,6 +110,9 @@ class MoodCalendar {
 
     // 添加事件监听器
     this.attachEventListeners();
+    
+    // 提示词 3: 跨数据关联 - 为有日志的日期添加图标
+    await this.addJournalIndicators();
   }
 
   /**
@@ -293,6 +304,8 @@ class MoodCalendar {
   /**
    * 添加事件监听器
    * Requirements: 5.3, 5.4
+   * Feature: mood-journal-enhancement
+   * Requirements: 1.1 - 点击无记录日期显示心情记录对话框
    */
   attachEventListeners() {
     // 上个月按钮
@@ -327,6 +340,66 @@ class MoodCalendar {
         }
       });
     });
+
+    // Feature: mood-journal-enhancement
+    // Requirement 1.1: 点击无心情记录的日期显示心情记录对话框
+    const emptyDayElements = this.container.querySelectorAll('.calendar-day:not([data-mood])');
+    emptyDayElements.forEach(dayEl => {
+      dayEl.addEventListener('click', (e) => {
+        const date = dayEl.dataset.date;
+        if (date) {
+          console.log('[MoodCalendar] 点击无记录日期:', date);
+          this.showMoodRecordModal(date);
+        }
+      });
+
+      // 键盘可访问性
+      dayEl.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          const date = dayEl.dataset.date;
+          if (date) {
+            this.showMoodRecordModal(date);
+          }
+        }
+      });
+    });
+  }
+
+  /**
+   * 显示心情记录对话框
+   * Feature: mood-journal-enhancement
+   * Requirements: 1.1, 1.4 - 显示对话框并处理保存回调
+   * @param {string} date - 日期字符串 (YYYY-MM-DD)
+   */
+  showMoodRecordModal(date) {
+    // 检查 MoodRecordModal 是否已加载
+    if (typeof MoodRecordModal === 'undefined') {
+      console.error('[MoodCalendar] MoodRecordModal 组件未加载');
+      return;
+    }
+
+    // 创建对话框实例
+    const modal = new MoodRecordModal({
+      date: date,
+      moodTypes: this.moodTypes,
+      onSave: (moodData) => {
+        console.log('[MoodCalendar] 新心情记录:', moodData);
+        console.log('[MoodCalendar] JSON 格式:', JSON.stringify(moodData, null, 2));
+        
+        // 将新心情记录添加到数据中
+        this.moods.push(moodData);
+        
+        // 重新渲染日历以显示新记录
+        this.render();
+      },
+      onClose: () => {
+        console.log('[MoodCalendar] 心情记录对话框已关闭');
+      }
+    });
+
+    // 显示对话框
+    modal.show();
   }
 
   /**
@@ -474,9 +547,12 @@ class MoodCalendar {
   /**
    * 导航到上个月或下个月
    * Requirements: 5.4, 5.5 - 支持月份导航 + 淡入淡出过渡效果
+   * Feature: mood-journal-enhancement
+   * Requirements: 3.7, 3.10 - 月份切换时更新统计数据
+   * 提示词 3: 支持异步渲染
    * @param {number} direction - 方向 (-1 = 上个月, 1 = 下个月)
    */
-  navigateMonth(direction) {
+  async navigateMonth(direction) {
     const newMonth = new Date(this.currentMonth);
     newMonth.setMonth(newMonth.getMonth() + direction);
     this.currentMonth = newMonth;
@@ -491,8 +567,12 @@ class MoodCalendar {
       gridContainer.style.transform = 'translateY(10px)';
       
       // 等待淡出完成后重新渲染
-      setTimeout(() => {
-        this.render();
+      setTimeout(async () => {
+        await this.render();
+        
+        // Feature: mood-journal-enhancement
+        // Requirements: 3.7, 3.10 - 更新情绪统计面板
+        this.updateEmotionStatistics();
         
         // 淡入
         const newGridContainer = this.container.querySelector('.calendar-grid-container');
@@ -509,7 +589,11 @@ class MoodCalendar {
       }, 200);
     } else {
       // 如果找不到容器，直接重新渲染
-      this.render();
+      await this.render();
+      
+      // Feature: mood-journal-enhancement
+      // Requirements: 3.7, 3.10 - 更新情绪统计面板
+      this.updateEmotionStatistics();
     }
   }
 
@@ -550,6 +634,49 @@ class MoodCalendar {
   }
 
   /**
+   * 为有日志的日期添加图标指示器
+   * 提示词 3: 跨数据关联 - 在日历单元格内显示"书本"图标
+   */
+  async addJournalIndicators() {
+    try {
+      // 加载日志数据
+      const journalData = await dataLoader.fetchJSON('/data/journal-entries.json');
+      
+      if (!journalData || !journalData.entries) {
+        console.log('[MoodCalendar] 没有日志数据');
+        return;
+      }
+      
+      // 为每个有日志的日期添加图标
+      journalData.entries.forEach(entry => {
+        const dateCell = this.container.querySelector(`[data-date="${entry.date}"]`);
+        
+        if (dateCell) {
+          // 检查是否已经有图标
+          if (!dateCell.querySelector('.journal-indicator')) {
+            // 添加日志图标
+            const indicator = document.createElement('div');
+            indicator.className = 'journal-indicator absolute top-1 right-1';
+            indicator.innerHTML = '<i class="fas fa-book text-xs text-purple-400/60 hover:text-purple-400 transition-colors"></i>';
+            indicator.title = '该日期有日志';
+            
+            dateCell.appendChild(indicator);
+            
+            // 为日期单元格添加 data-has-journal 属性
+            dateCell.dataset.hasJournal = 'true';
+            dateCell.dataset.journalId = entry.id;
+          }
+        }
+      });
+      
+      console.log('[MoodCalendar] 已添加日志指示器');
+      
+    } catch (error) {
+      console.warn('[MoodCalendar] 无法加载日志数据:', error);
+    }
+  }
+
+  /**
    * 转义 HTML 特殊字符
    * @param {string} text - 要转义的文本
    * @returns {string} 转义后的文本
@@ -558,6 +685,56 @@ class MoodCalendar {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
+  }
+
+  /**
+   * 初始化情绪统计组件
+   * Feature: mood-journal-enhancement
+   * Requirements: 3.8 - 集成 EmotionStatistics 到 MoodCalendar
+   */
+  initEmotionStatistics() {
+    const statsContainer = document.getElementById('emotion-statistics-container');
+    
+    if (!statsContainer) {
+      console.warn('[MoodCalendar] 找不到情绪统计容器，跳过初始化');
+      return;
+    }
+    
+    // 检查 EmotionStatistics 类是否已加载
+    if (typeof EmotionStatistics === 'undefined') {
+      console.error('[MoodCalendar] EmotionStatistics 组件未加载');
+      return;
+    }
+    
+    // 创建 EmotionStatistics 实例
+    this.emotionStatistics = new EmotionStatistics(
+      'emotion-statistics-container',
+      this.moods,
+      this.moodTypes,
+      this.currentMonth
+    );
+    
+    // 渲染统计面板
+    this.emotionStatistics.render();
+    
+    console.log('[MoodCalendar] EmotionStatistics 组件已初始化');
+  }
+
+  /**
+   * 更新情绪统计数据
+   * Feature: mood-journal-enhancement
+   * Requirements: 3.7, 3.10 - 月份切换时更新统计数据
+   */
+  updateEmotionStatistics() {
+    if (!this.emotionStatistics) {
+      console.warn('[MoodCalendar] EmotionStatistics 组件未初始化');
+      return;
+    }
+    
+    // 调用 EmotionStatistics 的 update 方法
+    this.emotionStatistics.update(this.moods, this.currentMonth);
+    
+    console.log('[MoodCalendar] 情绪统计数据已更新');
   }
 
   /**

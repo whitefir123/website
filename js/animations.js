@@ -120,20 +120,36 @@ class AnimationController {
   
   /**
    * 为瀑布流容器的子元素依次添加动画
+   * 提示词 2: 结合 scale 和 blur 的微小变化，呈现"涟漪状"入场感
    * @param {HTMLElement} container - 瀑布流容器
    */
   animateStaggerContainer(container) {
     // 获取所有直接子元素
     const children = Array.from(container.children);
     
-    // 为每个子元素按顺序添加动画，间隔 50ms
+    // 提示词 2: 根据 Bento Grid 位置动态计算延迟
+    // 计算每个元素的位置（行和列）
+    const containerRect = container.getBoundingClientRect();
+    
     children.forEach((child, index) => {
+      const childRect = child.getBoundingClientRect();
+      
+      // 计算元素中心点相对于容器的距离（用于涟漪效果）
+      const centerX = childRect.left + childRect.width / 2 - containerRect.left;
+      const centerY = childRect.top + childRect.height / 2 - containerRect.top;
+      const distance = Math.sqrt(centerX * centerX + centerY * centerY);
+      
+      // 根据距离计算延迟（距离越远，延迟越大）
+      const delay = Math.min(distance * 0.3, 800); // 最大延迟 800ms
+      
       setTimeout(() => {
-        child.classList.add('animate-smart-fade-in');
-      }, index * this.options.staggerDelay);
+        // 提示词 2: 添加增强的动画类（包含 scale 和 blur）
+        child.style.animation = 'smartFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards';
+        child.style.opacity = '1';
+      }, delay);
     });
     
-    console.log(`🌊 瀑布流动画：${children.length} 个子元素，间隔 ${this.options.staggerDelay}ms`);
+    console.log(`🌊 瀑布流动画（涟漪状）：${children.length} 个子元素`);
   }
   
   /**

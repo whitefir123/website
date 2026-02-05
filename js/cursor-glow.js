@@ -47,16 +47,28 @@ class CursorGlow {
 
   /**
    * Update glow position based on cursor coordinates
+   * 提示词 1: 增强光晕在经过 .glass-card 时的反射效果
    * @param {number} x - Mouse X coordinate
    * @param {number} y - Mouse Y coordinate
    */
   updateGlowPosition(x, y) {
     if (!this.isInitialized) return;
     
-    // Create radial gradient centered at cursor position
-    // 600px radius for subtle, wide glow
-    // rgba(139, 92, 246, 0.08) = magic purple at 8% opacity
-    this.glowElement.style.background = `radial-gradient(circle 600px at ${x}px ${y}px, rgba(139, 92, 246, 0.08) 0%, transparent 100%)`;
+    // 检测鼠标是否在 glass-card 上
+    const elementUnderCursor = document.elementFromPoint(x, y);
+    const isOverGlassCard = elementUnderCursor && elementUnderCursor.closest('.glass-card, .project-card');
+    
+    // 提示词 1: 在 glass-card 上时增强光晕强度和范围
+    if (isOverGlassCard) {
+      // 增强版：更大范围（800px）+ 更高不透明度（0.12）+ 多层渐变
+      this.glowElement.style.background = `
+        radial-gradient(circle 800px at ${x}px ${y}px, rgba(139, 92, 246, 0.12) 0%, rgba(139, 92, 246, 0.06) 40%, transparent 100%),
+        radial-gradient(circle 400px at ${x}px ${y}px, rgba(255, 255, 255, 0.03) 0%, transparent 60%)
+      `;
+    } else {
+      // 标准版：600px 范围 + 8% 不透明度
+      this.glowElement.style.background = `radial-gradient(circle 600px at ${x}px ${y}px, rgba(139, 92, 246, 0.08) 0%, transparent 100%)`;
+    }
   }
 
   /**

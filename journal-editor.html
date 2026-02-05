@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO 元数据 -->
+    <title>撰写日志 | Whitefir Studio - 记录想法与感悟</title>
+    <meta name="description" content="记录你的想法、经验和感悟，创建新的日志条目。使用实时预览功能，让你的文字更加精彩。">
+    <meta name="keywords" content="日志编辑器, 写作, 个人日志, 思考记录, Whitefir Studio">
+    
+    <!-- Open Graph 标签（社交媒体分享） -->
+    <meta property="og:title" content="撰写日志 | Whitefir Studio">
+    <meta property="og:description" content="记录你的想法、经验和感悟，创建新的日志条目">
+    <meta property="og:image" content="https://whitefir.top/assets/images/journal-editor-og-image.webp">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://whitefir.top/journal-editor.html">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="撰写日志 | Whitefir Studio">
+    <meta name="twitter:description" content="记录你的想法、经验和感悟，创建新的日志条目">
+    <meta name="twitter:image" content="https://whitefir.top/assets/images/journal-editor-og-image.webp">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="/assets/css/custom.css" rel="stylesheet">
+    <style>
+        /* 内联样式仅保留页面特定的样式，全局样式已移至 custom.css */
+        /* Mobile menu animation */
+        #mobile-menu {
+            transition: all 0.3s ease-in-out;
+        }
+        #mobile-menu.hidden {
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+        }
+        #mobile-menu:not(.hidden) {
+            opacity: 1;
+            max-height: 500px;
+        }
+        
+        /* 编辑器特定样式 */
+        .form-input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            color: white;
+            transition: all 0.3s ease-in-out;
+            width: 100%;
+            font-family: inherit;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: rgba(139, 92, 246, 0.5);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+            background: rgba(255, 255, 255, 0.08);
+        }
+        
+        .form-input.error {
+            border-color: rgba(239, 68, 68, 0.5);
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+        }
+        
+        .error-message {
+            color: #ef4444;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+        
+        .error-message.show {
+            display: block;
+        }
+        
+        /* 预览区域固定定位 */
+        .preview-sticky {
+            position: sticky;
+            top: 6rem;
+        }
+        
+        /* 标签选择器样式 */
+        .tag-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .tag-option {
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 9999px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+        }
+        
+        .tag-option:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+            color: white;
+        }
+        
+        .tag-option.selected {
+            background: linear-gradient(135deg, #4f46e5 0%, #8b5cf6 100%);
+            border-color: #8b5cf6;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="fixed top-0 w-full z-50">
+        <div class="w-full px-8 py-4">
+            <div class="flex justify-between items-center">
+                <!-- Logo -->
+                <a href="/" class="text-2xl font-bold tracking-tighter hover:text-white/80 transition-colors duration-300">
+                    WHITEFIR
+                </a>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex space-x-8">
+                    <a href="/#home" class="nav-link">首页</a>
+                    <a href="/#projects" class="nav-link">项目</a>
+                    <a href="/calendar.html" class="nav-link">心情日历</a>
+                    <a href="/journal.html" class="nav-link">日志</a>
+                    <a href="/journal-editor.html" class="nav-link active">撰写日志</a>
+                </div>
+                
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" class="md:hidden text-white/70 hover:text-white transition-colors duration-300 p-2" aria-label="Toggle menu">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+            
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden mt-4 pb-4 space-y-4">
+                <a href="/#home" class="block text-white/70 hover:text-white transition-colors duration-300 py-2">首页</a>
+                <a href="/#projects" class="block text-white/70 hover:text-white transition-colors duration-300 py-2">项目</a>
+                <a href="/calendar.html" class="block text-white/70 hover:text-white transition-colors duration-300 py-2">心情日历</a>
+                <a href="/journal.html" class="block text-white/70 hover:text-white transition-colors duration-300 py-2">日志</a>
+                <a href="/journal-editor.html" class="block text-white transition-colors duration-300 py-2">撰写日志</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="pt-24 min-h-screen">
+        <div class="container mx-auto px-6 py-12">
+            <!-- 页面标题和返回按钮 -->
+            <header class="mb-12 animate-on-scroll">
+                <div class="flex items-center justify-between mb-6">
+                    <h1 class="text-4xl md:text-5xl font-bold tracking-tighter gradient-text">
+                        <i class="fas fa-pen-fancy mr-4 text-purple-400"></i>
+                        撰写日志
+                    </h1>
+                    <a href="/journal.html" class="btn-secondary inline-flex items-center gap-2 px-4 py-2">
+                        <i class="fas fa-arrow-left"></i>
+                        <span>返回日志列表</span>
+                    </a>
+                </div>
+                <p class="text-gray-400 text-lg leading-relaxed max-w-2xl">
+                    记录你的想法、经验和感悟。使用实时预览功能，让你的文字更加精彩。
+                </p>
+            </header>
+            
+            <!-- 编辑器容器 -->
+            <div id="journal-editor-container" class="max-w-7xl mx-auto">
+                <!-- 加载提示 -->
+                <div class="glass-card rounded-2xl p-12 text-center">
+                    <i class="fas fa-spinner fa-spin text-4xl text-purple-400 mb-4"></i>
+                    <p class="text-gray-400">正在加载编辑器...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="py-12 border-t border-white/5 text-center text-gray-600 text-xs tracking-widest uppercase">
+        &copy; 2026 Whitefir Studio. All Rights Reserved.
+    </footer>
+
+    <!-- Core Scripts -->
+    <script src="/js/data-loader.js"></script>
+    <script src="/js/animations.js"></script>
+    <script src="/js/journal-editor.js"></script>
+    <script src="/js/navigation.js"></script>
+    <script src="/js/magnetic-effect.js"></script>
+    <script src="/js/cursor-glow.js"></script>
+    <script src="/js/main.js"></script>
+    
+    <!-- Initialize Journal Editor -->
+    <script>
+        // 等待 DOM 加载完成后初始化日志编辑器
+        document.addEventListener('DOMContentLoaded', async () => {
+            console.log('[JournalEditor] 初始化日志编辑器组件...');
+            
+            // 创建 JournalEditor 实例
+            const journalEditor = new JournalEditor('journal-editor-container');
+            
+            // 初始化编辑器
+            await journalEditor.init();
+            
+            console.log('[JournalEditor] 日志编辑器组件初始化完成');
+        });
+    </script>
+
+</body>
+</html>

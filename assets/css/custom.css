@@ -1025,6 +1025,66 @@ html {
   transform: translateY(-2px);
 }
 
+/* 提示词 3: 心情过滤按钮样式 */
+.mood-filter-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.7);
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: all 0.3s var(--spring-curve);
+  cursor: pointer;
+}
+
+.mood-filter-btn:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.3);
+  color: white;
+  transform: translateY(-2px) scale(1.05);
+}
+
+.mood-filter-btn.active {
+  background: var(--mood-color, rgba(139, 92, 246, 0.3));
+  border-color: var(--mood-color, rgba(139, 92, 246, 0.6));
+  color: white;
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 4px 12px var(--mood-color, rgba(139, 92, 246, 0.3));
+}
+
+
+/* 提示词 3: 日历日志图标指示器 */
+.journal-indicator {
+  position: absolute;
+  top: 0.25rem;
+  right: 0.25rem;
+  z-index: 10;
+  pointer-events: none;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* 日历日期单元格有日志时的特殊样式 */
+.calendar-day[data-has-journal="true"] {
+  cursor: pointer;
+}
+
+.calendar-day[data-has-journal="true"]:hover .journal-indicator i {
+  color: rgba(139, 92, 246, 1);
+  transform: scale(1.2);
+}
+
 
 /* ==================== 动态光标跟随光晕 ==================== */
 /* Requirements: 13.1, 13.2, 13.3, 13.4, 13.5 */

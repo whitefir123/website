@@ -18,6 +18,8 @@ class JournalSystem {
     this.entries = [];
     this.filteredEntries = [];
     this.currentTag = null;
+    this.currentMood = null; // 提示词 3: 当前选中的心情过滤
+    this.searchBox = null; // SearchBox 组件实例
     
     if (!this.container) {
       console.error(`[JournalSystem] 找不到容器元素: ${containerId}`);
@@ -49,7 +51,10 @@ class JournalSystem {
       this.filteredEntries = this.entries;
       
       // 渲染日志列表
-      this.render();
+      await this.render();
+      
+      // Task 2.9: 初始化 SearchBox 组件
+      this.initializeSearchBox();
       
     } catch (error) {
       console.error('[JournalSystem] 加载日志失败:', error);
@@ -76,6 +81,7 @@ class JournalSystem {
   /**
    * 渲染日志系统
    * Requirements: 6.1, 6.5, 6.6
+   * Task 2.9: 添加搜索框容器
    */
   async render() {
     if (!this.container) {
@@ -90,11 +96,15 @@ class JournalSystem {
     const entriesListHTML = await this.renderEntriesList();
 
     // 创建日志系统结构
+    // Task 2.9: 在标签过滤器上方添加搜索框容器
     const journalHTML = `
       <div class="journal-system">
+        <!-- Task 2.9: 搜索框容器 -->
+        <div id="journal-search-box" class="mb-6"></div>
+        
         <!-- 标签过滤器 -->
         <div class="tag-filter-section mb-8">
-          ${this.renderTagFilter()}
+          ${await this.renderTagFilter()}
         </div>
         
         <!-- 日志条目列表 -->
@@ -113,28 +123,57 @@ class JournalSystem {
   /**
    * 渲染标签过滤器
    * Requirement 6.5: 支持按标签过滤条目
+   * 提示词 3: 增加心情过滤功能
    */
-  renderTagFilter() {
+  async renderTagFilter() {
     const allTags = this.getAllTags();
     
-    if (allTags.length === 0) {
-      return '<p class="text-gray-400 text-center text-sm">暂无标签</p>';
+    // 提示词 3: 加载心情类型数据
+    let moodTypes = {};
+    try {
+      const moodData = await dataLoader.fetchJSON('/data/moods.json');
+      moodTypes = moodData.moodTypes || {};
+    } catch (error) {
+      console.warn('[JournalSystem] 无法加载心情类型数据:', error);
     }
-
+    
     let filterHTML = `
       <div class="glass-card rounded-2xl p-6">
         <h3 class="text-lg font-bold tracking-tighter mb-4">
           <i class="fas fa-filter mr-2 text-purple-400"></i>
-          按标签筛选
+          筛选日志
         </h3>
-        <div class="flex flex-wrap gap-3">
-          <!-- "全部"按钮 -->
-          <button class="tag-filter-btn ${!this.currentTag ? 'active' : ''}" 
-                  data-tag="all"
-                  aria-label="显示全部日志">
-            <i class="fas fa-list mr-2"></i>
-            全部 (${this.entries.length})
-          </button>
+        
+        <!-- 提示词 3: 心情过滤区域 -->
+        ${Object.keys(moodTypes).length > 0 ? `
+        <div class="mb-6">
+          <h4 class="text-sm font-semibold text-white/70 mb-3 uppercase tracking-wider">按心情筛选</h4>
+          <div class="flex flex-wrap gap-2">
+            ${Object.entries(moodTypes).map(([key, moodType]) => `
+              <button class="mood-filter-btn ${this.currentMood === key ? 'active' : ''} px-3 py-2 rounded-full text-sm font-medium transition-all duration-300"
+                      data-mood="${key}"
+                      style="--mood-color: ${moodType.color};"
+                      aria-label="筛选心情: ${moodType.label}">
+                <span class="mr-2">${moodType.icon}</span>
+                <span>${moodType.label}</span>
+              </button>
+            `).join('')}
+          </div>
+        </div>
+        ` : ''}
+        
+        <!-- 标签过滤区域 -->
+        ${allTags.length > 0 ? `
+        <div>
+          <h4 class="text-sm font-semibold text-white/70 mb-3 uppercase tracking-wider">按标签筛选</h4>
+          <div class="flex flex-wrap gap-3">
+            <!-- "全部"按钮 -->
+            <button class="tag-filter-btn ${!this.currentTag && !this.currentMood ? 'active' : ''}" 
+                    data-tag="all"
+                    aria-label="显示全部日志">
+              <i class="fas fa-list mr-2"></i>
+              全部 (${this.entries.length})
+            </button>
     `;
 
     // 为每个标签创建过滤按钮
@@ -153,7 +192,9 @@ class JournalSystem {
     });
 
     filterHTML += `
+          </div>
         </div>
+        ` : '<p class="text-gray-400 text-center text-sm">暂无标签</p>'}
       </div>
     `;
 
@@ -162,22 +203,30 @@ class JournalSystem {
 
   /**
    * 渲染日志条目列表
-   * Requirement 6.6: 显示标题、摘要、日期和阅读时间
-   */
-  renderEntriesList() {
-  /**
-   * 渲染日志条目列表
    * Requirements: 6.1, 6.6
+   * 提示词 3: 空状态美化 - 支持心情过滤的空状态
    * @returns {Promise<string>} 日志列表 HTML
    */
   async renderEntriesList() {
     // 如果没有条目，显示空状态
     if (this.filteredEntries.length === 0) {
+      // 提示词 3: 空状态美化
+      const emptyMessage = this.currentMood 
+        ? `没有找到心情为该类型的日志` 
+        : this.currentTag 
+          ? `没有找到标签为 "${this.currentTag}" 的日志` 
+          : '暂无日志条目';
+      
       return `
-        <div class="glass-card rounded-2xl p-12 text-center">
-          <i class="fas fa-book-open text-6xl text-white/10 mb-4"></i>
-          <p class="text-white/50 text-lg">
-            ${this.currentTag ? `没有找到标签为 "${this.currentTag}" 的日志` : '暂无日志条目'}
+        <div class="empty-state glass-card rounded-2xl">
+          <div class="empty-state-icon">
+            <i class="fas fa-${this.currentMood || this.currentTag ? 'search' : 'book-open'}"></i>
+          </div>
+          <h3 class="empty-state-title">${emptyMessage}</h3>
+          <p class="empty-state-description">
+            ${this.currentMood || this.currentTag 
+              ? '尝试选择其他筛选条件，或点击"全部"查看所有日志。' 
+              : '开始记录你的第一篇日志吧！'}
           </p>
         </div>
       `;
@@ -347,9 +396,19 @@ class JournalSystem {
   /**
    * 添加事件监听器
    * Requirements: 6.2, 6.5
+   * 提示词 3: 增加心情过滤按钮事件
    */
   attachEventListeners() {
     if (!this.container) return;
+
+    // 提示词 3: 心情过滤按钮点击事件
+    const moodButtons = this.container.querySelectorAll('.mood-filter-btn');
+    moodButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const mood = btn.dataset.mood;
+        this.filterByMood(mood);
+      });
+    });
 
     // 标签过滤按钮点击事件 (Requirement 6.5)
     const tagButtons = this.container.querySelectorAll('.tag-filter-btn');
@@ -388,20 +447,130 @@ class JournalSystem {
   }
 
   /**
+   * Task 2.9: 初始化 SearchBox 组件
+   * Requirements: 3.1, 3.2, 3.3, 3.4
+   */
+  initializeSearchBox() {
+    // 检查 SearchBox 类是否可用
+    if (typeof SearchBox === 'undefined') {
+      console.warn('[JournalSystem] SearchBox 类未定义，跳过搜索功能初始化');
+      return;
+    }
+
+    // 创建 SearchBox 实例
+    this.searchBox = new SearchBox('journal-search-box', (filteredResults) => {
+      this.handleSearchResults(filteredResults);
+    });
+
+    // 设置所有日志条目数据
+    this.searchBox.setEntries(this.entries);
+
+    // 渲染搜索框
+    this.searchBox.render();
+
+    console.log('[JournalSystem] SearchBox 组件已初始化');
+  }
+
+  /**
+   * Task 2.9: 处理搜索结果
+   * Requirements: 3.2, 3.3
+   * @param {Array} filteredResults - 搜索过滤后的日志条目数组
+   */
+  async handleSearchResults(filteredResults) {
+    console.log(`[JournalSystem] 搜索结果: ${filteredResults.length} 条`);
+
+    // 更新过滤后的条目
+    this.filteredEntries = filteredResults;
+
+    // 重新渲染日志列表
+    const entriesListHTML = await this.renderEntriesList();
+    const listContainer = this.container.querySelector('.journal-entries-list');
+    
+    if (listContainer) {
+      listContainer.innerHTML = entriesListHTML;
+      
+      // 重新添加卡片点击事件
+      const entryCards = listContainer.querySelectorAll('.journal-entry-card');
+      entryCards.forEach(card => {
+        const entryId = card.dataset.entryId;
+        const detailPage = card.dataset.detailPage;
+
+        card.addEventListener('click', () => {
+          this.navigateToEntry(entryId, detailPage);
+        });
+
+        card.addEventListener('keypress', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            this.navigateToEntry(entryId, detailPage);
+          }
+        });
+      });
+    }
+  }
+
+  /**
    * 按标签过滤日志条目
    * Requirement 6.5: 支持按标签过滤条目
    * @param {string} tag - 标签名称
    */
-  filterByTag(tag) {
+  async filterByTag(tag) {
     console.log(`[JournalSystem] 按标签过滤: ${tag}`);
     
     this.currentTag = tag;
+    this.currentMood = null; // 清除心情过滤
     this.filteredEntries = this.entries.filter(entry => 
       entry.tags && entry.tags.includes(tag)
     );
     
     // 重新渲染
-    this.render();
+    await this.render();
+    
+    // 滚动到顶部
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  /**
+   * 按心情过滤日志条目
+   * 提示词 3: 多维过滤 - 根据日期匹配心情数据
+   * @param {string} mood - 心情类型键
+   */
+  async filterByMood(mood) {
+    console.log(`[JournalSystem] 按心情过滤: ${mood}`);
+    
+    this.currentMood = mood;
+    this.currentTag = null; // 清除标签过滤
+    
+    try {
+      // 加载心情数据
+      const moodData = await dataLoader.fetchJSON('/data/moods.json');
+      
+      if (!moodData || !moodData.moods) {
+        console.warn('[JournalSystem] 心情数据无效');
+        this.filteredEntries = [];
+        this.render();
+        return;
+      }
+      
+      // 获取所有匹配该心情的日期
+      const moodDates = moodData.moods
+        .filter(m => m.mood === mood)
+        .map(m => m.date);
+      
+      // 过滤出这些日期的日志
+      this.filteredEntries = this.entries.filter(entry => 
+        moodDates.includes(entry.date)
+      );
+      
+      console.log(`[JournalSystem] 找到 ${this.filteredEntries.length} 条匹配心情 "${mood}" 的日志`);
+      
+    } catch (error) {
+      console.error('[JournalSystem] 按心情过滤失败:', error);
+      this.filteredEntries = [];
+    }
+    
+    // 重新渲染
+    await this.render();
     
     // 滚动到顶部
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -409,15 +578,17 @@ class JournalSystem {
 
   /**
    * 清除过滤器，显示所有条目
+   * 提示词 3: 同时清除标签和心情过滤
    */
-  clearFilter() {
+  async clearFilter() {
     console.log('[JournalSystem] 清除过滤器，显示全部');
     
     this.currentTag = null;
+    this.currentMood = null;
     this.filteredEntries = this.entries;
     
     // 重新渲染
-    this.render();
+    await this.render();
   }
 
   /**
