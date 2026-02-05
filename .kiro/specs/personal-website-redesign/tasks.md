@@ -13,24 +13,61 @@ This implementation plan transforms the existing Whitefir Studio website into a 
   - Initialize JSON data files with sample data (projects.json, moods.json, journal-entries.json)
   - _Requirements: 10.1, 10.2, 12.1, 12.2_
 
-- [ ]* 1.1 Write property test for data loader
+- [x] 1.1 Upgrade global visual system (大厂极简主义风格)
+  - [x] 1.1.1 Update background color to hsl(240 10% 3.9%)
+    - Replace #050505 with deeper black-gray
+    - _Requirements: 1.1_
+  
+  - [x] 1.1.2 Add noise texture to background
+    - Implement SVG noise filter
+    - Add subtle radial gradients for depth
+    - _Requirements: 1.4_
+  
+  - [x] 1.1.3 Implement fluid typography with clamp()
+    - Apply clamp() to all heading sizes
+    - Ensure responsive scaling
+    - _Requirements: 1.8_
+  
+  - [x] 1.1.4 Update typography contrast
+    - Add opacity-70 to body text
+    - Maintain tracking-tighter for headings
+    - _Requirements: 1.7_
+  
+  - [x] 1.1.5 Implement stagger animations for lists
+    - Create staggerFadeIn keyframes
+    - Apply sequential delays to list items
+    - _Requirements: 1.10_
+  
+  - [x] 1.1.6 Increase vertical spacing
+    - Change py-24 to py-32 globally
+    - Add more breathing space
+    - _Requirements: 3.6_
+
+- [ ]* 1.2 Write property test for data loader
   - **Property 28: Data Loading Success**
   - **Validates: Requirements 12.3**
 
-- [ ]* 1.2 Write property test for data caching
+- [ ]* 1.3 Write property test for data caching
   - **Property 30: Data Caching Behavior**
   - **Validates: Requirements 12.5**
 
-- [ ]* 1.3 Write property test for error handling
+- [ ]* 1.4 Write property test for error handling
   - **Property 29: Data Loading Error Handling**
   - **Validates: Requirements 12.4**
 
-- [ ] 2. Implement glassmorphism card component
+- [ ] 2. Implement glassmorphism card component (大厂极简风格升级)
   - [x] 2.1 Create reusable glass-card CSS classes with all required styling
     - Implement bg-white/5, backdrop-blur-md, border-white/10
     - Add hover state with border-white/30
     - Add subtle shadow effects
     - _Requirements: 11.1, 11.2, 11.3, 11.4, 11.5_
+  
+  - [x] 2.1.1 Upgrade glass-card with gradient borders (Border Beam effect)
+    - Implement ultra-thin gradient borders
+    - Add top gloss effect
+    - Apply multi-layer diffuse shadows for floating effect
+    - Add glow support on hover
+    - _Requirements: 1.2, 1.9_
   
   - [ ]* 2.2 Write property test for glassmorphism card styling
     - **Property 26: Glassmorphism Card Styling Completeness**
@@ -58,7 +95,7 @@ This implementation plan transforms the existing Whitefir Studio website into a 
     - **Property 21: Navigation Link Behavior**
     - **Validates: Requirements 8.4**
 
-- [ ] 4. Implement animation system
+- [ ] 4. Implement animation system (高级动效升级)
   - [x] 4.1 Create animation controller with Intersection Observer
     - Implement AnimationController class
     - Set up scroll-triggered fade-in-up animations
@@ -70,6 +107,21 @@ This implementation plan transforms the existing Whitefir Studio website into a 
     - Implement hover scale effects (1.05x)
     - Add smooth scroll CSS
     - _Requirements: 3.1, 3.2, 3.3, 3.5, 1.4_
+  
+  - [x] 4.2.1 Upgrade to cubic-bezier timing
+    - Replace ease-in-out with cubic-bezier(0.4, 0, 0.2, 1)
+    - Apply to all transitions globally
+    - _Requirements: 3.1_
+  
+  - [x] 4.2.2 Implement stagger effects
+    - Add sequential entrance animations for list items
+    - Use Intersection Observer for trigger
+    - _Requirements: 3.2_
+  
+  - [x] 4.2.3 Upgrade hover effects
+    - Replace simple scale with gradient shift or glow support
+    - Add more sophisticated hover interactions
+    - _Requirements: 3.5_
   
   - [ ]* 4.3 Write property test for transition consistency
     - **Property 6: Transition Animation Consistency**
@@ -105,7 +157,7 @@ This implementation plan transforms the existing Whitefir Studio website into a 
 - [x] 6. Checkpoint - Verify core systems
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 7. Implement project showcase component
+- [ ] 7. Implement project showcase component (优化显示)
   - [x] 7.1 Create ProjectShowcase class with data loading
     - Implement loadProjects() method to fetch projects.json
     - Create renderProjectCard() method for card HTML generation
@@ -117,6 +169,19 @@ This implementation plan transforms the existing Whitefir Studio website into a 
     - Add project title, description, and tech stack tags
     - Implement tech stack tag cloud layout
     - _Requirements: 4.1, 4.6_
+  
+  - [x] 7.2.1 Optimize project card layout
+    - Replace fixed height with aspect-video for thumbnails
+    - Add line-clamp-2 for titles
+    - Add line-clamp-3 for descriptions
+    - Implement responsive padding (smaller on mobile, spacious on desktop)
+    - _Requirements: 4.7, 4.8, 4.10_
+  
+  - [x] 7.2.2 Upgrade hover effects
+    - Implement gradient shift on hover
+    - Add glow support effect
+    - Remove simple scale, use sophisticated animation
+    - _Requirements: 4.9_
   
   - [ ]* 7.3 Write property test for project card navigation
     - **Property 8: Project Card Navigation**
@@ -138,7 +203,7 @@ This implementation plan transforms the existing Whitefir Studio website into a 
     - **Property 9: Project Detail Page Completeness**
     - **Validates: Requirements 4.3, 4.4, 4.5**
 
-- [ ] 9. Implement mood calendar component
+- [ ] 9. Implement mood calendar component (Apple Health 风格精致交互)
   - [x] 9.1 Create MoodCalendar class with month rendering
     - Implement calendar grid generation for any month/year
     - Add previous/next month navigation buttons
@@ -151,6 +216,29 @@ This implementation plan transforms the existing Whitefir Studio website into a 
     - Add hover tooltips with mood details
     - Ensure distinct colors for different mood types
     - _Requirements: 5.2, 5.3, 5.5_
+  
+  - [x] 9.2.1 Refine calendar grid styling
+    - Remove thick borders
+    - Use extremely subtle background colors for date cells
+    - Implement minimalist aesthetic
+    - _Requirements: 5.1, 5.8_
+  
+  - [x] 9.2.2 Add diffuse glow to mood indicators
+    - Implement subtle glow effect for days with moods
+    - Use mood color for glow
+    - _Requirements: 5.2_
+  
+  - [x] 9.2.3 Upgrade tooltip to glassmorphism with spring animation
+    - Create glassmorphism tooltip style
+    - Implement spring physics animation (cubic-bezier with overshoot)
+    - Add edge detection for automatic position adjustment
+    - _Requirements: 5.3, 5.4_
+  
+  - [x] 9.2.4 Add fade transition for month navigation
+    - Implement fade-out before month change
+    - Implement fade-in after month change
+    - Remove instant switching
+    - _Requirements: 5.5_
   
   - [ ]* 9.3 Write property test for calendar grid completeness
     - **Property 11: Calendar Grid Completeness**
@@ -168,7 +256,7 @@ This implementation plan transforms the existing Whitefir Studio website into a 
     - **Property 14: Distinct Mood Colors**
     - **Validates: Requirements 5.5**
 
-- [ ] 10. Implement journal system component
+- [ ] 10. Implement journal system component (极简排版美化)
   - [x] 10.1 Create JournalSystem class with entry loading
     - Implement loadEntries() method to fetch journal-entries.json
     - Sort entries by date (newest first)
@@ -185,6 +273,25 @@ This implementation plan transforms the existing Whitefir Studio website into a 
     - Attach click handlers to entry cards
     - Navigate to detail pages on click
     - _Requirements: 6.2_
+  
+  - [x] 10.3.1 Refine metadata typography
+    - Use small uppercase font for date and read time
+    - Increase letter-spacing
+    - Apply text-white/50 color
+    - _Requirements: 6.7_
+  
+  - [x] 10.3.2 Upgrade tag styling
+    - Use transparent background with thin border
+    - Implement hover effect: white background, black text
+    - Add smooth transitions
+    - _Requirements: 6.8_
+  
+  - [x] 10.3.3 Implement borderless list design
+    - Remove card backgrounds by default
+    - Show only bottom thin line
+    - Display glass background only on hover
+    - Add padding/margin transitions on hover
+    - _Requirements: 6.9, 6.10_
   
   - [ ]* 10.4 Write property test for journal date sorting
     - **Property 15: Journal Entry Date Sorting**

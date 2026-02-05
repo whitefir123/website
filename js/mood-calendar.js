@@ -154,7 +154,7 @@ class MoodCalendar {
 
   /**
    * 渲染单个日期单元格
-   * Requirements: 5.2, 5.3
+   * Requirements: 5.1, 5.2, 5.3, 5.8
    * @param {number} day - 日期数字
    * @param {string} dateString - 格式化的日期字符串 (YYYY-MM-DD)
    * @param {Object|null} mood - 心情数据对象
@@ -163,24 +163,33 @@ class MoodCalendar {
     const today = new Date();
     const isToday = dateString === this.formatDate(today.getFullYear(), today.getMonth(), today.getDate());
     
-    // 基础样式
-    let dayClasses = 'calendar-day relative p-3 rounded-lg transition-all duration-300 cursor-pointer hover:bg-white/10';
+    // Requirement 5.8: 极其微妙的背景色，移除厚重边框
+    let dayClasses = 'calendar-day relative aspect-square flex flex-col items-center justify-center rounded-lg transition-all duration-300 cursor-pointer';
+    
+    // 基础背景色 - 极其微妙
+    dayClasses += ' bg-white/[0.02]';
+    
+    // Hover 效果
+    dayClasses += ' hover:bg-white/[0.05] hover:scale-105';
     
     // 如果是今天，添加特殊样式
     if (isToday) {
-      dayClasses += ' ring-2 ring-purple-500';
+      dayClasses += ' ring-1 ring-purple-500/50';
     }
     
-    // 如果有心情记录，添加边框
+    // Requirement 5.2: 如果有心情记录，添加扩散光圈
+    let glowStyle = '';
     if (mood) {
-      dayClasses += ' border-2';
-    } else {
-      dayClasses += ' border border-white/10';
+      const moodType = this.moodTypes[mood.mood];
+      const color = mood.color || (moodType ? moodType.color : '#6b7280');
+      // 扩散光圈效果
+      glowStyle = `box-shadow: 0 0 20px ${color}40;`;
     }
     
     // 构建日期单元格 HTML
     let dayHTML = `
       <div class="${dayClasses}" 
+           style="${glowStyle}"
            data-date="${dateString}"
            ${mood ? `data-mood="${mood.mood}"` : ''}
            ${mood ? `data-note="${this.escapeHtml(mood.note || '')}"` : ''}
@@ -189,7 +198,7 @@ class MoodCalendar {
            aria-label="${dateString}${mood ? ` - ${this.moodTypes[mood.mood]?.label || mood.mood}` : ''}">
         
         <!-- 日期数字 -->
-        <div class="text-center text-sm font-bold ${isToday ? 'text-purple-400' : 'text-white/70'}">
+        <div class="text-center text-sm font-medium ${isToday ? 'text-purple-400' : 'text-white/60'}">
           ${day}
         </div>
         
@@ -298,7 +307,7 @@ class MoodCalendar {
 
   /**
    * 显示心情提示框
-   * Requirement 5.3: Hover 时显示心情详情
+   * Requirements: 5.3, 5.4 - 毛玻璃悬浮框 + 弹簧动画 + 边缘检测
    * @param {HTMLElement} dayElement - 日期元素
    */
   showTooltip(dayElement) {
@@ -311,19 +320,26 @@ class MoodCalendar {
     const moodType = this.moodTypes[moodKey];
     const moodLabel = moodType ? moodType.label : moodKey;
     const moodIcon = moodType ? moodType.icon : '●';
+    const moodColor = moodType ? moodType.color : '#6b7280';
 
     // 移除已存在的提示框
     this.hideTooltip();
 
-    // 创建提示框
+    // Requirement 5.3: 创建毛玻璃悬浮框
     const tooltip = document.createElement('div');
     tooltip.id = 'mood-tooltip';
-    tooltip.className = 'fixed z-50 glass-card border-2 p-4 rounded-xl max-w-xs pointer-events-none';
-    tooltip.style.borderColor = moodType ? moodType.color : '#6b7280';
+    tooltip.className = 'fixed z-50 glass-card p-4 rounded-xl max-w-xs pointer-events-none';
+    tooltip.style.borderColor = moodColor;
+    tooltip.style.borderWidth = '1px';
+    tooltip.style.borderStyle = 'solid';
+    
+    // Requirement 5.3: 应用弹簧动画
+    tooltip.style.animation = 'springIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
+    tooltip.style.opacity = '0';
     
     tooltip.innerHTML = `
       <div class="flex items-start gap-3">
-        <span class="text-3xl">${moodIcon}</span>
+        <span class="text-3xl" style="filter: drop-shadow(0 0 8px ${moodColor});">${moodIcon}</span>
         <div>
           <p class="font-bold text-sm mb-1">${moodLabel}</p>
           <p class="text-xs text-white/50 mb-2">${date}</p>
@@ -334,31 +350,40 @@ class MoodCalendar {
 
     document.body.appendChild(tooltip);
 
-    // 定位提示框
+    // Requirement 5.4: 边缘检测并自动调整位置
     const rect = dayElement.getBoundingClientRect();
     const tooltipRect = tooltip.getBoundingClientRect();
     
     // 计算位置（尝试显示在元素上方，如果空间不够则显示在下方）
     let top = rect.top - tooltipRect.height - 10;
+    let adjustedPosition = 'top';
+    
     if (top < 10) {
       top = rect.bottom + 10;
+      adjustedPosition = 'bottom';
     }
     
     let left = rect.left + (rect.width / 2) - (tooltipRect.width / 2);
     
-    // 确保不超出屏幕边界
-    if (left < 10) left = 10;
+    // Requirement 5.4: 确保不超出屏幕边界（边缘检测）
+    if (left < 10) {
+      left = 10;
+    }
     if (left + tooltipRect.width > window.innerWidth - 10) {
       left = window.innerWidth - tooltipRect.width - 10;
+    }
+    
+    // 如果底部也超出屏幕，调整到屏幕内
+    if (top + tooltipRect.height > window.innerHeight - 10) {
+      top = window.innerHeight - tooltipRect.height - 10;
     }
 
     tooltip.style.top = `${top}px`;
     tooltip.style.left = `${left}px`;
 
-    // 添加淡入动画
+    // 触发弹簧动画
     setTimeout(() => {
       tooltip.style.opacity = '1';
-      tooltip.style.transform = 'translateY(0)';
     }, 10);
   }
 
@@ -376,7 +401,7 @@ class MoodCalendar {
 
   /**
    * 导航到上个月或下个月
-   * Requirement 5.4: 支持月份导航
+   * Requirements: 5.4, 5.5 - 支持月份导航 + 淡入淡出过渡效果
    * @param {number} direction - 方向 (-1 = 上个月, 1 = 下个月)
    */
   navigateMonth(direction) {
@@ -386,8 +411,34 @@ class MoodCalendar {
     
     console.log(`[MoodCalendar] 导航到: ${this.getMonthYearString()}`);
     
-    // 重新渲染日历
-    this.render();
+    // Requirement 5.5: 应用淡入淡出过渡效果
+    const gridContainer = this.container.querySelector('.calendar-grid-container');
+    if (gridContainer) {
+      // 淡出
+      gridContainer.style.opacity = '0';
+      gridContainer.style.transform = 'translateY(10px)';
+      
+      // 等待淡出完成后重新渲染
+      setTimeout(() => {
+        this.render();
+        
+        // 淡入
+        const newGridContainer = this.container.querySelector('.calendar-grid-container');
+        if (newGridContainer) {
+          newGridContainer.style.opacity = '0';
+          newGridContainer.style.transform = 'translateY(-10px)';
+          
+          setTimeout(() => {
+            newGridContainer.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+            newGridContainer.style.opacity = '1';
+            newGridContainer.style.transform = 'translateY(0)';
+          }, 10);
+        }
+      }, 200);
+    } else {
+      // 如果找不到容器，直接重新渲染
+      this.render();
+    }
   }
 
   /**

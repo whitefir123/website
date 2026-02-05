@@ -41,10 +41,12 @@ The design follows a component-based approach with reusable UI patterns, client-
 ### Technology Stack
 
 - **Frontend Framework**: Vanilla JavaScript (ES6+)
-- **CSS Framework**: Tailwind CSS 3.x (via CDN)
+- **CSS Framework**: Tailwind CSS 3.x (via CDN) + Custom CSS for advanced effects
 - **Icons**: Font Awesome 6.x (via CDN)
 - **Data Format**: JSON files for content storage
 - **Hosting**: Static file hosting (Cloudflare Pages compatible)
+- **Design Style**: Big Tech Minimalism (Linear/Vercel inspired)
+- **Animation**: CSS cubic-bezier + Spring physics for tooltips
 
 ### File Structure
 
@@ -75,6 +77,147 @@ The design follows a component-based approach with reusable UI patterns, client-
 ```
 
 ## Components and Interfaces
+
+### 0. Global Visual System (大厂极简主义风格)
+
+**Purpose**: Establish the foundational visual language with Linear/Vercel-inspired minimalism, featuring deep backgrounds, refined shadows, and fluid typography.
+
+**Color System**:
+```css
+:root {
+  /* 深邃黑灰背景 */
+  --bg-primary: hsl(240 10% 3.9%);
+  --bg-secondary: hsl(240 10% 5%);
+  
+  /* 玻璃拟态 */
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-border-hover: rgba(255, 255, 255, 0.2);
+  
+  /* 强调色 */
+  --accent-purple: #8b5cf6;
+  --accent-blue: #3b82f6;
+  
+  /* 文字 */
+  --text-primary: rgba(255, 255, 255, 0.95);
+  --text-secondary: rgba(255, 255, 255, 0.70);
+  --text-tertiary: rgba(255, 255, 255, 0.50);
+}
+```
+
+**Background with Noise Texture**:
+```css
+body {
+  background-color: var(--bg-primary);
+  background-image: 
+    radial-gradient(circle at 20% 50%, rgba(139, 92, 246, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(59, 130, 246, 0.05) 0%, transparent 50%),
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+  background-attachment: fixed;
+}
+```
+
+**Fluid Typography with clamp()**:
+```css
+h1 {
+  font-size: clamp(2rem, 5vw, 4rem);
+  letter-spacing: -0.05em;
+  line-height: 1.1;
+}
+
+h2 {
+  font-size: clamp(1.5rem, 4vw, 3rem);
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+}
+
+h3 {
+  font-size: clamp(1.25rem, 3vw, 2rem);
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+}
+
+p, li {
+  font-size: clamp(1rem, 2vw, 1.125rem);
+  line-height: 1.7;
+  color: var(--text-secondary);
+  opacity: 0.7;
+}
+```
+
+**Multi-Layer Diffuse Shadows**:
+```css
+.floating-element {
+  box-shadow: 
+    0 1px 2px rgba(0, 0, 0, 0.3),
+    0 4px 8px rgba(0, 0, 0, 0.2),
+    0 8px 16px rgba(0, 0, 0, 0.15),
+    0 16px 32px rgba(0, 0, 0, 0.1);
+}
+```
+
+**Stagger Animation for Lists**:
+```css
+@keyframes staggerFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.stagger-item {
+  opacity: 0;
+  animation: staggerFadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.stagger-item:nth-child(1) { animation-delay: 0.1s; }
+.stagger-item:nth-child(2) { animation-delay: 0.2s; }
+.stagger-item:nth-child(3) { animation-delay: 0.3s; }
+.stagger-item:nth-child(4) { animation-delay: 0.4s; }
+.stagger-item:nth-child(5) { animation-delay: 0.5s; }
+/* ... 继续为更多项目 */
+```
+
+**Spacing System (增加呼吸空间)**:
+```css
+.section {
+  padding-top: 8rem;    /* py-32 instead of py-24 */
+  padding-bottom: 8rem;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding-left: 3rem;
+    padding-right: 3rem;
+  }
+}
+```
+
+**Refined Transitions**:
+```css
+* {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.interactive-element {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.interactive-element:hover {
+  transform: translateY(-2px);
+}
+```
 
 ### 1. Navigation Component
 
@@ -138,9 +281,9 @@ class NavigationComponent {
 }
 ```
 
-### 2. Glassmorphism Card Component
+### 2. Glassmorphism Card Component (大厂极简风格升级)
 
-**Purpose**: Reusable card component with premium glass effect for projects, journal entries, and other content.
+**Purpose**: Reusable card component with premium glass effect featuring gradient borders and refined shadows for projects, journal entries, and other content.
 
 **HTML Structure**:
 ```html
@@ -154,20 +297,63 @@ class NavigationComponent {
 **Styling Classes**:
 ```css
 .glass-card {
-  @apply bg-white/5 backdrop-blur-md border border-white/10 
-         rounded-xl p-6 transition-all duration-300
-         hover:border-white/30 hover:scale-105;
+  @apply bg-white/5 backdrop-blur-md 
+         rounded-xl p-6 transition-all
+         hover:scale-[1.02];
+  
+  /* 极细渐变边框 (Border Beam 效果) */
+  border: 1px solid transparent;
+  background-image: 
+    linear-gradient(hsl(240 10% 3.9%), hsl(240 10% 3.9%)),
+    linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  
+  /* 多层漫反射阴影 - 漂浮效果 */
+  box-shadow: 
+    0 1px 2px rgba(0, 0, 0, 0.3),
+    0 4px 8px rgba(0, 0, 0, 0.2),
+    0 8px 16px rgba(0, 0, 0, 0.15),
+    0 16px 32px rgba(0, 0, 0, 0.1);
+  
+  /* 顶部微弱光泽 */
+  position: relative;
+}
+
+.glass-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(255,255,255,0.1), 
+    transparent);
+}
+
+.glass-card:hover {
+  border-color: rgba(255,255,255,0.2);
+  
+  /* 悬浮时显示发光底座 */
+  box-shadow: 
+    0 1px 2px rgba(0, 0, 0, 0.3),
+    0 4px 8px rgba(0, 0, 0, 0.2),
+    0 8px 16px rgba(0, 0, 0, 0.15),
+    0 16px 32px rgba(0, 0, 0, 0.1),
+    0 0 40px rgba(139, 92, 246, 0.15); /* 紫色发光 */
 }
 ```
 
 **Variants**:
-- **Project Card**: Includes image, title, description, tech tags
-- **Journal Card**: Includes title, excerpt, date, read time
-- **Mood Day Card**: Includes date, mood indicator, optional note
+- **Project Card**: Includes image with aspect-video, title with line-clamp-2, description with line-clamp-3, tech tags
+- **Journal Card**: Includes title, excerpt, date with uppercase small font, read time
+- **Mood Day Card**: Includes date, mood indicator with glow, optional note
 
-### 3. Project Showcase Component
+### 3. Project Showcase Component (优化显示)
 
-**Purpose**: Display grid of project cards on homepage and detailed project pages.
+**Purpose**: Display grid of project cards on homepage and detailed project pages with optimized layout preventing display issues.
 
 **Data Interface** (`/data/projects.json`):
 ```json
@@ -208,20 +394,67 @@ class ProjectShowcase {
   }
   
   render() {
-    // Generate project cards HTML
+    // Generate project cards HTML with optimized layout
+    // Apply stagger entrance animations
     // Attach event listeners
-    // Apply entrance animations
   }
   
   renderProjectCard(project) {
-    // Return HTML string for a single project card
+    // 使用 aspect-video 替代固定高度
+    // 标题使用 line-clamp-2，描述使用 line-clamp-3
+    // 响应式 padding：移动端较小，桌面端宽敞
+    return `
+      <div class="glass-card project-card group cursor-pointer 
+                  p-4 sm:p-6 lg:p-8">
+        <div class="aspect-video overflow-hidden rounded-lg mb-4">
+          <img src="${project.thumbnail}" 
+               alt="${project.title}"
+               class="w-full h-full object-cover 
+                      transition-transform duration-500
+                      group-hover:scale-110" />
+        </div>
+        <h3 class="text-xl font-bold tracking-tighter 
+                   line-clamp-2 mb-2">
+          ${project.title}
+        </h3>
+        <p class="text-white/70 leading-relaxed 
+                  line-clamp-3 mb-4">
+          ${project.description}
+        </p>
+        <div class="flex flex-wrap gap-2">
+          ${project.techStack.map(tech => 
+            `<span class="tech-tag">${tech}</span>`
+          ).join('')}
+        </div>
+      </div>
+    `;
   }
 }
 ```
 
-### 4. Mood Calendar Component
+**Enhanced Hover Effect**:
+```css
+.project-card {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
-**Purpose**: Interactive monthly calendar displaying daily mood entries with color-coded indicators.
+.project-card:hover {
+  /* 背景渐变偏移效果 */
+  background-position: 100% 100%;
+  
+  /* 发光底座 */
+  box-shadow: 
+    0 1px 2px rgba(0, 0, 0, 0.3),
+    0 4px 8px rgba(0, 0, 0, 0.2),
+    0 8px 16px rgba(0, 0, 0, 0.15),
+    0 16px 32px rgba(0, 0, 0, 0.1),
+    0 0 60px rgba(139, 92, 246, 0.2);
+}
+```
+
+### 4. Mood Calendar Component (Apple Health 风格精致交互)
+
+**Purpose**: Interactive monthly calendar displaying daily mood entries with Apple Health-like refinement and spring physics animations.
 
 **Data Interface** (`/data/moods.json`):
 ```json
@@ -259,6 +492,7 @@ class MoodCalendar {
     this.currentMonth = new Date();
     this.moods = [];
     this.moodTypes = {};
+    this.tooltip = null;
   }
   
   async loadMoods() {
@@ -270,22 +504,73 @@ class MoodCalendar {
   }
   
   render() {
-    // Generate calendar grid for current month
-    // Populate mood indicators
-    // Attach hover tooltips
+    // Generate calendar grid with subtle styling
+    // Populate mood indicators with glow effects
+    // Attach hover tooltips with spring animation
+    // Apply fade transition for month changes
   }
   
   navigateMonth(direction) {
+    // Fade out current month
     // Move to previous/next month
-    // Re-render calendar
+    // Fade in new month
+    this.applyFadeTransition();
+  }
+  
+  applyFadeTransition() {
+    const grid = this.container.querySelector('.calendar-grid');
+    grid.style.opacity = '0';
+    setTimeout(() => {
+      this.render();
+      grid.style.opacity = '1';
+    }, 200);
   }
   
   getMoodForDate(dateString) {
-    // Return mood object for given date or null
+    return this.moods.find(m => m.date === dateString) || null;
   }
   
   renderDay(date, mood) {
-    // Return HTML for a single calendar day
+    // 极其微妙的背景色区分日期
+    // 有心情记录的日期显示扩散光圈
+    const hasGlow = mood ? `box-shadow: 0 0 20px ${mood.color}40;` : '';
+    
+    return `
+      <div class="calendar-day" 
+           style="background: rgba(255,255,255,0.02); ${hasGlow}"
+           data-date="${date}">
+        ${mood ? `<span class="mood-icon">${mood.icon}</span>` : ''}
+      </div>
+    `;
+  }
+  
+  showTooltip(event, mood) {
+    // 创建毛玻璃悬浮框
+    // 应用物理弹簧动画
+    // 检测屏幕边缘并自动调整位置
+    const tooltip = document.createElement('div');
+    tooltip.className = 'mood-tooltip glass-card';
+    tooltip.innerHTML = `
+      <div class="font-bold">${mood.icon} ${mood.mood}</div>
+      <div class="text-sm text-white/70">${mood.note}</div>
+    `;
+    
+    // 弹簧动画
+    tooltip.style.animation = 'springIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
+    
+    // 边缘检测
+    const rect = event.target.getBoundingClientRect();
+    const tooltipRect = tooltip.getBoundingClientRect();
+    
+    if (rect.right + tooltipRect.width > window.innerWidth) {
+      tooltip.style.right = '0';
+    }
+    if (rect.bottom + tooltipRect.height > window.innerHeight) {
+      tooltip.style.bottom = '100%';
+    }
+    
+    document.body.appendChild(tooltip);
+    this.tooltip = tooltip;
   }
 }
 ```
@@ -293,30 +578,75 @@ class MoodCalendar {
 **HTML Structure**:
 ```html
 <div class="mood-calendar">
-  <div class="calendar-header">
-    <button id="prev-month" class="nav-btn">
+  <div class="calendar-header flex justify-between items-center mb-8">
+    <button id="prev-month" class="nav-btn glass-card p-3 
+                                   hover:scale-110 transition-all">
       <i class="fas fa-chevron-left"></i>
     </button>
-    <h2 id="current-month" class="text-2xl font-bold">January 2024</h2>
-    <button id="next-month" class="nav-btn">
+    <h2 id="current-month" class="text-2xl font-bold tracking-tighter">
+      January 2024
+    </h2>
+    <button id="next-month" class="nav-btn glass-card p-3 
+                                   hover:scale-110 transition-all">
       <i class="fas fa-chevron-right"></i>
     </button>
   </div>
   
-  <div class="calendar-grid grid grid-cols-7 gap-2">
+  <div class="calendar-grid grid grid-cols-7 gap-1 
+              transition-opacity duration-200">
     <!-- Day headers (Sun, Mon, Tue...) -->
-    <!-- Day cells -->
+    <!-- Day cells with subtle backgrounds -->
   </div>
   
-  <div class="mood-legend mt-6">
-    <!-- Legend showing mood types and colors -->
+  <div class="mood-legend mt-8 flex flex-wrap gap-4">
+    <!-- Legend showing mood types with icons and colors -->
   </div>
 </div>
 ```
 
-### 5. Journal System Component
+**CSS Animations**:
+```css
+@keyframes springIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateY(-10px);
+  }
+  50% {
+    transform: scale(1.05) translateY(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
 
-**Purpose**: Display journal entries with filtering, pagination, and individual entry pages.
+.mood-tooltip {
+  position: absolute;
+  z-index: 1000;
+  padding: 1rem;
+  min-width: 200px;
+  pointer-events: none;
+}
+
+.calendar-day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.calendar-day:hover {
+  background: rgba(255,255,255,0.05) !important;
+  transform: scale(1.05);
+}
+```
+
+### 5. Journal System Component (极简排版美化)
+
+**Purpose**: Display journal entries with refined typography, minimalist design, and enhanced reading experience.
 
 **Data Interface** (`/data/journal-entries.json`):
 ```json
@@ -356,22 +686,140 @@ class JournalSystem {
   }
   
   filterByTag(tag) {
-    // Filter entries by tag
-    // Re-render list
+    if (tag === this.currentTag) {
+      // 取消过滤
+      this.currentTag = null;
+      this.filteredEntries = this.entries;
+    } else {
+      this.currentTag = tag;
+      this.filteredEntries = this.entries.filter(e => 
+        e.tags.includes(tag)
+      );
+    }
+    this.render();
   }
   
   render() {
-    // Generate entry cards
+    // Generate entry cards with minimalist styling
     // Render tag filter buttons
+    // Apply stagger entrance animations
   }
   
   renderEntryCard(entry) {
-    // Return HTML for journal entry preview card
+    // 无边框设计，仅底部细线
+    // 悬浮时才显示玻璃背景
+    // 元数据使用小号全大写字体
+    return `
+      <article class="journal-entry-card group 
+                      border-b border-white/5 pb-8 mb-8
+                      transition-all duration-300
+                      hover:bg-white/5 hover:backdrop-blur-md
+                      hover:px-6 hover:py-4 hover:rounded-xl
+                      hover:-mx-6 hover:-my-4 hover:mb-4">
+        <h2 class="text-2xl font-bold tracking-tighter mb-3
+                   group-hover:text-purple-400 transition-colors">
+          ${entry.title}
+        </h2>
+        
+        <div class="flex items-center gap-4 mb-4 
+                    text-xs uppercase tracking-wider text-white/50">
+          <time datetime="${entry.date}">
+            ${new Date(entry.date).toLocaleDateString()}
+          </time>
+          <span>${entry.readTime} min read</span>
+        </div>
+        
+        <p class="text-white/70 leading-relaxed mb-4">
+          ${entry.excerpt}
+        </p>
+        
+        <div class="flex flex-wrap gap-2">
+          ${entry.tags.map(tag => `
+            <span class="journal-tag 
+                         px-3 py-1 rounded-full
+                         bg-transparent border border-white/20
+                         text-sm text-white/70
+                         transition-all duration-300
+                         hover:bg-white hover:text-black hover:border-white
+                         cursor-pointer">
+              ${tag}
+            </span>
+          `).join('')}
+        </div>
+      </article>
+    `;
   }
   
   getAllTags() {
-    // Extract unique tags from all entries
+    const tagSet = new Set();
+    this.entries.forEach(entry => {
+      entry.tags.forEach(tag => tagSet.add(tag));
+    });
+    return Array.from(tagSet);
   }
+  
+  renderTagFilters() {
+    const tags = this.getAllTags();
+    return `
+      <div class="tag-filters flex flex-wrap gap-3 mb-12">
+        <button class="filter-tag ${!this.currentTag ? 'active' : ''}"
+                onclick="journalSystem.filterByTag(null)">
+          All
+        </button>
+        ${tags.map(tag => `
+          <button class="filter-tag ${this.currentTag === tag ? 'active' : ''}"
+                  onclick="journalSystem.filterByTag('${tag}')">
+            ${tag}
+          </button>
+        `).join('')}
+      </div>
+    `;
+  }
+}
+```
+
+**Enhanced Styling**:
+```css
+/* 极简列表样式 */
+.journal-entry-card {
+  cursor: pointer;
+}
+
+/* 标签样式 */
+.journal-tag {
+  font-size: 0.875rem;
+  letter-spacing: 0.05em;
+}
+
+/* 过滤器标签 */
+.filter-tag {
+  padding: 0.5rem 1.5rem;
+  border-radius: 9999px;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.7);
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.filter-tag:hover,
+.filter-tag.active {
+  background: white;
+  color: black;
+  border-color: white;
+  transform: translateY(-2px);
+}
+
+/* 元数据样式 */
+.journal-entry-card time,
+.journal-entry-card .read-time {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-weight: 500;
 }
 ```
 

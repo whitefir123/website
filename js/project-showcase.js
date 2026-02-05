@@ -93,7 +93,7 @@ class ProjectShowcase {
 
   /**
    * 渲染单个项目卡片的 HTML
-   * Requirements: 4.1, 4.6
+   * Requirements: 4.1, 4.6, 4.7, 4.8, 4.9, 4.10
    * @param {Object} project - 项目数据对象
    * @returns {string} 项目卡片的 HTML 字符串
    */
@@ -111,18 +111,20 @@ class ProjectShowcase {
     const hasLiveUrl = validatedProject.liveUrl && validatedProject.liveUrl !== null;
     
     // 生成卡片 HTML
+    // Requirement 4.10: 响应式 padding (移动端较小，桌面端宽敞)
     return `
-      <div class="project-card glass-card rounded-3xl overflow-hidden group cursor-pointer" 
+      <div class="project-card glass-card rounded-3xl overflow-hidden group cursor-pointer p-4 sm:p-6 lg:p-8" 
            data-project-id="${validatedProject.id}"
            data-detail-page="${validatedProject.detailPage}"
            data-live-url="${validatedProject.liveUrl || ''}">
         
         <!-- 项目缩略图 -->
-        <div class="h-64 bg-gradient-to-br ${this.getGradientClass(validatedProject.statusColor)} relative overflow-hidden">
+        <!-- Requirement 4.7: 使用 aspect-video 替代固定高度 -->
+        <div class="aspect-video bg-gradient-to-br ${this.getGradientClass(validatedProject.statusColor)} relative overflow-hidden rounded-lg mb-4">
           ${validatedProject.thumbnail && validatedProject.thumbnail !== '/assets/images/placeholder.webp' 
             ? `<img src="${validatedProject.thumbnail}" 
                     alt="${validatedProject.title}" 
-                    class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     loading="lazy" />`
             : `<div class="absolute inset-0 flex items-center justify-center text-5xl opacity-20 group-hover:opacity-40 transition">
                  <i class="fas fa-gamepad"></i>
@@ -131,31 +133,33 @@ class ProjectShowcase {
         </div>
         
         <!-- 项目信息 -->
-        <div class="p-8">
+        <div>
           <!-- 状态标签 -->
           <span class="text-xs ${statusColorClass} font-bold tracking-widest uppercase">
             ${validatedProject.status || '未知'}
           </span>
           
           <!-- 项目标题 -->
-          <h3 class="text-2xl font-bold mt-2 tracking-tighter group-hover:text-purple-400 transition-colors duration-300">
+          <!-- Requirement 4.8: 标题使用 line-clamp-2 -->
+          <h3 class="text-xl font-bold tracking-tighter line-clamp-2 mb-2 group-hover:text-purple-400 transition-colors duration-300">
             ${validatedProject.title}
           </h3>
           
           <!-- 项目描述 -->
-          <p class="text-gray-400 mt-4 font-light leading-relaxed">
+          <!-- Requirement 4.8: 描述使用 line-clamp-3 -->
+          <p class="text-white/70 leading-relaxed line-clamp-3 mb-4">
             ${validatedProject.description}
           </p>
           
           <!-- 技术栈标签云 (Requirement 4.6) -->
-          <div class="mt-6">
+          <div class="mb-6">
             <div class="flex flex-wrap gap-2">
               ${techStackHTML}
             </div>
           </div>
           
           <!-- 操作按钮 -->
-          <div class="mt-8 flex gap-4">
+          <div class="flex gap-4">
             ${hasLiveUrl 
               ? `<button class="btn-live-demo px-6 py-2 bg-white text-black text-sm font-bold rounded-full hover:bg-gray-200 transition-all duration-300">
                    立即体验

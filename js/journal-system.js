@@ -186,7 +186,7 @@ class JournalSystem {
 
   /**
    * 渲染单个日志条目卡片
-   * Requirement 6.6: 显示标题、摘要、日期和阅读时间估算
+   * Requirements: 6.6, 6.7, 6.8, 6.9, 6.10 - 极简排版美化
    * @param {Object} entry - 日志条目对象
    */
   renderEntryCard(entry) {
@@ -199,54 +199,52 @@ class JournalSystem {
     // 生成标签 HTML
     const tagsHTML = this.renderEntryTags(validatedEntry.tags);
     
+    // Requirement 6.9, 6.10: 无边框设计，仅底部细线，悬浮时才显示玻璃背景
     return `
-      <article class="journal-entry-card glass-card rounded-2xl p-6 md:p-8 cursor-pointer group hover:scale-[1.02] transition-all duration-300 animate-on-scroll"
+      <article class="journal-entry-card group border-b border-white/5 pb-8 mb-8 cursor-pointer
+                      transition-all duration-300
+                      hover:bg-white/5 hover:backdrop-blur-md
+                      hover:px-6 hover:py-4 hover:rounded-xl
+                      hover:-mx-6 hover:-my-4 hover:mb-4
+                      animate-on-scroll"
                data-entry-id="${validatedEntry.id}"
                data-detail-page="${validatedEntry.detailPage}"
                role="button"
                tabindex="0"
                aria-label="阅读日志: ${validatedEntry.title}">
         
+        <!-- 标题 -->
+        <h2 class="text-2xl font-bold tracking-tighter mb-3 group-hover:text-purple-400 transition-colors">
+          ${validatedEntry.title}
+        </h2>
+        
         <!-- 日期和阅读时间 -->
-        <div class="flex items-center gap-4 text-sm text-white/50 mb-4">
-          <span class="flex items-center gap-2">
-            <i class="far fa-calendar"></i>
+        <!-- Requirement 6.7: 元数据使用小号全大写字体，增加字间距 -->
+        <div class="flex items-center gap-4 mb-4 text-xs uppercase tracking-wider text-white/50">
+          <time datetime="${validatedEntry.date}">
             ${formattedDate}
-          </span>
-          <span class="flex items-center gap-2">
-            <i class="far fa-clock"></i>
-            ${validatedEntry.readTime} 分钟阅读
-          </span>
+          </time>
+          <span>${validatedEntry.readTime} min read</span>
         </div>
         
-        <!-- 标题 -->
-        <h3 class="text-2xl md:text-3xl font-bold tracking-tighter mb-4 group-hover:text-purple-400 transition-colors duration-300">
-          ${validatedEntry.title}
-        </h3>
-        
         <!-- 摘要 -->
-        <p class="text-gray-400 leading-relaxed mb-6">
+        <p class="text-white/70 leading-relaxed mb-4">
           ${validatedEntry.excerpt}
         </p>
         
         <!-- 标签 -->
         ${tagsHTML ? `
-          <div class="flex flex-wrap gap-2 mb-4">
+          <div class="flex flex-wrap gap-2">
             ${tagsHTML}
           </div>
         ` : ''}
-        
-        <!-- 阅读更多按钮 -->
-        <div class="flex items-center gap-2 text-purple-400 font-bold group-hover:gap-4 transition-all duration-300">
-          <span>阅读全文</span>
-          <i class="fas fa-arrow-right"></i>
-        </div>
       </article>
     `;
   }
 
   /**
    * 渲染日志条目的标签
+   * Requirement 6.8: 透明背景+细边框，悬浮时背景变白、文字变黑
    * @param {Array} tags - 标签数组
    * @returns {string} 标签 HTML
    */
@@ -256,8 +254,13 @@ class JournalSystem {
     }
 
     return tags.map(tag => `
-      <span class="px-3 py-1 bg-white/5 border border-white/10 rounded-full text-xs text-white/70 hover:bg-white/10 hover:border-white/20 transition-all duration-300">
-        <i class="fas fa-tag mr-1"></i>
+      <span class="journal-tag 
+                   px-3 py-1 rounded-full
+                   bg-transparent border border-white/20
+                   text-sm text-white/70
+                   transition-all duration-300
+                   hover:bg-white hover:text-black hover:border-white
+                   cursor-pointer">
         ${tag}
       </span>
     `).join('');

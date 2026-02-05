@@ -18,18 +18,22 @@ This document specifies the requirements for transforming the existing Whitefir 
 
 ## Requirements
 
-### Requirement 1: Visual Design Consistency
+### Requirement 1: Visual Design Consistency (大厂极简主义风格)
 
-**User Story:** As a visitor, I want the website to maintain a consistent premium aesthetic across all pages, so that I experience a cohesive professional brand.
+**User Story:** As a visitor, I want the website to maintain a consistent premium aesthetic across all pages with a "big tech minimalist" style (Linear/Vercel), so that I experience a cohesive professional brand.
 
 #### Acceptance Criteria
 
-1. THE Website SHALL use #050505 as the primary background color for 60% of the visual space
-2. THE Website SHALL apply glassmorphism styling (bg-white/5, backdrop-blur-md, border-white/10) to 30% of the visual space
+1. THE Website SHALL use hsl(240 10% 3.9%) as the primary background color for 60% of the visual space (更深邃的黑灰色)
+2. THE Website SHALL apply glassmorphism styling with gradient borders (Border Beam effect) and subtle top gloss to 30% of the visual space
 3. THE Website SHALL use accent colors (magic purple, tech blue) for 10% of the visual space
-4. WHEN any interactive element is hovered, THE Website SHALL apply a visual feedback effect within 300ms
-5. THE Website SHALL use tracking-tighter for all heading typography
-6. THE Website SHALL use leading-relaxed for all body text typography
+4. THE Website SHALL apply a subtle noise texture to the background for enhanced texture quality
+5. WHEN any interactive element is hovered, THE Website SHALL apply a visual feedback effect with cubic-bezier(0.4, 0, 0.2, 1) timing
+6. THE Website SHALL use tracking-tighter for all heading typography
+7. THE Website SHALL use leading-relaxed with opacity-70 for all body text typography to create contrast
+8. THE Website SHALL use clamp() function for fluid typography sizing
+9. THE Website SHALL use multi-layer diffuse shadows instead of basic shadows to create floating effect
+10. THE Website SHALL implement stagger effects for list elements entering viewport
 
 ### Requirement 2: Responsive Layout System
 
@@ -43,47 +47,54 @@ This document specifies the requirements for transforming the existing Whitefir 
 4. THE Website SHALL maintain readable text sizes across all breakpoints
 5. THE Website SHALL ensure touch targets are at least 44x44px on mobile devices
 
-### Requirement 3: Smooth Animation System
+### Requirement 3: Smooth Animation System (高级动效)
 
-**User Story:** As a visitor, I want all interactions to feel smooth and responsive, so that the website feels polished and professional.
+**User Story:** As a visitor, I want all interactions to feel smooth and responsive with professional-grade animations, so that the website feels polished and premium.
 
 #### Acceptance Criteria
 
-1. WHEN any element changes state, THE Website SHALL apply transition animations with 300ms duration
-2. THE Website SHALL use ease-in-out timing function for all transitions
+1. WHEN any element changes state, THE Website SHALL apply transition animations with cubic-bezier(0.4, 0, 0.2, 1) timing function
+2. THE Website SHALL use stagger effects for list elements, making them enter viewport in sequence
 3. WHEN scrolling to anchor links, THE Website SHALL apply smooth scroll behavior
 4. WHEN elements enter the viewport, THE Website SHALL fade in and slide up
-5. WHEN hovering over clickable elements, THE Website SHALL scale them to 1.05x or apply brightness increase
+5. WHEN hovering over clickable elements, THE Website SHALL apply gradient shift or glow support effect (not just simple scale)
+6. THE Website SHALL increase vertical spacing (py-24 to py-32) for more breathing space
 
-### Requirement 4: Game Project Showcase
+### Requirement 4: Game Project Showcase (优化显示)
 
-**User Story:** As a visitor, I want to browse game projects with detailed information, so that I can understand the creator's work and experience the games.
+**User Story:** As a visitor, I want to browse game projects with detailed information in an optimized layout, so that I can understand the creator's work without display issues.
 
 #### Acceptance Criteria
 
-1. THE Website SHALL display a grid of project cards on the homepage
+1. THE Website SHALL display a grid of project cards on the homepage with adaptive layout
 2. WHEN a project card is clicked, THE Website SHALL navigate to a dedicated project detail page
 3. THE Project_Detail_Page SHALL display project title, description, screenshots, and technology stack
 4. THE Project_Detail_Page SHALL include a "Back to Home" floating button
 5. THE Project_Detail_Page SHALL include a "Try It Out" CTA button linking to the live project
 6. WHEN displaying technology stack, THE Website SHALL render tags in a cloud layout
+7. THE Project_Card SHALL use aspect-video for thumbnail instead of fixed height to prevent distortion
+8. THE Project_Card SHALL use line-clamp (2 lines for title, 3 lines for description) to prevent text overflow
+9. WHEN hovering over project card, THE Website SHALL apply gradient shift or glow support effect
+10. THE Project_Card SHALL adjust padding for mobile (smaller) and desktop (spacious) responsively
 
-### Requirement 5: Mood Calendar System
+### Requirement 5: Mood Calendar System (Apple Health 风格精致交互)
 
-**User Story:** As the website owner, I want to display my daily moods in an interactive calendar, so that visitors can see my emotional journey over time.
+**User Story:** As the website owner, I want to display my daily moods in an interactive calendar with Apple Health-like refinement, so that visitors can see my emotional journey with premium interaction quality.
 
 #### Acceptance Criteria
 
-1. THE Mood_Calendar SHALL display a monthly calendar grid with all days of the month
-2. WHEN a day has a mood entry, THE Mood_Calendar SHALL display a colored indicator on that day
-3. WHEN hovering over a day with a mood entry, THE Mood_Calendar SHALL display a tooltip with mood details
-4. THE Mood_Calendar SHALL support navigation between months using previous/next buttons
-5. THE Mood_Calendar SHALL use distinct colors for different mood categories (happy, neutral, sad, excited, etc.)
-6. WHEN the calendar loads, THE Mood_Calendar SHALL display the current month by default
+1. THE Mood_Calendar SHALL display a monthly calendar grid with all days of the month using subtle background colors instead of thick borders
+2. WHEN a day has a mood entry, THE Mood_Calendar SHALL display a colored indicator with a subtle diffuse glow effect
+3. WHEN hovering over a day with a mood entry, THE Mood_Calendar SHALL display a glassmorphism tooltip with spring physics animation
+4. THE Mood_Calendar_Tooltip SHALL automatically adjust position when near screen edges to prevent cutoff
+5. THE Mood_Calendar SHALL support navigation between months with fade-in-out transition effects (not instant switch)
+6. THE Mood_Calendar SHALL use distinct colors for different mood categories (happy, neutral, sad, excited, etc.)
+7. WHEN the calendar loads, THE Mood_Calendar SHALL display the current month by default
+8. THE Mood_Calendar SHALL use extremely subtle styling for date grid cells to maintain refinement
 
-### Requirement 6: Journal/Blog System
+### Requirement 6: Journal/Blog System (极简排版美化)
 
-**User Story:** As the website owner, I want to publish and display journal entries, so that I can share my thoughts and experiences with visitors.
+**User Story:** As the website owner, I want to publish and display journal entries with refined typography and minimalist design, so that visitors have an enhanced reading experience.
 
 #### Acceptance Criteria
 
@@ -93,6 +104,10 @@ This document specifies the requirements for transforming the existing Whitefir 
 4. THE Journal_Entry_Page SHALL include a "Back to Journal" navigation button
 5. THE Journal_System SHALL support filtering entries by tags
 6. WHEN displaying entry previews, THE Journal_System SHALL show title, excerpt, date, and read time estimate
+7. THE Journal_Entry_Metadata (date, read time) SHALL use small uppercase font with increased letter-spacing
+8. THE Journal_Tags SHALL use transparent background with thin border, changing to white background with black text on hover
+9. THE Journal_Entry_List SHALL use borderless design with only bottom thin line, showing glass background only on hover
+10. THE Journal_Entry_List SHALL maintain minimalist "no-border" aesthetic for premium feel
 
 ### Requirement 7: Homepage Hero Section
 
