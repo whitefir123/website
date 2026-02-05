@@ -3,8 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>心情日历 | Whitefir</title>
-    <meta name="description" content="记录每一天的心情变化，用色彩标记生活的轨迹">
+    
+    <!-- SEO 元数据 -->
+    <title>心情日历 | Whitefir Studio - 记录每一天的心情变化</title>
+    <meta name="description" content="记录每一天的心情变化，用色彩标记生活的轨迹。通过互动式日历查看我的情绪历程和日常感悟。">
+    <meta name="keywords" content="心情日历, 情绪记录, 日常生活, Whitefir Studio">
+    
+    <!-- Open Graph 标签（社交媒体分享） -->
+    <meta property="og:title" content="心情日历 | Whitefir Studio">
+    <meta property="og:description" content="记录每一天的心情变化，用色彩标记生活的轨迹">
+    <meta property="og:image" content="https://whitefir.top/assets/images/calendar-og-image.webp">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://whitefir.top/calendar.html">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="心情日历 | Whitefir Studio">
+    <meta name="twitter:description" content="记录每一天的心情变化，用色彩标记生活的轨迹">
+    <meta name="twitter:image" content="https://whitefir.top/assets/images/calendar-og-image.webp">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="/assets/css/custom.css" rel="stylesheet">
@@ -63,13 +80,24 @@
     <!-- Main Content -->
     <main class="pt-24 min-h-screen">
         <div class="container mx-auto px-6 py-12">
-            <h1 class="text-4xl md:text-5xl font-bold tracking-tighter mb-4 text-center">心情日历</h1>
-            <p class="text-gray-400 text-center leading-relaxed mb-12">记录每一天的心情变化</p>
+            <!-- 页面标题 -->
+            <header class="text-center mb-12 animate-on-scroll">
+                <h1 class="text-4xl md:text-6xl font-bold tracking-tighter mb-4 glow-text">
+                    <i class="fas fa-calendar-heart mr-4 text-purple-400"></i>
+                    心情日历
+                </h1>
+                <p class="text-gray-400 text-lg leading-relaxed max-w-2xl mx-auto">
+                    记录每一天的心情变化，用色彩标记生活的轨迹。<br>
+                    每个表情都是一段故事，每种颜色都是一份情绪。
+                </p>
+            </header>
             
-            <!-- Calendar will be rendered here -->
-            <div id="mood-calendar-container" class="max-w-4xl mx-auto">
-                <div class="glass-card rounded-2xl p-8">
-                    <p class="text-gray-400 text-center">日历组件即将上线...</p>
+            <!-- 日历容器 -->
+            <div id="mood-calendar-container" class="max-w-5xl mx-auto">
+                <!-- 加载提示 -->
+                <div class="glass-card rounded-2xl p-12 text-center">
+                    <i class="fas fa-spinner fa-spin text-4xl text-purple-400 mb-4"></i>
+                    <p class="text-gray-400">正在加载心情日历...</p>
                 </div>
             </div>
         </div>
@@ -80,8 +108,28 @@
         &copy; 2026 Whitefir Studio. All Rights Reserved.
     </footer>
 
-    <!-- Navigation Component Script -->
+    <!-- Core Scripts -->
+    <script src="/js/data-loader.js"></script>
+    <script src="/js/animations.js"></script>
+    <script src="/js/mood-calendar.js"></script>
     <script src="/js/navigation.js"></script>
+    <script src="/js/main.js"></script>
+    
+    <!-- Initialize Mood Calendar -->
+    <script>
+        // 等待 DOM 加载完成后初始化心情日历组件
+        document.addEventListener('DOMContentLoaded', async () => {
+            console.log('[Calendar] 初始化心情日历组件...');
+            
+            // 创建 MoodCalendar 实例
+            const moodCalendar = new MoodCalendar('mood-calendar-container', '/data/moods.json');
+            
+            // 加载并渲染日历
+            await moodCalendar.loadMoods();
+            
+            console.log('[Calendar] 心情日历组件初始化完成');
+        });
+    </script>
 
 </body>
 </html>

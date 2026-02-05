@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO 元数据 -->
+    <title>开启个人网站之旅 | Whitefir Studio 日志</title>
+    <meta name="description" content="今天开始构建我的个人网站，记录这段充满挑战和乐趣的开发旅程。">
+    
+    <!-- Open Graph 标签（社交媒体分享） -->
+    <meta property="og:title" content="开启个人网站之旅">
+    <meta property="og:description" content="今天开始构建我的个人网站，记录这段充满挑战和乐趣的开发旅程。">
+    <meta property="og:image" content="https://whitefir.top/assets/images/journal-og-image.webp">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://whitefir.top/journal/my-first-post.html">
+    <meta property="article:published_time" content="2024-01-20">
+    <meta property="article:author" content="Whitefir Studio">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="开启个人网站之旅">
+    <meta name="twitter:description" content="今天开始构建我的个人网站，记录这段充满挑战和乐趣的开发旅程。">
+    <meta name="twitter:image" content="https://whitefir.top/assets/images/journal-og-image.webp">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="/assets/css/custom.css" rel="stylesheet">
+    
+    <style>
+        /* 文章内容样式 */
+        .article-content {
+            font-size: 1.125rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.85);
+        }
+        
+        .article-content h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-top: 3rem;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.05em;
+            color: white;
+        }
+        
+        .article-content h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            letter-spacing: -0.05em;
+            color: white;
+        }
+        
+        .article-content p {
+            margin-bottom: 1.5rem;
+            color: rgba(255, 255, 255, 0.75);
+        }
+        
+        .article-content ul, .article-content ol {
+            margin-bottom: 1.5rem;
+            padding-left: 2rem;
+        }
+        
+        .article-content li {
+            margin-bottom: 0.75rem;
+            color: rgba(255, 255, 255, 0.75);
+        }
+        
+        .article-content code {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        
+        .article-content blockquote {
+            border-left: 4px solid #8b5cf6;
+            padding-left: 1.5rem;
+            margin: 2rem 0;
+            font-style: italic;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        /* 返回日志浮动按钮 */
+        .back-to-journal-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 40;
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #4f46e5 0%, #8b5cf6 100%);
+            border-radius: 50%;
+            box-shadow: 0 4px 14px rgba(139, 92, 246, 0.6);
+            transition: all 0.3s ease-in-out;
+        }
+        
+        .back-to-journal-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.8);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-md border-b border-white/10">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <a href="/" class="text-2xl font-bold tracking-tighter hover:text-white/80 transition-colors duration-300">
+                    WHITEFIR
+                </a>
+                
+                <div class="hidden md:flex space-x-8">
+                    <a href="/#home" class="nav-link text-white/70 hover:text-white transition-colors duration-300">首页</a>
+                    <a href="/#projects" class="nav-link text-white/70 hover:text-white transition-colors duration-300">项目</a>
+                    <a href="/calendar.html" class="nav-link text-white/70 hover:text-white transition-colors duration-300">心情日历</a>
+                    <a href="/journal.html" class="nav-link text-white/70 hover:text-white transition-colors duration-300">日志</a>
+                </div>
+                
+                <button id="mobile-menu-btn" class="md:hidden text-white/70 hover:text-white transition-colors duration-300 p-2" aria-label="Toggle menu">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+            
+            <div id="mobile-menu" class="hidden md:hidden mt-4 pb-4 space-y-4">
+                <a href="/#home" class="block text-white/70 hover:text-white transition-colors duration-300 py-2">首页</a>
+                <a href="/#projects" class="block text-white/70 hover:text-white transition-colors duration-300 py-2">项目</a>
+                <a href="/calendar.html" class="block text-white/70 hover:text-white transition-colors duration-300 py-2">心情日历</a>
+                <a href="/journal.html" class="block text-white/70 hover:text-white transition-colors duration-300 py-2">日志</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="pt-24 min-h-screen">
+        <article class="container mx-auto px-6 py-12 max-w-4xl">
+            
+            <!-- 文章头部 -->
+            <header class="mb-12 animate-on-scroll">
+                <!-- 返回链接 -->
+                <a href="/journal.html" 
+                   class="inline-flex items-center gap-2 text-purple-400 hover:text-purple-300 transition-colors duration-300 mb-6">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>返回日志列表</span>
+                </a>
+                
+                <!-- 文章标题 -->
+                <h1 class="text-4xl md:text-6xl font-black tracking-tighter mb-6 glow-text">
+                    开启个人网站之旅
+                </h1>
+                
+                <!-- 文章元信息 -->
+                <div class="flex flex-wrap items-center gap-6 text-sm text-white/50 mb-6">
+                    <span class="flex items-center gap-2">
+                        <i class="far fa-calendar"></i>
+                        2024 年 01 月 20 日
+                    </span>
+                    <span class="flex items-center gap-2">
+                        <i class="far fa-clock"></i>
+                        5 分钟阅读
+                    </span>
+                    <span class="flex items-center gap-2">
+                        <i class="far fa-user"></i>
+                        Whitefir Studio
+                    </span>
+                </div>
+                
+                <!-- 文章标签 -->
+                <div class="flex flex-wrap gap-2">
+                    <span class="px-3 py-1 bg-white/5 border border-white/10 rounded-full text-xs text-white/70">
+                        <i class="fas fa-tag mr-1"></i>
+                        web-development
+                    </span>
+                    <span class="px-3 py-1 bg-white/5 border border-white/10 rounded-full text-xs text-white/70">
+                        <i class="fas fa-tag mr-1"></i>
+                        personal
+                    </span>
+                    <span class="px-3 py-1 bg-white/5 border border-white/10 rounded-full text-xs text-white/70">
+                        <i class="fas fa-tag mr-1"></i>
+                        design
+                    </span>
+                </div>
+            </header>
+
+            <!-- 文章内容 -->
+            <div class="glass-card rounded-2xl p-8 md:p-12 animate-on-scroll">
+                <div class="article-content">
+                    <h2>为什么要建立个人网站？</h2>
+                    <p>
+                        在这个数字时代，拥有一个属于自己的空间来展示作品、分享想法变得越来越重要。作为一名游戏开发者，我希望通过这个网站来展示我的项目、记录开发历程、分享技术心得。
+                    </p>
+                    <p>
+                        个人网站不仅是一个作品集，更是一个表达自我的平台。在这里，我可以自由地设计每一个细节，打造独特的视觉风格，让访客感受到我的个性和专业性。
+                    </p>
+
+                    <h2>技术选型</h2>
+                    <p>
+                        我选择了简洁的技术栈：<strong>Tailwind CSS + 原生 JavaScript</strong>。这样可以保持网站的轻量级，同时获得出色的性能表现。
+                    </p>
+                    <p>
+                        没有选择 React 或 Vue 等框架，是因为对于一个静态内容为主的个人网站来说，原生 JavaScript 已经足够强大。这样做的好处是：
+                    </p>
+                    <ul>
+                        <li><strong>更快的加载速度</strong>：没有框架的额外开销，首屏加载极快</li>
+                        <li><strong>更好的 SEO</strong>：静态 HTML 对搜索引擎更友好</li>
+                        <li><strong>更简单的部署</strong>：可以部署到任何静态托管服务</li>
+                        <li><strong>更低的维护成本</strong>：不需要担心框架版本更新和依赖管理</li>
+                    </ul>
+
+                    <h2>设计理念</h2>
+                    <p>
+                        遵循 <strong>60-30-10 设计原则</strong>，60% 纯黑背景营造专业感，30% 玻璃拟态效果增添现代感，10% 强调色点缀关键元素。
+                    </p>
+                    <p>
+                        这种配色方案不仅视觉上舒适，还能有效引导用户的注意力。纯黑背景让内容更加突出，玻璃拟态效果增加了层次感，而紫色和蓝色的强调色则为页面注入了活力。
+                    </p>
+
+                    <h3>玻璃拟态（Glassmorphism）</h3>
+                    <p>
+                        玻璃拟态是近年来流行的设计趋势，通过半透明背景和毛玻璃模糊效果，创造出类似磨砂玻璃的视觉效果。这种设计风格既现代又优雅，非常适合用于卡片、导航栏等组件。
+                    </p>
+
+                    <h3>动画与交互</h3>
+                    <p>
+                        所有的交互都有即时的视觉反馈。按钮在 hover 时会轻微放大，卡片会有边框高亮效果，页面滚动时元素会淡入并向上滑动。这些细节让网站感觉更加"活"，提升了用户体验。
+                    </p>
+
+                    <h2>下一步计划</h2>
+                    <p>
+                        网站的基础框架已经搭建完成，接下来我计划：
+                    </p>
+                    <ul>
+                        <li>完善项目详情页，添加更多游戏截图和开发故事</li>
+                        <li>实现心情日历功能，记录每天的心情变化</li>
+                        <li>持续更新日志，分享开发经验和技术心得</li>
+                        <li>优化移动端体验，确保在各种设备上都有良好的表现</li>
+                        <li>添加深色/浅色主题切换功能（虽然目前的深色主题已经很棒了）</li>
+                    </ul>
+
+                    <h2>结语</h2>
+                    <p>
+                        建立个人网站是一个持续的过程，它会随着我的成长而不断演进。我期待在这个平台上记录更多的故事，分享更多的作品，也希望能够结识更多志同道合的朋友。
+                    </p>
+                    <p>
+                        如果你也在考虑建立自己的个人网站，我强烈建议你行动起来。这不仅是一个展示自己的机会，更是一个学习和成长的过程。
+                    </p>
+                </div>
+            </div>
+
+            <!-- 文章底部导航 -->
+            <nav class="mt-12 animate-on-scroll">
+                <div class="glass-card rounded-2xl p-6">
+                    <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                        <a href="/journal.html" 
+                           class="btn-secondary inline-flex items-center gap-3 px-6 py-3">
+                            <i class="fas fa-arrow-left"></i>
+                            返回日志列表
+                        </a>
+                        <div class="flex gap-4">
+                            <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" 
+                                    class="btn-secondary inline-flex items-center gap-3 px-6 py-3">
+                                <i class="fas fa-arrow-up"></i>
+                                回到顶部
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+        </article>
+    </main>
+
+    <!-- 返回日志浮动按钮 -->
+    <a href="/journal.html" 
+       class="back-to-journal-btn" 
+       aria-label="返回日志列表"
+       title="返回日志列表">
+        <i class="fas fa-book text-xl"></i>
+    </a>
+
+    <!-- Footer -->
+    <footer class="py-12 border-t border-white/5 text-center text-gray-600 text-xs tracking-widest uppercase">
+        &copy; 2026 Whitefir Studio. All Rights Reserved.
+    </footer>
+
+    <!-- Scripts -->
+    <script src="/js/animations.js"></script>
+    <script src="/js/navigation.js"></script>
+    <script src="/js/main.js"></script>
+
+</body>
+</html>

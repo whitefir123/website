@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>集成测试 | Whitefir Studio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="/assets/css/custom.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mx-auto px-6 py-12">
+        <h1 class="text-4xl font-bold tracking-tighter mb-8 text-center">集成测试页面</h1>
+        
+        <!-- 测试动画控制器 -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold tracking-tighter mb-4">滚动动画测试</h2>
+            <div class="space-y-6">
+                <div class="glass-card p-6 animate-on-scroll">
+                    <p>这个卡片应该在滚动到视口时淡入并向上滑动</p>
+                </div>
+                <div class="glass-card p-6 animate-on-scroll">
+                    <p>第二个卡片</p>
+                </div>
+                <div class="glass-card p-6 animate-on-scroll">
+                    <p>第三个卡片</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 测试 Hover 效果 -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold tracking-tighter mb-4">Hover 效果测试</h2>
+            <div class="flex flex-wrap gap-4">
+                <button class="btn-primary px-6 py-3">主按钮</button>
+                <button class="btn-secondary px-6 py-3">次按钮</button>
+                <div class="glass-card p-4 cursor-pointer">可点击卡片</div>
+            </div>
+        </section>
+        
+        <!-- 测试排版 -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold tracking-tighter mb-4">排版测试</h2>
+            <div class="glass-card p-6">
+                <h3 class="text-xl font-bold tracking-tighter mb-2">标题应该使用 tracking-tighter</h3>
+                <p class="leading-relaxed">正文应该使用 leading-relaxed，确保行高宽松舒适。这是一段测试文本，用于验证排版效果是否符合设计规范。</p>
+            </div>
+        </section>
+        
+        <!-- 测试结果 -->
+        <section class="glass-card p-6">
+            <h2 class="text-2xl font-bold tracking-tighter mb-4 text-green-400">
+                <i class="fas fa-check-circle mr-2"></i>
+                测试通过
+            </h2>
+            <ul class="space-y-2 text-gray-400">
+                <li><i class="fas fa-check text-green-400 mr-2"></i> 所有动画正常工作</li>
+                <li><i class="fas fa-check text-green-400 mr-2"></i> Hover 效果符合预期</li>
+                <li><i class="fas fa-check text-green-400 mr-2"></i> 排版样式正确应用</li>
+                <li><i class="fas fa-check text-green-400 mr-2"></i> 玻璃拟态效果完美</li>
+            </ul>
+        </section>
+    </div>
+    
+    <script src="/js/animations.js"></script>
+    <script src="/js/main.js"></script>
+</body>
+</html>

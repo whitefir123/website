@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO 元数据 -->
+    <title>Magic Tower Wars - 策略魔塔游戏 | Whitefir Studio</title>
+    <meta name="description" content="经典的策略魔塔玩法与现代战争元素的完美融合。在这款游戏中，玩家需要运用智慧和策略，在充满挑战的魔塔中战斗并生存。">
+    
+    <!-- Open Graph 标签（社交媒体分享） -->
+    <meta property="og:title" content="Magic Tower Wars - 策略魔塔游戏">
+    <meta property="og:description" content="经典的策略魔塔玩法与现代战争元素的完美融合">
+    <meta property="og:image" content="https://whitefir.top/assets/images/magic-tower-wars-thumb.webp">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://whitefir.top/projects/magic-tower-wars.html">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Magic Tower Wars - 策略魔塔游戏">
+    <meta name="twitter:description" content="经典的策略魔塔玩法与现代战争元素的完美融合">
+    <meta name="twitter:image" content="https://whitefir.top/assets/images/magic-tower-wars-thumb.webp">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="/assets/css/custom.css" rel="stylesheet">
+    
+    <style>
+        /* 页面特定样式 */
+        .screenshot-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .screenshot-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 1rem;
+            aspect-ratio: 16/9;
+            cursor: pointer;
+        }
+        
+        .screenshot-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease-in-out;
+        }
+        
+        .screenshot-item:hover img {
+            transform: scale(1.1);
+        }
+        
+        /* 返回首页浮动按钮 */
+        .back-to-home-btn {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 40;
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #4f46e5 0%, #8b5cf6 100%);
+            border-radius: 50%;
+            box-shadow: 0 4px 14px rgba(139, 92, 246, 0.6);
+            transition: all 0.3s ease-in-out;
+        }
+        
+        .back-to-home-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.8);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-md border-b border-white/10">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <a href="/" class="text-2xl font-bold tracking-tighter hover:text-white/80 transition-colors duration-300">
+                    WHITEFIR
+                </a>
+                
+                <div class="hidden md:flex space-x-8">
+                    <a href="/#home" class="nav-link text-white/70 hover:text-white transition-colors duration-300">首页</a>
+                    <a href="/#projects" class="nav-link text-white/70 hover:text-white transition-colors duration-300">项目</a>
+                    <a href="/calendar.html" class="nav-link text-white/70 hover:text-white transition-colors duration-300">心情日历</a>
+                    <a href="/journal.html" class="nav-link text-white/70 hover:text-white transition-colors duration-300">日志</a>
+                </div>
+                
+                <button id="mobile-menu-btn" class="md:hidden text-white/70 hover:text-white transition-colors duration-300 p-2" aria-label="Toggle menu">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+            
+            <div id="mobile-menu" class="hidden md:hidden mt-4 pb-4 space-y-4">
+                <a href="/#home" class="block text-white/70 hover:text-white transition-colors duration-300 py-2">首页</a>
+                <a href="/#projects" class="block text-white/70 hover:text-white transition-colors duration-300 py-2">项目</a>
+                <a href="/calendar.html" class="block text-white/70 hover:text-white transition-colors duration-300 py-2">心情日历</a>
+                <a href="/journal.html" class="block text-white/70 hover:text-white transition-colors duration-300 py-2">日志</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="pt-24 min-h-screen">
+        <div class="container mx-auto px-6 py-12 max-w-5xl">
+            
+            <!-- 项目头部 -->
+            <header class="mb-12 animate-on-scroll">
+                <!-- 状态标签 -->
+                <span class="inline-block text-xs text-indigo-400 font-bold tracking-widest uppercase mb-4">
+                    <i class="fas fa-circle mr-2 text-xs"></i>
+                    已上线
+                </span>
+                
+                <!-- 项目标题 -->
+                <h1 class="text-4xl md:text-6xl font-black tracking-tighter mb-6 glow-text">
+                    Magic Tower Wars
+                </h1>
+                
+                <!-- 项目描述 -->
+                <p class="text-xl text-gray-400 leading-relaxed mb-8">
+                    经典的策略魔塔玩法与现代战争元素的完美融合。在这款游戏中，玩家需要运用智慧和策略，在充满挑战的魔塔中战斗并生存。
+                </p>
+                
+                <!-- CTA 按钮 -->
+                <div class="flex flex-wrap gap-4">
+                    <a href="https://magictowerwars.netlify.app/" 
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       class="btn-primary inline-flex items-center gap-3 px-8 py-4 text-lg">
+                        <i class="fas fa-play"></i>
+                        立即体验
+                    </a>
+                    <a href="/#projects" 
+                       class="btn-secondary inline-flex items-center gap-3 px-8 py-4 text-lg">
+                        <i class="fas fa-arrow-left"></i>
+                        返回项目列表
+                    </a>
+                </div>
+            </header>
+
+            <!-- 技术栈标签云 -->
+            <section class="mb-12 animate-on-scroll">
+                <div class="glass-card rounded-2xl p-8">
+                    <h2 class="text-2xl font-bold tracking-tighter mb-6">
+                        <i class="fas fa-code mr-3 text-purple-400"></i>
+                        技术栈
+                    </h2>
+                    <div class="flex flex-wrap gap-3">
+                        <span class="px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-full text-sm font-bold">
+                            Unity
+                        </span>
+                        <span class="px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full text-sm font-bold">
+                            C#
+                        </span>
+                        <span class="px-4 py-2 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-full text-sm font-bold">
+                            Photon
+                        </span>
+                        <span class="px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-600 rounded-full text-sm font-bold">
+                            WebGL
+                        </span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 游戏截图 -->
+            <section class="mb-12 animate-on-scroll">
+                <div class="glass-card rounded-2xl p-8">
+                    <h2 class="text-2xl font-bold tracking-tighter mb-6">
+                        <i class="fas fa-images mr-3 text-purple-400"></i>
+                        游戏截图
+                    </h2>
+                    <div class="screenshot-gallery">
+                        <div class="screenshot-item glass-card">
+                            <img src="/assets/images/mtw-screenshot-1.webp" 
+                                 alt="Magic Tower Wars 游戏截图 1 - 主界面" 
+                                 loading="lazy">
+                        </div>
+                        <div class="screenshot-item glass-card">
+                            <img src="/assets/images/mtw-screenshot-2.webp" 
+                                 alt="Magic Tower Wars 游戏截图 2 - 战斗场景" 
+                                 loading="lazy">
+                        </div>
+                        <div class="screenshot-item glass-card">
+                            <img src="/assets/images/mtw-screenshot-3.webp" 
+                                 alt="Magic Tower Wars 游戏截图 3 - 关卡选择" 
+                                 loading="lazy">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 游戏特色 -->
+            <section class="mb-12 animate-on-scroll">
+                <div class="glass-card rounded-2xl p-8">
+                    <h2 class="text-2xl font-bold tracking-tighter mb-6">
+                        <i class="fas fa-star mr-3 text-purple-400"></i>
+                        游戏特色
+                    </h2>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="p-6 bg-white/5 rounded-xl">
+                            <h3 class="text-lg font-bold mb-3 flex items-center gap-3">
+                                <i class="fas fa-chess text-indigo-400"></i>
+                                策略深度
+                            </h3>
+                            <p class="text-gray-400 leading-relaxed">
+                                每一步都需要深思熟虑，合理分配资源，选择最优路径，才能在魔塔中生存下来。
+                            </p>
+                        </div>
+                        <div class="p-6 bg-white/5 rounded-xl">
+                            <h3 class="text-lg font-bold mb-3 flex items-center gap-3">
+                                <i class="fas fa-gamepad text-purple-400"></i>
+                                经典玩法
+                            </h3>
+                            <p class="text-gray-400 leading-relaxed">
+                                致敬经典魔塔游戏，保留核心玩法的同时加入现代化的游戏机制和视觉效果。
+                            </p>
+                        </div>
+                        <div class="p-6 bg-white/5 rounded-xl">
+                            <h3 class="text-lg font-bold mb-3 flex items-center gap-3">
+                                <i class="fas fa-network-wired text-blue-400"></i>
+                                多人联机
+                            </h3>
+                            <p class="text-gray-400 leading-relaxed">
+                                使用 Photon 网络框架，支持多人在线协作或对战，增加游戏的社交性和可玩性。
+                            </p>
+                        </div>
+                        <div class="p-6 bg-white/5 rounded-xl">
+                            <h3 class="text-lg font-bold mb-3 flex items-center gap-3">
+                                <i class="fas fa-globe text-green-400"></i>
+                                跨平台支持
+                            </h3>
+                            <p class="text-gray-400 leading-relaxed">
+                                基于 WebGL 技术，无需下载安装，在浏览器中即可畅玩，支持桌面和移动设备。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 开发历程 -->
+            <section class="mb-12 animate-on-scroll">
+                <div class="glass-card rounded-2xl p-8">
+                    <h2 class="text-2xl font-bold tracking-tighter mb-6">
+                        <i class="fas fa-book mr-3 text-purple-400"></i>
+                        开发历程
+                    </h2>
+                    <div class="space-y-6">
+                        <div class="border-l-4 border-indigo-500 pl-6">
+                            <h3 class="text-lg font-bold mb-2">项目启动</h3>
+                            <p class="text-gray-400 leading-relaxed">
+                                2023年初，我决定重新演绎经典魔塔游戏。选择 Unity 作为开发引擎，因为它强大的跨平台能力和丰富的资源生态。
+                            </p>
+                        </div>
+                        <div class="border-l-4 border-purple-500 pl-6">
+                            <h3 class="text-lg font-bold mb-2">核心机制实现</h3>
+                            <p class="text-gray-400 leading-relaxed">
+                                花费了大量时间设计和平衡游戏的核心机制，包括战斗系统、道具系统、关卡设计等。确保游戏既有挑战性又不失趣味性。
+                            </p>
+                        </div>
+                        <div class="border-l-4 border-blue-500 pl-6">
+                            <h3 class="text-lg font-bold mb-2">多人功能集成</h3>
+                            <p class="text-gray-400 leading-relaxed">
+                                集成 Photon 网络框架，实现多人联机功能。这是项目中最具挑战性的部分，需要处理网络同步、延迟补偿等复杂问题。
+                            </p>
+                        </div>
+                        <div class="border-l-4 border-green-500 pl-6">
+                            <h3 class="text-lg font-bold mb-2">优化与发布</h3>
+                            <p class="text-gray-400 leading-relaxed">
+                                针对 WebGL 平台进行了大量优化，包括资源压缩、加载优化、性能调优等。最终成功发布并获得玩家好评。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- 返回首页浮动按钮 -->
+    <a href="/" 
+       class="back-to-home-btn" 
+       aria-label="返回首页"
+       title="返回首页">
+        <i class="fas fa-home text-xl"></i>
+    </a>
+
+    <!-- Footer -->
+    <footer class="py-12 border-t border-white/5 text-center text-gray-600 text-xs tracking-widest uppercase">
+        &copy; 2026 Whitefir Studio. All Rights Reserved.
+    </footer>
+
+    <!-- Scripts -->
+    <script src="/js/animations.js"></script>
+    <script src="/js/navigation.js"></script>
+    <script src="/js/main.js"></script>
+
+</body>
+</html>

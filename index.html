@@ -3,7 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Whitefir | 游戏作品集</title>
+    
+    <!-- SEO 元数据 -->
+    <title>Whitefir Studio - 探索游戏新边界 | 独立游戏开发者作品集</title>
+    <meta name="description" content="Whitefir Studio 致力于打造极具沉浸感的交互体验，将想象力转化为可触碰的代码世界。探索我们的游戏项目、开发日志和创作历程。">
+    <meta name="keywords" content="游戏开发, 独立游戏, Unity, WebGL, 游戏设计, Whitefir Studio, 个人作品集">
+    <meta name="author" content="Whitefir Studio">
+    
+    <!-- Open Graph 标签（社交媒体分享） -->
+    <meta property="og:title" content="Whitefir Studio - 探索游戏新边界">
+    <meta property="og:description" content="致力于打造极具沉浸感的交互体验，将想象力转化为可触碰的代码世界">
+    <meta property="og:image" content="https://whitefir.top/assets/images/og-image.webp">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://whitefir.top/">
+    <meta property="og:site_name" content="Whitefir Studio">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Whitefir Studio - 探索游戏新边界">
+    <meta name="twitter:description" content="致力于打造极具沉浸感的交互体验，将想象力转化为可触碰的代码世界">
+    <meta name="twitter:image" content="https://whitefir.top/assets/images/og-image.webp">
+    <meta name="twitter:site" content="@whitefir">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://whitefir.top/">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/assets/icons/favicon.png">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="/assets/css/custom.css" rel="stylesheet">
@@ -59,13 +86,67 @@
         </div>
     </nav>
 
+    <!-- Hero Section -->
     <section id="home" class="h-screen flex flex-col justify-center items-center text-center px-4 hero-gradient">
-        <h1 class="text-6xl md:text-8xl font-black mb-6 glow-text tracking-tighter">探索游戏新边界</h1>
-        <p class="text-gray-400 text-lg md:text-xl max-w-2xl font-light leading-relaxed">
+        <!-- 主标题 -->
+        <h1 class="text-6xl md:text-8xl font-black mb-6 glow-text tracking-tighter animate-on-scroll">
+            探索游戏新边界
+        </h1>
+        
+        <!-- 副标题/简介 -->
+        <p class="text-gray-400 text-lg md:text-xl max-w-2xl font-light leading-relaxed mb-8 animate-on-scroll">
             致力于打造极具沉浸感的交互体验，将想象力转化为可触碰的代码世界。
         </p>
-        <div class="mt-12 animate-bounce">
-            <a href="#projects"><i class="fa-solid fa-chevron-down text-2xl text-gray-500"></i></a>
+        
+        <!-- 导航链接 -->
+        <div class="flex flex-wrap justify-center gap-4 mb-12 animate-on-scroll">
+            <a href="#projects" 
+               class="btn-primary inline-flex items-center gap-2 px-6 py-3">
+                <i class="fas fa-gamepad"></i>
+                <span>查看项目</span>
+            </a>
+            <a href="/journal.html" 
+               class="btn-secondary inline-flex items-center gap-2 px-6 py-3">
+                <i class="fas fa-book"></i>
+                <span>阅读日志</span>
+            </a>
+            <a href="/calendar.html" 
+               class="btn-secondary inline-flex items-center gap-2 px-6 py-3">
+                <i class="fas fa-calendar"></i>
+                <span>心情日历</span>
+            </a>
+        </div>
+        
+        <!-- 社交媒体链接 -->
+        <div class="flex gap-6 mb-12 animate-on-scroll">
+            <a href="https://github.com/whitefir" 
+               target="_blank"
+               rel="noopener noreferrer"
+               class="w-12 h-12 flex items-center justify-center glass-card rounded-full hover:bg-white/10 transition-all duration-300 hover:scale-110"
+               aria-label="GitHub">
+                <i class="fab fa-github text-xl"></i>
+            </a>
+            <a href="https://twitter.com/whitefir" 
+               target="_blank"
+               rel="noopener noreferrer"
+               class="w-12 h-12 flex items-center justify-center glass-card rounded-full hover:bg-white/10 transition-all duration-300 hover:scale-110"
+               aria-label="Twitter">
+                <i class="fab fa-twitter text-xl"></i>
+            </a>
+            <a href="mailto:contact@whitefir.top" 
+               class="w-12 h-12 flex items-center justify-center glass-card rounded-full hover:bg-white/10 transition-all duration-300 hover:scale-110"
+               aria-label="Email">
+                <i class="fas fa-envelope text-xl"></i>
+            </a>
+        </div>
+        
+        <!-- 向下滚动提示 -->
+        <div class="mt-auto mb-12 animate-bounce">
+            <a href="#projects" 
+               class="inline-block text-gray-500 hover:text-gray-300 transition-colors duration-300"
+               aria-label="向下滚动查看项目">
+                <i class="fa-solid fa-chevron-down text-2xl"></i>
+            </a>
         </div>
     </section>
 
