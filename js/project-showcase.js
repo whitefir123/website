@@ -146,31 +146,31 @@ class ProjectShowcase {
           </h3>
           
           <!-- 项目描述 -->
-          <!-- Requirement 4.8: 描述使用 line-clamp-3 -->
-          <p class="text-white/70 leading-relaxed line-clamp-3 mb-4">
+          <!-- 提示词 3: 描述使用 line-clamp-2，严格执行 -->
+          <p class="text-white/70 leading-relaxed line-clamp-2 mb-4" style="min-height: 3rem;">
             ${validatedProject.description}
           </p>
           
-          <!-- 技术栈标签云 (Requirement 4.6) -->
+          <!-- 技术栈标签云 (提示词 3: 超低对比度样式) -->
           <div class="mb-6">
             <div class="flex flex-wrap gap-2">
               ${techStackHTML}
             </div>
           </div>
           
-          <!-- 操作按钮 -->
-          <div class="flex gap-4">
+          <!-- 操作按钮 (提示词 3: 极简形式 - 文字 + 箭头) -->
+          <div class="flex gap-4 items-center">
             ${hasLiveUrl 
-              ? `<button class="btn-live-demo px-6 py-2 bg-white text-black text-sm font-bold rounded-full hover:bg-gray-200 transition-all duration-300">
+              ? `<a href="${validatedProject.liveUrl}" target="_blank" rel="noopener noreferrer" class="btn-minimal">
                    立即体验
-                 </button>`
-              : `<button disabled class="px-6 py-2 bg-white/5 text-gray-500 text-sm font-bold rounded-full cursor-not-allowed">
-                   即将推出
-                 </button>`
+                   <i class="fas fa-arrow-right"></i>
+                 </a>`
+              : `<span class="text-gray-500 text-sm">即将推出</span>`
             }
-            <button class="btn-view-details px-6 py-2 border border-white/20 text-sm font-bold rounded-full hover:bg-white/10 transition-all duration-300">
+            <a href="${validatedProject.detailPage}" class="btn-minimal">
               查看详情
-            </button>
+              <i class="fas fa-arrow-right"></i>
+            </a>
           </div>
         </div>
       </div>
@@ -179,7 +179,7 @@ class ProjectShowcase {
 
   /**
    * 渲染技术栈标签云
-   * Requirement 4.6: 技术栈标签云布局
+   * 提示词 3: 超低对比度样式，仅在悬停时才加深颜色
    * @param {string[]} techStack - 技术栈数组
    * @returns {string} 技术栈标签的 HTML 字符串
    */
@@ -189,7 +189,7 @@ class ProjectShowcase {
     }
 
     return techStack.map(tech => `
-      <span class="px-3 py-1 bg-white/5 border border-white/10 rounded-full text-xs text-white/70 hover:bg-white/10 hover:border-white/20 transition-all duration-300">
+      <span class="tech-tag">
         ${tech}
       </span>
     `).join('');

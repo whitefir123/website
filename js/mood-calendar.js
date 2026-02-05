@@ -212,21 +212,45 @@ class MoodCalendar {
 
   /**
    * 渲染心情指示器
-   * Requirement 5.2: 在有心情记录的日期显示彩色指示器
+   * 提示词 2: 移除 Emoji，改用彩色毛玻璃光点
    * @param {Object} mood - 心情数据对象
    */
   renderMoodIndicator(mood) {
     const moodType = this.moodTypes[mood.mood];
     const color = mood.color || (moodType ? moodType.color : '#6b7280');
-    const icon = moodType ? moodType.icon : '●';
+    
+    // 提示词 2：使用不同颜色的毛玻璃光点（Blurred Orbs）
+    // 根据心情类型使用不同的渐变色
+    let gradientColors = this.getMoodGradient(mood.mood);
     
     return `
       <div class="mood-indicator mt-2 flex justify-center items-center">
-        <div class="text-2xl" style="filter: drop-shadow(0 0 8px ${color});" title="${moodType?.label || mood.mood}">
-          ${icon}
+        <div class="mood-dot-wrapper mt-2" style="--mood-color: ${color};">
+          <div class="mood-dot" style="background: ${gradientColors}; color: ${color};"></div>
         </div>
       </div>
     `;
+  }
+
+  /**
+   * 获取心情对应的渐变色
+   * 提示词 2：不同心情使用不同的渐变色
+   * @param {string} moodKey - 心情类型键
+   * @returns {string} CSS 渐变色
+   */
+  getMoodGradient(moodKey) {
+    const gradientMap = {
+      'happy': 'linear-gradient(135deg, #10b981, #14b8a6)', // Emerald-to-Teal
+      'excited': 'linear-gradient(135deg, #f59e0b, #ef4444)', // Amber-to-Red
+      'calm': 'linear-gradient(135deg, #3b82f6, #8b5cf6)', // Blue-to-Purple
+      'tired': 'linear-gradient(135deg, #6366f1, #06b6d4)', // Indigo-to-Cyan (淡蓝渐变)
+      'sad': 'linear-gradient(135deg, #6b7280, #9ca3af)', // Gray
+      'anxious': 'linear-gradient(135deg, #f97316, #fb923c)', // Orange
+      'productive': 'linear-gradient(135deg, #22c55e, #84cc16)', // Green-to-Lime
+      'creative': 'linear-gradient(135deg, #a855f7, #ec4899)' // Purple-to-Pink
+    };
+    
+    return gradientMap[moodKey] || 'linear-gradient(135deg, #6b7280, #9ca3af)';
   }
 
   /**
@@ -307,7 +331,7 @@ class MoodCalendar {
 
   /**
    * 显示心情提示框
-   * Requirements: 5.3, 5.4 - 毛玻璃悬浮框 + 弹簧动画 + 边缘检测
+   * 提示词 2: 毛玻璃悬浮框 + 弹簧动画 + 边缘检测 + 位置跟随感更丝滑
    * @param {HTMLElement} dayElement - 日期元素
    */
   showTooltip(dayElement) {
@@ -319,27 +343,27 @@ class MoodCalendar {
 
     const moodType = this.moodTypes[moodKey];
     const moodLabel = moodType ? moodType.label : moodKey;
-    const moodIcon = moodType ? moodType.icon : '●';
     const moodColor = moodType ? moodType.color : '#6b7280';
+    const gradientColors = this.getMoodGradient(moodKey);
 
     // 移除已存在的提示框
     this.hideTooltip();
 
-    // Requirement 5.3: 创建毛玻璃悬浮框
+    // 提示词 2: 创建毛玻璃悬浮框
     const tooltip = document.createElement('div');
     tooltip.id = 'mood-tooltip';
-    tooltip.className = 'fixed z-50 glass-card p-4 rounded-xl max-w-xs pointer-events-none';
+    tooltip.className = 'fixed z-50 p-4 rounded-xl max-w-xs pointer-events-none';
     tooltip.style.borderColor = moodColor;
     tooltip.style.borderWidth = '1px';
     tooltip.style.borderStyle = 'solid';
     
-    // Requirement 5.3: 应用弹簧动画
-    tooltip.style.animation = 'springIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
+    // 提示词 2: 应用弹簧动画
+    tooltip.style.animation = 'springIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)';
     tooltip.style.opacity = '0';
     
     tooltip.innerHTML = `
       <div class="flex items-start gap-3">
-        <span class="text-3xl" style="filter: drop-shadow(0 0 8px ${moodColor});">${moodIcon}</span>
+        <div class="mood-dot" style="background: ${gradientColors}; width: 24px; height: 24px; border-radius: 50%; filter: blur(2px); box-shadow: 0 0 16px ${moodColor};"></div>
         <div>
           <p class="font-bold text-sm mb-1">${moodLabel}</p>
           <p class="text-xs text-white/50 mb-2">${date}</p>
@@ -350,22 +374,18 @@ class MoodCalendar {
 
     document.body.appendChild(tooltip);
 
-    // Requirement 5.4: 边缘检测并自动调整位置
+    // 提示词 2: 边缘检测并自动调整位置 - 位置跟随感更丝滑
     const rect = dayElement.getBoundingClientRect();
     const tooltipRect = tooltip.getBoundingClientRect();
     
-    // 计算位置（尝试显示在元素上方，如果空间不够则显示在下方）
     let top = rect.top - tooltipRect.height - 10;
-    let adjustedPosition = 'top';
     
     if (top < 10) {
       top = rect.bottom + 10;
-      adjustedPosition = 'bottom';
     }
     
     let left = rect.left + (rect.width / 2) - (tooltipRect.width / 2);
     
-    // Requirement 5.4: 确保不超出屏幕边界（边缘检测）
     if (left < 10) {
       left = 10;
     }
@@ -373,7 +393,6 @@ class MoodCalendar {
       left = window.innerWidth - tooltipRect.width - 10;
     }
     
-    // 如果底部也超出屏幕，调整到屏幕内
     if (top + tooltipRect.height > window.innerHeight - 10) {
       top = window.innerHeight - tooltipRect.height - 10;
     }

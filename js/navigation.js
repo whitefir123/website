@@ -9,6 +9,7 @@ class NavigationComponent {
     this.mobileMenuBtn = document.getElementById('mobile-menu-btn');
     this.mobileMenu = document.getElementById('mobile-menu');
     this.navLinks = document.querySelectorAll('.nav-link');
+    this.lastActiveSection = null; // 提示词 4: 记录上一个激活的 section，避免闪烁
     this.init();
   }
   
@@ -155,20 +156,35 @@ class NavigationComponent {
   
   /**
    * Update active link based on scroll position
+   * 提示词 4: 优化滚动监听逻辑，避免在滚动到两个 Section 边界时导航条高亮闪烁
    */
   updateActiveOnScroll() {
     const sections = document.querySelectorAll('section[id]');
-    const scrollPosition = window.scrollY + 100; // Offset for fixed nav
+    const scrollPosition = window.scrollY + 150; // 增加偏移量以提前触发
     
+    let currentSection = null;
+    
+    // 找到当前最匹配的 section
     sections.forEach(section => {
       const sectionTop = section.offsetTop;
       const sectionHeight = section.offsetHeight;
       const sectionId = section.getAttribute('id');
       
-      if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+      // 使用更宽松的判断条件，减少边界闪烁
+      if (scrollPosition >= sectionTop - 100 && scrollPosition < sectionTop + sectionHeight - 100) {
+        currentSection = sectionId;
+      }
+    });
+    
+    // 如果找到了当前 section，更新导航高亮
+    if (currentSection) {
+      // 防抖：只在 section 真正改变时更新
+      if (this.lastActiveSection !== currentSection) {
+        this.lastActiveSection = currentSection;
+        
         // Update hash without scrolling
-        if (window.location.hash !== `#${sectionId}`) {
-          history.replaceState(null, null, `#${sectionId}`);
+        if (window.location.hash !== `#${currentSection}`) {
+          history.replaceState(null, null, `#${currentSection}`);
         }
         
         // Update active link
@@ -177,12 +193,12 @@ class NavigationComponent {
           link.classList.remove('text-white', 'border-b-2', 'border-purple-500');
           link.classList.add('text-white/70');
           
-          if (href === `/#${sectionId}` || href === `#${sectionId}`) {
+          if (href === `/#${currentSection}` || href === `#${currentSection}`) {
             this.setActiveLink(link);
           }
         });
       }
-    });
+    }
   }
   
   /**
