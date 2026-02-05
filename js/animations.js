@@ -3,6 +3,7 @@
  * 
  * 功能：
  * - 使用 Intersection Observer 实现滚动触发的淡入向上动画
+ * - 瀑布流入场：子元素按 50ms 间隔依次触发
  * - 管理页面元素的进入动画
  * - 提供统一的动画接口
  * 
@@ -11,8 +12,9 @@
  * 
  * 使用方法：
  * 1. 在 HTML 元素上添加 .animate-on-scroll 类
- * 2. 页面加载时初始化：new AnimationController()
- * 3. 当元素进入视口时，自动添加 .animate-fade-in-up 类触发动画
+ * 2. 在容器上添加 .stagger-container 类以启用瀑布流效果
+ * 3. 页面加载时初始化：new AnimationController()
+ * 4. 当元素进入视口时，自动添加 .animate-smart-fade-in 类触发动画
  */
 
 class AnimationController {
@@ -21,11 +23,13 @@ class AnimationController {
    * @param {Object} options - 配置选项
    * @param {number} options.threshold - 触发动画的阈值 (0-1)，默认 0.1
    * @param {string} options.rootMargin - 根边距，默认 '0px'
+   * @param {number} options.staggerDelay - 瀑布流延迟间隔（毫秒），默认 50
    */
   constructor(options = {}) {
     this.options = {
       threshold: options.threshold || 0.1,
-      rootMargin: options.rootMargin || '0px'
+      rootMargin: options.rootMargin || '0px',
+      staggerDelay: options.staggerDelay || 50
     };
     
     this.observer = null;
@@ -100,12 +104,36 @@ class AnimationController {
       return;
     }
     
-    // 添加动画类
-    element.classList.add('animate-fade-in-up');
+    // 检查是否为瀑布流容器
+    if (element.classList.contains('stagger-container')) {
+      this.animateStaggerContainer(element);
+    } else {
+      // 普通元素：直接添加动画类
+      element.classList.add('animate-smart-fade-in');
+    }
+    
     this.animatedElements.add(element);
     
     // 停止观察已动画的元素（性能优化）
     this.observer.unobserve(element);
+  }
+  
+  /**
+   * 为瀑布流容器的子元素依次添加动画
+   * @param {HTMLElement} container - 瀑布流容器
+   */
+  animateStaggerContainer(container) {
+    // 获取所有直接子元素
+    const children = Array.from(container.children);
+    
+    // 为每个子元素按顺序添加动画，间隔 50ms
+    children.forEach((child, index) => {
+      setTimeout(() => {
+        child.classList.add('animate-smart-fade-in');
+      }, index * this.options.staggerDelay);
+    });
+    
+    console.log(`🌊 瀑布流动画：${children.length} 个子元素，间隔 ${this.options.staggerDelay}ms`);
   }
   
   /**
@@ -171,7 +199,58 @@ class AnimationController {
   }
 }
 
+/**
+ * ParallaxController - 视差效果控制器
+ * 为 Hero Section 文字添加随滚动微弱移动的视差效果
+ */
+class ParallaxController {
+  /**
+   * 构造函数
+   * @param {string} selector - 要应用视差效果的元素选择器
+   * @param {number} intensity - 视差强度（0-1），默认 0.3
+   */
+  constructor(selector, intensity = 0.3) {
+    this.elements = document.querySelectorAll(selector);
+    this.intensity = intensity;
+    this.ticking = false;
+    
+    if (this.elements.length > 0) {
+      this.init();
+    }
+  }
+  
+  /**
+   * 初始化视差效果
+   */
+  init() {
+    window.addEventListener('scroll', () => {
+      if (!this.ticking) {
+        window.requestAnimationFrame(() => {
+          this.updateParallax();
+          this.ticking = false;
+        });
+        this.ticking = true;
+      }
+    });
+    
+    console.log(`✨ 视差效果已启用：${this.elements.length} 个元素，强度 ${this.intensity}`);
+  }
+  
+  /**
+   * 更新视差位置
+   */
+  updateParallax() {
+    const scrollY = window.scrollY;
+    
+    this.elements.forEach(element => {
+      // 计算视差偏移量（向上移动）
+      const offset = scrollY * this.intensity;
+      element.style.transform = `translateY(${offset}px)`;
+    });
+  }
+}
+
 // 导出供其他模块使用
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = AnimationController;
+  module.exports = { AnimationController, ParallaxController };
 }

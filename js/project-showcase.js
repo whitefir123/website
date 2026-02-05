@@ -302,6 +302,22 @@ class ProjectShowcase {
           this.navigateToDetail(projectId, detailPage);
         }
       });
+
+      // 鼠标聚光灯效果：追踪鼠标位置
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        
+        card.style.setProperty('--mouse-x', `${x}%`);
+        card.style.setProperty('--mouse-y', `${y}%`);
+      });
+
+      // 鼠标离开时重置位置
+      card.addEventListener('mouseleave', () => {
+        card.style.setProperty('--mouse-x', '50%');
+        card.style.setProperty('--mouse-y', '50%');
+      });
     });
 
     console.log(`[ProjectShowcase] 已为 ${projectCards.length} 个项目卡片添加事件监听器`);

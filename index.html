@@ -88,18 +88,18 @@
 
     <!-- Hero Section -->
     <section id="home" class="h-screen flex flex-col justify-center items-center text-center px-4 hero-gradient">
-        <!-- 主标题 (提示词 4: 模糊淡入动画) -->
-        <h1 class="text-6xl md:text-8xl font-black mb-6 glow-text tracking-tighter hero-title-animate">
+        <!-- 主标题 (提示词 4: 模糊淡入动画 + 视差效果) -->
+        <h1 class="text-6xl md:text-8xl font-black mb-6 glow-text tracking-tighter hero-title-animate hero-parallax">
             探索游戏新边界
         </h1>
         
         <!-- 副标题/简介 -->
-        <p class="text-gray-400 text-lg md:text-xl max-w-2xl font-light leading-relaxed mb-8 hero-subtitle-animate">
+        <p class="text-gray-400 text-lg md:text-xl max-w-2xl font-light leading-relaxed mb-8 hero-subtitle-animate hero-parallax">
             致力于打造极具沉浸感的交互体验，将想象力转化为可触碰的代码世界。
         </p>
         
         <!-- 导航链接 -->
-        <div class="flex flex-wrap justify-center gap-4 mb-12 hero-buttons-animate">
+        <div class="flex flex-wrap justify-center gap-4 mb-12 hero-buttons-animate hero-parallax">
             <a href="#projects" 
                class="btn-primary inline-flex items-center gap-2 px-6 py-3">
                 <i class="fas fa-gamepad"></i>
@@ -154,7 +154,8 @@
         <h2 class="text-3xl font-bold mb-16 text-center italic tracking-tighter">SELECTED PROJECTS</h2>
         
         <!-- 项目展示容器 - 由 ProjectShowcase 组件动态填充 -->
-        <div id="projects-container" class="grid grid-cols-1 md:grid-cols-2 gap-12">
+        <!-- 添加 stagger-container 和 animate-on-scroll 类以启用瀑布流入场效果 -->
+        <div id="projects-container" class="grid grid-cols-1 md:grid-cols-2 gap-12 stagger-container animate-on-scroll">
             <!-- 加载中提示 -->
             <div class="col-span-full text-center py-12">
                 <i class="fas fa-spinner fa-spin text-4xl text-white/30 mb-4"></i>

@@ -10,6 +10,7 @@ class NavigationComponent {
     this.mobileMenu = document.getElementById('mobile-menu');
     this.navLinks = document.querySelectorAll('.nav-link');
     this.lastActiveSection = null; // 提示词 4: 记录上一个激活的 section，避免闪烁
+    this.jellyBg = null; // 果冻背景元素
     this.init();
   }
   
@@ -17,6 +18,8 @@ class NavigationComponent {
     this.attachEventListeners();
     this.highlightActiveSection();
     this.setupSmoothScroll();
+    this.initJellyBackground(); // 初始化果冻背景
+    this.initLoadingProgress(); // 初始化加载进度条
   }
   
   /**
@@ -238,6 +241,99 @@ class NavigationComponent {
           }
         }
       });
+    });
+  }
+  
+  /**
+   * 初始化果冻背景效果
+   */
+  initJellyBackground() {
+    // 只在桌面端启用
+    if (window.innerWidth < 768) return;
+    
+    const desktopNav = document.querySelector('nav .hidden.md\\:flex');
+    if (!desktopNav) return;
+    
+    // 创建果冻背景元素
+    this.jellyBg = document.createElement('div');
+    this.jellyBg.className = 'nav-jelly-bg';
+    
+    // 包装导航链接
+    const navLinksWrapper = document.createElement('div');
+    navLinksWrapper.className = 'nav-links-container flex space-x-8 relative';
+    
+    // 将现有链接移到包装器中
+    const links = Array.from(desktopNav.children);
+    links.forEach(link => navLinksWrapper.appendChild(link));
+    
+    // 添加果冻背景和包装器
+    navLinksWrapper.appendChild(this.jellyBg);
+    desktopNav.appendChild(navLinksWrapper);
+    
+    // 为每个链接添加 hover 事件
+    this.navLinks.forEach(link => {
+      link.addEventListener('mouseenter', (e) => {
+        this.updateJellyPosition(e.target);
+      });
+    });
+    
+    // 鼠标离开导航区域时隐藏果冻背景
+    navLinksWrapper.addEventListener('mouseleave', () => {
+      if (this.jellyBg) {
+        this.jellyBg.style.opacity = '0';
+      }
+    });
+  }
+  
+  /**
+   * 更新果冻背景位置
+   */
+  updateJellyPosition(linkElement) {
+    if (!this.jellyBg) return;
+    
+    const rect = linkElement.getBoundingClientRect();
+    const parentRect = linkElement.parentElement.getBoundingClientRect();
+    
+    const left = rect.left - parentRect.left;
+    const width = rect.width;
+    
+    this.jellyBg.style.left = `${left}px`;
+    this.jellyBg.style.width = `${width}px`;
+    this.jellyBg.style.opacity = '1';
+  }
+  
+  /**
+   * 初始化加载进度条
+   */
+  initLoadingProgress() {
+    // 创建进度条元素
+    const progressBar = document.createElement('div');
+    progressBar.id = 'loading-progress';
+    document.body.appendChild(progressBar);
+    
+    // 模拟加载进度
+    let progress = 0;
+    const interval = setInterval(() => {
+      progress += Math.random() * 30;
+      if (progress >= 90) {
+        progress = 90;
+        clearInterval(interval);
+      }
+      progressBar.style.width = `${progress}%`;
+    }, 200);
+    
+    // 页面完全加载后完成进度条
+    window.addEventListener('load', () => {
+      clearInterval(interval);
+      progressBar.style.width = '100%';
+      
+      // 延迟后移除进度条
+      setTimeout(() => {
+        progressBar.classList.add('complete');
+        setTimeout(() => {
+          progressBar.remove();
+        }, 500);
+      }, 300);
     });
   }
 }

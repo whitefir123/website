@@ -18,6 +18,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // 初始化滚动动画
   initScrollAnimations();
   
+  // 初始化视差效果
+  initParallax();
+  
   console.log('[Whitefir] 应用程序初始化完成');
 });
 
@@ -89,7 +92,8 @@ function initScrollAnimations() {
   if (typeof AnimationController !== 'undefined') {
     window.animationController = new AnimationController({
       threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px'
+      rootMargin: '0px 0px -50px 0px',
+      staggerDelay: 50 // 瀑布流延迟间隔 50ms
     });
   } else {
     console.warn('[Whitefir] AnimationController 未加载，使用降级方案');
@@ -98,6 +102,19 @@ function initScrollAnimations() {
       el.style.opacity = '1';
       el.style.transform = 'translateY(0)';
     });
+  }
+}
+
+/**
+ * 初始化视差效果
+ * 为 Hero Section 文字添加随滚动微弱移动的视差效果
+ */
+function initParallax() {
+  if (typeof ParallaxController !== 'undefined') {
+    // 为 Hero Section 的文字元素添加视差效果
+    window.parallaxController = new ParallaxController('.hero-parallax', 0.3);
+  } else {
+    console.warn('[Whitefir] ParallaxController 未加载，跳过视差效果');
   }
 }
 
