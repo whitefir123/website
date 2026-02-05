@@ -200,53 +200,127 @@ class AnimationController {
 }
 
 /**
- * ParallaxController - 视差效果控制器
- * 为 Hero Section 文字添加随滚动微弱移动的视差效果
+ * ParallaxController - 增强视差效果控制器
+ * 为背景和前景元素创建差异化滚动速度，营造 3D 深度感
+ * 
+ * Requirements: 20.1, 20.2, 20.3, 20.4, 20.5
  */
 class ParallaxController {
   /**
    * 构造函数
-   * @param {string} selector - 要应用视差效果的元素选择器
-   * @param {number} intensity - 视差强度（0-1），默认 0.3
+   * @param {Object} options - 配置选项
    */
-  constructor(selector, intensity = 0.3) {
-    this.elements = document.querySelectorAll(selector);
-    this.intensity = intensity;
+  constructor(options = {}) {
+    this.elements = [];
     this.ticking = false;
+    this.isMobile = window.innerWidth <= 768;
     
-    if (this.elements.length > 0) {
-      this.init();
+    // Requirement 20.5: 移动设备禁用视差效果
+    if (this.isMobile) {
+      console.log('[ParallaxController] 移动设备检测到，视差效果已禁用');
+      return;
     }
+    
+    this.init();
   }
   
   /**
    * 初始化视差效果
+   * Requirement 20.1, 20.4
    */
   init() {
-    window.addEventListener('scroll', () => {
-      if (!this.ticking) {
-        window.requestAnimationFrame(() => {
-          this.updateParallax();
-          this.ticking = false;
-        });
-        this.ticking = true;
+    // 查找所有带有 data-parallax 属性的元素
+    this.findParallaxElements();
+    
+    if (this.elements.length === 0) {
+      console.log('[ParallaxController] 未找到视差元素');
+      return;
+    }
+    
+    // Requirement 20.4: 使用 requestAnimationFrame 优化性能
+    window.addEventListener('scroll', () => this.requestTick());
+    
+    // 监听窗口大小变化
+    window.addEventListener('resize', () => {
+      this.isMobile = window.innerWidth <= 768;
+      if (this.isMobile) {
+        this.resetParallax();
       }
     });
     
-    console.log(`✨ 视差效果已启用：${this.elements.length} 个元素，强度 ${this.intensity}`);
+    console.log(`[ParallaxController] 初始化完成，${this.elements.length} 个元素`);
+  }
+  
+  /**
+   * 查找所有视差元素
+   */
+  findParallaxElements() {
+    const parallaxElements = document.querySelectorAll('[data-parallax]');
+    
+    parallaxElements.forEach(el => {
+      const speed = parseFloat(el.dataset.parallax) || 0.5;
+      this.elements.push({ element: el, speed });
+    });
+  }
+  
+  /**
+   * 请求动画帧
+   * Requirement 20.4: 使用 requestAnimationFrame
+   */
+  requestTick() {
+    if (!this.ticking && !this.isMobile) {
+      requestAnimationFrame(() => this.update());
+      this.ticking = true;
+    }
   }
   
   /**
    * 更新视差位置
+   * Requirements: 20.1, 20.2, 20.3
    */
-  updateParallax() {
-    const scrollY = window.scrollY;
+  update() {
+    const scrollY = window.pageYOffset;
     
-    this.elements.forEach(element => {
-      // 计算视差偏移量（向上移动）
-      const offset = scrollY * this.intensity;
+    this.elements.forEach(({ element, speed }) => {
+      // Requirement 20.1: 背景移动速度慢于前景
+      // speed < 1: 背景（慢速）
+      // speed = 0: 前景（不动）
+      // speed > 1: 超快速（特殊效果）
+      const offset = scrollY * speed;
+      
+      // Requirement 20.2, 20.3: 创建 3D 深度感，但保持微妙
       element.style.transform = `translateY(${offset}px)`;
     });
+    
+    this.ticking = false;
+  }
+  
+  /**
+   * 重置视差效果（移动端）
+   */
+  resetParallax() {
+    this.elements.forEach(({ element }) => {
+      element.style.transform = 'translateY(0)';
+    });
+  }
+  
+  /**
+   * 添加新的视差元素
+   * @param {HTMLElement} element - 元素
+   * @param {number} speed - 速度（0-1）
+   */
+  addElement(element, speed = 0.5) {
+    if (!this.isMobile) {
+      this.elements.push({ element, speed });
+    }
+  }
+  
+  /**
+   * 销毁控制器
+   */
+  destroy() {
+    this.resetParallax();
+    this.elements = [];
   }
 }
 

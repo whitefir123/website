@@ -180,3 +180,147 @@ This document specifies the requirements for transforming the existing Whitefir 
 3. WHEN the page loads, THE Website SHALL fetch and parse data files
 4. THE Website SHALL handle missing or malformed data gracefully with error messages
 5. THE Website SHALL cache loaded data to minimize repeated file reads
+
+### Requirement 13: Dynamic Cursor Follow Glow (动态光影)
+
+**User Story:** As a visitor, I want to see a subtle radial gradient glow that follows my cursor, so that the dark background feels more dynamic and premium.
+
+#### Acceptance Criteria
+
+1. THE Website SHALL implement a cursor-following radial gradient glow effect on the body element
+2. THE Cursor_Glow SHALL use rgba(139, 92, 246, 0.08) as the glow color (magic purple)
+3. THE Cursor_Glow SHALL be extremely subtle and only visible on the dark background
+4. THE Cursor_Glow SHALL smoothly follow the mouse cursor position
+5. THE Cursor_Glow SHALL not interfere with text readability or other UI elements
+
+### Requirement 14: Bento Grid Layout (便当盒布局)
+
+**User Story:** As a visitor, I want to see project cards displayed in an irregular but aligned Bento Grid layout, so that the design feels more sophisticated and breaks visual monotony.
+
+#### Acceptance Criteria
+
+1. THE Project_Showcase SHALL use a Bento Grid layout instead of uniform grid
+2. THE Featured_Project SHALL occupy a 2x1 or 1x2 grid space (larger than regular cards)
+3. THE Bento_Grid SHALL maintain visual alignment and balance
+4. THE Bento_Grid SHALL be responsive and adapt to different screen sizes
+5. THE Bento_Grid SHALL use CSS Grid with explicit grid-template-areas or grid-column/row spans
+
+### Requirement 15: Gradient Border Enhancement (边框美学)
+
+**User Story:** As a visitor, I want to see ultra-thin gradient borders on glass cards that simulate metallic edges, so that the design feels more refined and premium.
+
+#### Acceptance Criteria
+
+1. THE Glass_Card SHALL use conic-gradient for border simulation
+2. THE Border_Gradient SHALL be extremely thin (0.5px visual thickness)
+3. THE Border_Gradient SHALL smoothly transition between transparent and white/purple tones
+4. THE Border_Gradient SHALL enhance the floating effect of cards
+5. THE Border_Gradient SHALL be visible but not overwhelming
+
+### Requirement 16: Dramatic Typography with Gradient Text (排版升级)
+
+**User Story:** As a visitor, I want to see hero section headings with dramatic gradient text effects, so that the typography feels more premium and eye-catching.
+
+#### Acceptance Criteria
+
+1. THE Hero_Section h1 SHALL use bg-clip-text for gradient text effect
+2. THE Text_Gradient SHALL smoothly transition from white to light gray
+3. THE Hero_Section h1 SHALL maintain tracking-tighter for tight letter spacing
+4. THE Text_Gradient SHALL be readable and not compromise accessibility
+5. THE Text_Gradient SHALL enhance the visual hierarchy of the page
+
+### Requirement 17: Spring Physics Animation (弹性物理曲线)
+
+**User Story:** As a visitor, I want all transform animations to use spring physics curves, so that interactions feel more natural and premium.
+
+#### Acceptance Criteria
+
+1. THE Website SHALL replace standard ease-out with cubic-bezier(0.175, 0.885, 0.32, 1.275) for transform animations
+2. THE Spring_Curve SHALL apply to card hover effects
+3. THE Spring_Curve SHALL apply to entrance animations
+4. THE Spring_Curve SHALL create a subtle bounce-back effect
+5. THE Spring_Curve SHALL not be overly exaggerated or distracting
+
+### Requirement 18: Line Reveal Animation (遮罩入场)
+
+**User Story:** As a visitor, I want to see text lines slide up from hidden boxes when entering viewport, so that content reveals feel more cinematic and premium.
+
+#### Acceptance Criteria
+
+1. THE Project_Card titles and descriptions SHALL use line reveal animation
+2. THE Line_Reveal SHALL create the effect of text sliding up from a hidden container
+3. THE Line_Reveal SHALL be staggered for multiple lines
+4. THE Line_Reveal SHALL use overflow-hidden and translateY transforms
+5. THE Line_Reveal SHALL complete within 0.6-0.8 seconds
+
+### Requirement 19: Seamless Page Transitions (无缝页面过渡)
+
+**User Story:** As a visitor, I want smooth fade transitions between page navigations, so that the browsing experience feels seamless and premium.
+
+#### Acceptance Criteria
+
+1. THE Website SHALL implement page transition effects using document.startViewTransition API where supported
+2. WHEN the API is not supported, THE Website SHALL use a full-screen fade overlay
+3. THE Page_Transition SHALL fade out the current page before navigation
+4. THE Page_Transition SHALL fade in the new page after load
+5. THE Page_Transition SHALL complete within 300-400ms
+
+### Requirement 20: Enhanced Parallax Scrolling (滚动视差增强)
+
+**User Story:** As a visitor, I want to see background elements move slower than foreground content when scrolling, so that the page feels more immersive with depth.
+
+#### Acceptance Criteria
+
+1. THE Hero_Section background grid SHALL move slower than foreground text
+2. THE Parallax_Effect SHALL create a sense of 3D depth
+3. THE Parallax_Effect SHALL be subtle and not cause motion sickness
+4. THE Parallax_Effect SHALL use requestAnimationFrame for smooth performance
+5. THE Parallax_Effect SHALL be disabled on mobile devices to preserve performance
+
+### Requirement 21: Calendar-Journal Data Linking (日历与日志互通)
+
+**User Story:** As a visitor, I want to click on a mood calendar date and see if there's a journal entry for that day, so that I can explore the connection between mood and writing.
+
+#### Acceptance Criteria
+
+1. WHEN a calendar date with a mood entry is clicked, THE Website SHALL check if a journal entry exists for that date
+2. IF a journal entry exists, THE Mood_Tooltip SHALL display a "View Journal Entry" link
+3. WHEN the link is clicked, THE Website SHALL navigate to the corresponding journal entry page
+4. THE Link SHALL be visually distinct and clearly actionable
+5. THE Feature SHALL work bidirectionally (calendar → journal)
+
+### Requirement 22: Journal Mood Color Indicator (日志心情色标)
+
+**User Story:** As a visitor, I want to see a colored vertical line on journal entry cards that matches the mood for that day, so that I can visually connect emotions with writing.
+
+#### Acceptance Criteria
+
+1. THE Journal_Entry_Card SHALL display a 2px wide vertical line on the left side or top
+2. THE Color_Indicator SHALL automatically match the mood color from moods.json for that date
+3. IF no mood exists for that date, THE Color_Indicator SHALL use a neutral gray color
+4. THE Color_Indicator SHALL be subtle but visible
+5. THE Color_Indicator SHALL enhance the visual storytelling of the journal
+
+### Requirement 23: Mood Legend Interactive Filtering (心情图例交互)
+
+**User Story:** As a visitor, I want to click on a mood type in the legend to highlight only dates with that mood, so that I can focus on specific emotional patterns.
+
+#### Acceptance Criteria
+
+1. WHEN a mood type in the legend is clicked, THE Calendar SHALL dim all dates without that mood
+2. THE Filtered_Dates SHALL remain at full opacity while others reduce to 20% opacity
+3. WHEN the same mood type is clicked again, THE Calendar SHALL reset to show all dates normally
+4. THE Active_Filter SHALL be visually indicated in the legend
+5. THE Feature SHALL support toggling between different mood filters
+
+### Requirement 24: Empty State Design (空状态美化)
+
+**User Story:** As a visitor, I want to see elegant empty state designs when no content is available, so that the experience feels polished even with missing data.
+
+#### Acceptance Criteria
+
+1. WHEN no journal entries exist, THE Journal_Page SHALL display a glassmorphism empty state card
+2. WHEN no mood data exists for a month, THE Calendar SHALL display an empty state message
+3. THE Empty_State SHALL include a relevant icon with glassmorphism styling
+4. THE Empty_State SHALL include encouraging text (e.g., "No entries yet. Start writing!")
+5. THE Empty_State SHALL maintain the overall design aesthetic

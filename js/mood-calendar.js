@@ -334,7 +334,12 @@ class MoodCalendar {
    * 提示词 2: 毛玻璃悬浮框 + 弹簧动画 + 边缘检测 + 位置跟随感更丝滑
    * @param {HTMLElement} dayElement - 日期元素
    */
-  showTooltip(dayElement) {
+  /**
+   * 显示心情提示框
+   * Requirements: 5.3, 21.1, 21.2, 21.3, 21.4
+   * @param {HTMLElement} dayElement - 日期元素
+   */
+  async showTooltip(dayElement) {
     const date = dayElement.dataset.date;
     const moodKey = dayElement.dataset.mood;
     const note = dayElement.dataset.note;
@@ -345,6 +350,9 @@ class MoodCalendar {
     const moodLabel = moodType ? moodType.label : moodKey;
     const moodColor = moodType ? moodType.color : '#6b7280';
     const gradientColors = this.getMoodGradient(moodKey);
+
+    // Requirement 21.1: 检查是否存在日志条目
+    const journalEntry = await this.checkJournalEntry(date);
 
     // 移除已存在的提示框
     this.hideTooltip();
@@ -367,7 +375,8 @@ class MoodCalendar {
         <div>
           <p class="font-bold text-sm mb-1">${moodLabel}</p>
           <p class="text-xs text-white/50 mb-2">${date}</p>
-          ${note ? `<p class="text-sm text-white/80 leading-relaxed">${note}</p>` : ''}
+          ${note ? `<p class="text-sm text-white/80 leading-relaxed mb-3">${note}</p>` : ''}
+          ${journalEntry ? this.renderJournalLink(journalEntry) : ''}
         </div>
       </div>
     `;
@@ -404,6 +413,50 @@ class MoodCalendar {
     setTimeout(() => {
       tooltip.style.opacity = '1';
     }, 10);
+  }
+
+  /**
+   * 检查指定日期是否有日志条目
+   * Requirement 21.1: 检查日志条目是否存在
+   * @param {string} date - 日期字符串 (YYYY-MM-DD)
+   * @returns {Promise<Object|null>} 日志条目或 null
+   */
+  async checkJournalEntry(date) {
+    try {
+      // 加载日志数据
+      const journalData = await dataLoader.fetchJSON('/data/journal-entries.json');
+      
+      if (!journalData || !journalData.entries) {
+        return null;
+      }
+      
+      // 查找匹配日期的日志条目
+      const entry = journalData.entries.find(e => e.date === date);
+      return entry || null;
+      
+    } catch (error) {
+      console.warn('[MoodCalendar] 无法加载日志数据:', error);
+      return null;
+    }
+  }
+
+  /**
+   * 渲染日志链接
+   * Requirements: 21.2, 21.3, 21.4
+   * @param {Object} entry - 日志条目
+   * @returns {string} HTML 字符串
+   */
+  renderJournalLink(entry) {
+    // Requirement 21.2, 21.4: 显示"查看当日日志"链接，视觉上清晰可操作
+    return `
+      <a href="${entry.detailPage}" 
+         class="journal-link flex items-center gap-2 mt-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 pointer-events-auto"
+         style="background: rgba(139, 92, 246, 0.2); border: 1px solid rgba(139, 92, 246, 0.4); color: white;">
+        <i class="fas fa-book"></i>
+        <span>查看当日日志</span>
+        <i class="fas fa-arrow-right text-xs"></i>
+      </a>
+    `;
   }
 
   /**

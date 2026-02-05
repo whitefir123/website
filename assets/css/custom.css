@@ -1024,3 +1024,952 @@ html {
   border-color: white;
   transform: translateY(-2px);
 }
+
+
+/* ==================== 动态光标跟随光晕 ==================== */
+/* Requirements: 13.1, 13.2, 13.3, 13.4, 13.5 */
+/* 提示词 1：动态光影 - Cursor Follow Glow */
+
+.cursor-glow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  transition: background 0.15s ease;
+  will-change: background;
+}
+
+/* 在触摸设备上隐藏光晕效果 */
+@media (hover: none) and (pointer: coarse) {
+  .cursor-glow {
+    display: none;
+  }
+}
+
+
+/* ==================== Bento Grid 便当盒布局 ==================== */
+/* Requirements: 14.1, 14.2, 14.3, 14.4, 14.5 */
+/* 提示词 1：Bento 布局 - 不规则但对齐的网格系统 */
+
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  grid-auto-flow: dense;
+}
+
+/* Featured 项目占据更大空间 (2x1 或 1x2) */
+.bento-grid .featured {
+  grid-column: span 2;
+  grid-row: span 1;
+}
+
+/* 响应式：移动端 featured 项目恢复正常大小 */
+@media (max-width: 768px) {
+  .bento-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .bento-grid .featured {
+    grid-column: span 1;
+  }
+}
+
+/* 平板端：2列布局 */
+@media (min-width: 769px) and (max-width: 1023px) {
+  .bento-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* 桌面端：3-4列布局 */
+@media (min-width: 1024px) {
+  .bento-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  /* Featured 项目在桌面端可以占据 2x2 */
+  .bento-grid .featured-large {
+    grid-column: span 2;
+    grid-row: span 2;
+  }
+}
+
+/* 超大屏幕：4列布局 */
+@media (min-width: 1536px) {
+  .bento-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* 显式布局方案（可选）- 用于更精确的控制 */
+.bento-grid-explicit {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(3, 300px);
+  gap: 1.5rem;
+}
+
+.bento-item-1 {
+  grid-column: 1 / 3;
+  grid-row: 1 / 2;
+}
+
+.bento-item-2 {
+  grid-column: 3 / 5;
+  grid-row: 1 / 3;
+}
+
+.bento-item-3 {
+  grid-column: 1 / 2;
+  grid-row: 2 / 4;
+}
+
+.bento-item-4 {
+  grid-column: 2 / 3;
+  grid-row: 2 / 3;
+}
+
+.bento-item-5 {
+  grid-column: 2 / 3;
+  grid-row: 3 / 4;
+}
+
+.bento-item-6 {
+  grid-column: 3 / 5;
+  grid-row: 3 / 4;
+}
+
+/* Bento Grid 项目的特殊样式 */
+.bento-grid .project-card {
+  height: 100%;
+  min-height: 350px;
+}
+
+.bento-grid .featured .project-card {
+  min-height: 400px;
+}
+
+/* 确保 featured 项目的图片填充整个空间 */
+.bento-grid .featured img {
+  object-fit: cover;
+  height: 100%;
+}
+
+
+/* ==================== 渐变边框增强 (边框美学) ==================== */
+/* Requirements: 15.1, 15.2, 15.3, 15.4, 15.5 */
+/* 提示词 1：边框美学 - 极细渐变边框模拟金属切边 */
+
+.glass-card-gradient-border {
+  position: relative;
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  border-radius: 1rem;
+  padding: 1.5rem;
+}
+
+.glass-card-gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 1rem;
+  padding: 0.5px; /* Requirement 15.2: 0.5px 视觉厚度 */
+  /* Requirement 15.1, 15.3: conic-gradient 边框，透明到白色/紫色过渡 */
+  background: conic-gradient(
+    from 180deg at 50% 50%,
+    rgba(255, 255, 255, 0) 0deg,
+    rgba(255, 255, 255, 0.1) 90deg,
+    rgba(139, 92, 246, 0.2) 180deg,
+    rgba(255, 255, 255, 0.1) 270deg,
+    rgba(255, 255, 255, 0) 360deg
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  /* Requirement 15.4: 增强漂浮效果 */
+  filter: drop-shadow(0 0 2px rgba(139, 92, 246, 0.1));
+}
+
+/* Requirement 15.5: 悬停时增强但不压倒性 */
+.glass-card-gradient-border:hover::before {
+  background: conic-gradient(
+    from 180deg at 50% 50%,
+    rgba(255, 255, 255, 0.1) 0deg,
+    rgba(255, 255, 255, 0.2) 90deg,
+    rgba(139, 92, 246, 0.4) 180deg,
+    rgba(255, 255, 255, 0.2) 270deg,
+    rgba(255, 255, 255, 0.1) 360deg
+  );
+  filter: drop-shadow(0 0 4px rgba(139, 92, 246, 0.2));
+}
+
+/* 为现有 glass-card 添加渐变边框选项 */
+.glass-card.with-gradient-border {
+  position: relative;
+}
+
+.glass-card.with-gradient-border::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 0.5px;
+  background: conic-gradient(
+    from 180deg at 50% 50%,
+    rgba(255, 255, 255, 0) 0deg,
+    rgba(255, 255, 255, 0.1) 90deg,
+    rgba(139, 92, 246, 0.2) 180deg,
+    rgba(255, 255, 255, 0.1) 270deg,
+    rgba(255, 255, 255, 0) 360deg
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.glass-card.with-gradient-border:hover::after {
+  background: conic-gradient(
+    from 180deg at 50% 50%,
+    rgba(255, 255, 255, 0.1) 0deg,
+    rgba(255, 255, 255, 0.2) 90deg,
+    rgba(139, 92, 246, 0.4) 180deg,
+    rgba(255, 255, 255, 0.2) 270deg,
+    rgba(255, 255, 255, 0.1) 360deg
+  );
+}
+
+
+/* ==================== 戏剧化渐变文字效果 (排版升级) ==================== */
+/* Requirements: 16.1, 16.2, 16.3, 16.4, 16.5 */
+/* 提示词 1：排版升级 - Hero Section h1 渐变文字 */
+
+.gradient-text {
+  /* Requirement 16.1: bg-clip-text 渐变效果 */
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(255, 255, 255, 0.7) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  /* Requirement 16.3: 保持 tracking-tighter */
+  letter-spacing: -0.05em;
+  /* Requirement 16.5: 增强视觉层次 */
+  position: relative;
+  z-index: 1;
+}
+
+/* Requirement 16.2: 白色到浅灰色平滑过渡 */
+.gradient-text-subtle {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(255, 255, 255, 0.8) 50%,
+    rgba(255, 255, 255, 0.6) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.05em;
+}
+
+/* 带颜色强调的渐变文字（可选） */
+.gradient-text-accent {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(139, 92, 246, 0.9) 50%,
+    rgba(59, 130, 246, 0.8) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.05em;
+}
+
+/* Requirement 16.4: 确保可读性和可访问性 */
+/* 为不支持 background-clip 的浏览器提供回退 */
+@supports not (-webkit-background-clip: text) {
+  .gradient-text,
+  .gradient-text-subtle,
+  .gradient-text-accent {
+    color: rgba(255, 255, 255, 1);
+    background: none;
+  }
+}
+
+/* Hero Section 特定样式 */
+.hero-title {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(255, 255, 255, 0.75) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.05em;
+  font-weight: 800;
+}
+
+/* 增强对比度的渐变文字（用于深色背景） */
+.gradient-text-enhanced {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(255, 255, 255, 0.9) 30%,
+    rgba(255, 255, 255, 0.7) 70%,
+    rgba(255, 255, 255, 0.5) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.05em;
+}
+
+
+/* ==================== 弹性物理动画系统 (Spring Physics) ==================== */
+/* Requirements: 17.1, 17.2, 17.3, 17.4, 17.5 */
+/* 提示词 2：弹性物理曲线 - cubic-bezier(0.175, 0.885, 0.32, 1.275) */
+
+:root {
+  /* Requirement 17.1: Spring 物理曲线 */
+  --spring-curve: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --spring-duration: 0.5s;
+  --spring-duration-fast: 0.3s;
+  --spring-duration-slow: 0.7s;
+}
+
+/* 全局弹性动画类 */
+.spring-animation {
+  transition: transform var(--spring-duration) var(--spring-curve);
+}
+
+.spring-animation-fast {
+  transition: transform var(--spring-duration-fast) var(--spring-curve);
+}
+
+.spring-animation-slow {
+  transition: transform var(--spring-duration-slow) var(--spring-curve);
+}
+
+/* Requirement 17.2: 应用到卡片悬停效果 */
+.glass-card {
+  transition: all 0.5s var(--spring-curve);
+}
+
+.project-card {
+  transition: all 0.5s var(--spring-curve);
+}
+
+/* Requirement 17.3, 17.4: 应用到入场动画，创建微妙弹回效果 */
+@keyframes springEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  60% {
+    transform: translateY(-5px) scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.spring-enter {
+  animation: springEnter 0.6s var(--spring-curve) forwards;
+}
+
+/* 弹性悬停效果 */
+.spring-hover {
+  transition: transform var(--spring-duration) var(--spring-curve);
+}
+
+.spring-hover:hover {
+  transform: scale(1.05) translateY(-4px);
+}
+
+/* Requirement 17.5: 确保不过度夸张 */
+.spring-subtle {
+  transition: transform var(--spring-duration) var(--spring-curve);
+}
+
+.spring-subtle:hover {
+  transform: scale(1.02) translateY(-2px);
+}
+
+/* 按钮的弹性效果 */
+.btn-primary,
+.btn-secondary,
+.btn-minimal {
+  transition: all var(--spring-duration) var(--spring-curve);
+}
+
+/* 导航链接的弹性效果 */
+.nav-link {
+  transition: all var(--spring-duration-fast) var(--spring-curve);
+}
+
+/* 卡片内图片的弹性缩放 */
+.project-card img,
+.glass-card img {
+  transition: transform var(--spring-duration) var(--spring-curve);
+}
+
+/* 标签的弹性效果 */
+.tech-tag,
+.journal-tag,
+.filter-tag {
+  transition: all var(--spring-duration-fast) var(--spring-curve);
+}
+
+/* 弹性弹跳动画（用于特殊交互） */
+@keyframes springBounce {
+  0% {
+    transform: scale(1);
+  }
+  30% {
+    transform: scale(1.15);
+  }
+  50% {
+    transform: scale(0.95);
+  }
+  70% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.spring-bounce {
+  animation: springBounce 0.6s var(--spring-curve);
+}
+
+/* 弹性滑入动画 */
+@keyframes springSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  60% {
+    transform: translateX(5px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.spring-slide-in {
+  animation: springSlideIn 0.6s var(--spring-curve) forwards;
+}
+
+/* 弹性滑出动画 */
+@keyframes springSlideOut {
+  0% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  40% {
+    transform: translateX(-5px);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+}
+
+.spring-slide-out {
+  animation: springSlideOut 0.6s var(--spring-curve) forwards;
+}
+
+/* 弹性旋转动画 */
+@keyframes springRotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  60% {
+    transform: rotate(370deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.spring-rotate {
+  animation: springRotate 0.8s var(--spring-curve);
+}
+
+
+/* ==================== 文字行切入动画 (Line Reveal Animation) ==================== */
+/* Requirements: 18.1, 18.2, 18.3, 18.4, 18.5 */
+/* 提示词 2：遮罩入场 - 文字从隐藏盒子中向上滑动 */
+
+/* Requirement 18.4: overflow-hidden 容器 */
+.line-reveal-container {
+  overflow: hidden;
+  display: block;
+  position: relative;
+}
+
+/* Requirement 18.2, 18.4: 文字从隐藏容器滑出效果 */
+.line-reveal-text {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(100%);
+  /* Requirement 18.5: 0.6-0.8秒完成，使用弹性曲线 */
+  transition: all 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* 触发动画 */
+.line-reveal-container.revealed .line-reveal-text {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Requirement 18.3: 多行文字的顺序延迟 */
+.line-reveal-container:nth-child(1) .line-reveal-text {
+  transition-delay: 0.1s;
+}
+
+.line-reveal-container:nth-child(2) .line-reveal-text {
+  transition-delay: 0.2s;
+}
+
+.line-reveal-container:nth-child(3) .line-reveal-text {
+  transition-delay: 0.3s;
+}
+
+.line-reveal-container:nth-child(4) .line-reveal-text {
+  transition-delay: 0.4s;
+}
+
+.line-reveal-container:nth-child(5) .line-reveal-text {
+  transition-delay: 0.5s;
+}
+
+.line-reveal-container:nth-child(6) .line-reveal-text {
+  transition-delay: 0.6s;
+}
+
+.line-reveal-container:nth-child(7) .line-reveal-text {
+  transition-delay: 0.7s;
+}
+
+.line-reveal-container:nth-child(8) .line-reveal-text {
+  transition-delay: 0.8s;
+}
+
+/* 快速版本（0.6秒） */
+.line-reveal-fast .line-reveal-text {
+  transition-duration: 0.6s;
+}
+
+/* 慢速版本（0.8秒） */
+.line-reveal-slow .line-reveal-text {
+  transition-duration: 0.8s;
+}
+
+/* 从左侧滑入的变体 */
+.line-reveal-from-left .line-reveal-text {
+  transform: translateX(-100%);
+}
+
+.line-reveal-from-left.revealed .line-reveal-text {
+  transform: translateX(0);
+}
+
+/* 从右侧滑入的变体 */
+.line-reveal-from-right .line-reveal-text {
+  transform: translateX(100%);
+}
+
+.line-reveal-from-right.revealed .line-reveal-text {
+  transform: translateX(0);
+}
+
+/* Requirement 18.1: 应用到项目卡片标题和描述 */
+.project-card .line-reveal-container {
+  margin-bottom: 0.5rem;
+}
+
+.project-card h3.line-reveal-text,
+.project-card p.line-reveal-text {
+  width: 100%;
+}
+
+
+/* ==================== 无缝页面过渡 (Seamless Page Transitions) ==================== */
+/* Requirements: 19.1, 19.2, 19.3, 19.4, 19.5 */
+/* 提示词 2：无缝页面过渡 - 消除"硬切"感 */
+
+/* Requirement 19.2: 全屏淡入淡出遮罩 */
+.page-transition-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: hsl(240 10% 3.9%);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 9999;
+  /* Requirement 19.5: 300-400ms 过渡时间 */
+  transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.page-transition-overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* Requirement 19.1: View Transition API 样式 */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.35s;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 淡入淡出动画 */
+::view-transition-old(root) {
+  animation-name: fade-out;
+}
+
+::view-transition-new(root) {
+  animation-name: fade-in;
+}
+
+@keyframes fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* 可选：滑动过渡效果 */
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(root) {
+    animation-name: slide-out-fade;
+  }
+
+  ::view-transition-new(root) {
+    animation-name: slide-in-fade;
+  }
+
+  @keyframes slide-out-fade {
+    from {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+  }
+
+  @keyframes slide-in-fade {
+    from {
+      opacity: 0;
+      transform: translateX(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+}
+
+/* 尊重用户的动画偏好设置 */
+@media (prefers-reduced-motion: reduce) {
+  .page-transition-overlay {
+    transition-duration: 0.01s;
+  }
+  
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.01s;
+  }
+}
+
+
+/* ==================== 增强滚动视差效果 ==================== */
+/* Requirements: 20.1, 20.2, 20.3, 20.4, 20.5 */
+/* 提示词 2：滚动视差增强 - 背景慢于前景，营造 3D 深度 */
+
+/* Requirement 20.1: Hero Section 背景网格慢速移动 */
+.hero-background {
+  will-change: transform;
+  transition: transform 0.1s ease-out;
+}
+
+/* 前景内容不移动或移动很少 */
+.hero-content {
+  will-change: transform;
+  position: relative;
+  z-index: 2;
+}
+
+/* 视差元素基础样式 */
+[data-parallax] {
+  will-change: transform;
+  transition: transform 0.1s ease-out;
+}
+
+/* Requirement 20.5: 移动设备禁用视差 */
+@media (max-width: 768px) {
+  [data-parallax] {
+    transform: none !important;
+  }
+  
+  .hero-background,
+  .hero-content {
+    transform: none !important;
+  }
+}
+
+/* Requirement 20.3: 确保效果微妙，不引起晕动症 */
+@media (prefers-reduced-motion: reduce) {
+  [data-parallax],
+  .hero-background,
+  .hero-content {
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+/* 视差层级定义 */
+.parallax-layer-1 {
+  /* 最慢层（背景） */
+  z-index: 1;
+}
+
+.parallax-layer-2 {
+  /* 中速层 */
+  z-index: 2;
+}
+
+.parallax-layer-3 {
+  /* 快速层（前景） */
+  z-index: 3;
+}
+
+
+/* ==================== 日历与日志互通 ==================== */
+/* Requirements: 21.1, 21.2, 21.3, 21.4, 21.5 */
+/* 提示词 3：日历与日志互通 - 点击日期查看日志 */
+
+.journal-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  padding: 0.5rem 1rem;
+  background: rgba(139, 92, 246, 0.2);
+  border: 1px solid rgba(139, 92, 246, 0.4);
+  border-radius: 0.5rem;
+  color: white;
+  text-decoration: none;
+  font-size: 0.875rem;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  cursor: pointer;
+}
+
+.journal-link:hover {
+  background: rgba(139, 92, 246, 0.3);
+  border-color: rgba(139, 92, 246, 0.6);
+  transform: translateX(4px);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+}
+
+.journal-link i:last-child {
+  transition: transform 0.3s c
+
+
+/* ==================== 日历与日志互通 ==================== */
+/* Requirements: 21.1, 21.2, 21.3, 21.4, 21.5 */
+
+.journal-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  padding: 0.5rem 1rem;
+  background: rgba(139, 92, 246, 0.2);
+  border: 1px solid rgba(139, 92, 246, 0.4);
+  border-radius: 0.5rem;
+  color: white;
+  text-decoration: none;
+  font-size: 0.875rem;
+  transition: all 0.3s var(--spring-curve);
+  cursor: pointer;
+}
+
+.journal-link:hover {
+  background: rgba(139, 92, 246, 0.3);
+  border-color: rgba(139, 92, 246, 0.6);
+  transform: translateX(4px);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+}
+
+
+/* ==================== 日志心情色标 ==================== */
+/* Requirements: 22.1, 22.2, 22.3, 22.4, 22.5 */
+
+.journal-entry-card {
+  position: relative;
+  padding-left: 1.5rem;
+  transition: all 0.3s var(--spring-curve);
+}
+
+/* 心情色标竖线 */
+.journal-entry-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: inherit;
+  transition: all 0.3s var(--spring-curve);
+}
+
+/* 悬停时增强发光效果 */
+.journal-entry-card:hover::before {
+  width: 3px;
+  filter: brightness(1.3);
+}
+
+
+/* ==================== 心情图例交互过滤 ==================== */
+/* Requirements: 23.1, 23.2, 23.3, 23.4, 23.5 */
+
+.mood-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 2rem;
+}
+
+.mood-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 9999px;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  transition: all 0.3s var(--spring-curve);
+}
+
+.mood-legend-item:hover,
+.mood-legend-item.active {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: white;
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.mood-color-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  box-shadow: 0 0 8px currentColor;
+}
+
+/* 过滤状态下的日历日期 */
+.calendar-day.filtered-out {
+  opacity: 0.2;
+  pointer-events: none;
+}
+
+.calendar-day {
+  transition: opacity 0.3s var(--spring-curve);
+}
+
+/* ==================== 空状态美化 ==================== */
+/* Requirements: 24.1, 24.2, 24.3, 24.4, 24.5 */
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+  min-height: 400px;
+}
+
+.empty-state-icon {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+  color: rgba(255, 255, 255, 0.5);
+  transition: all 0.3s var(--spring-curve);
+}
+
+.empty-state:hover .empty-state-icon {
+  transform: scale(1.1) rotate(5deg);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.empty-state-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  margin-bottom: 0.5rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.empty-state-description {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.6);
+  max-width: 400px;
+  line-height: 1.6;
+}
+
+/* 空状态动画 */
+@keyframes emptyStateFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.empty-state-icon {
+  animation: emptyStateFloat 3s ease-in-out infinite;
+}

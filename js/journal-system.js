@@ -77,7 +77,7 @@ class JournalSystem {
    * 渲染日志系统
    * Requirements: 6.1, 6.5, 6.6
    */
-  render() {
+  async render() {
     if (!this.container) {
       console.error('[JournalSystem] 容器不存在，无法渲染');
       return;
@@ -85,6 +85,9 @@ class JournalSystem {
 
     // 清空容器
     this.container.innerHTML = '';
+
+    // 渲染日志列表（异步）
+    const entriesListHTML = await this.renderEntriesList();
 
     // 创建日志系统结构
     const journalHTML = `
@@ -96,7 +99,7 @@ class JournalSystem {
         
         <!-- 日志条目列表 -->
         <div class="journal-entries-list">
-          ${this.renderEntriesList()}
+          ${entriesListHTML}
         </div>
       </div>
     `;
@@ -162,6 +165,13 @@ class JournalSystem {
    * Requirement 6.6: 显示标题、摘要、日期和阅读时间
    */
   renderEntriesList() {
+  /**
+   * 渲染日志条目列表
+   * Requirements: 6.1, 6.6
+   * @returns {Promise<string>} 日志列表 HTML
+   */
+  async renderEntriesList() {
+    // 如果没有条目，显示空状态
     if (this.filteredEntries.length === 0) {
       return `
         <div class="glass-card rounded-2xl p-12 text-center">
@@ -175,10 +185,11 @@ class JournalSystem {
 
     let entriesHTML = '<div class="space-y-6">';
 
-    this.filteredEntries.forEach(entry => {
-      entriesHTML += this.renderEntryCard(entry);
-    });
-
+    // 使用 Promise.all 并行渲染所有卡片
+    const cardPromises = this.filteredEntries.map(entry => this.renderEntryCard(entry));
+    const cards = await Promise.all(cardPromises);
+    
+    entriesHTML += cards.join('');
     entriesHTML += '</div>';
 
     return entriesHTML;
@@ -189,7 +200,13 @@ class JournalSystem {
    * Requirements: 6.6, 6.7, 6.8, 6.9, 6.10 - 极简排版美化
    * @param {Object} entry - 日志条目对象
    */
-  renderEntryCard(entry) {
+  /**
+   * 渲染单个日志条目卡片
+   * Requirements: 6.6, 6.7, 6.8, 6.9, 6.10, 22.1, 22.2, 22.3, 22.4, 22.5
+   * @param {Object} entry - 日志条目对象
+   * @returns {string} 日志卡片 HTML
+   */
+  async renderEntryCard(entry) {
     // 验证条目数据
     const validatedEntry = this.validateEntryData(entry);
     
@@ -199,19 +216,29 @@ class JournalSystem {
     // 生成标签 HTML
     const tagsHTML = this.renderEntryTags(validatedEntry.tags);
     
+    // Requirement 22.1, 22.2, 22.3: 获取当日心情颜色
+    const moodColor = await this.getMoodColorForDate(validatedEntry.date);
+    
     // Requirement 6.9, 6.10: 无边框设计，仅底部细线，悬浮时才显示玻璃背景
+    // Requirement 22.1: 左侧 2px 竖线显示心情颜色
     return `
       <article class="journal-entry-card group border-b border-white/5 pb-8 mb-8 cursor-pointer
                       transition-all duration-300
                       hover:bg-white/5 hover:backdrop-blur-md
                       hover:px-6 hover:py-4 hover:rounded-xl
                       hover:-mx-6 hover:-my-4 hover:mb-4
-                      animate-on-scroll"
+                      animate-on-scroll
+                      relative pl-6"
                data-entry-id="${validatedEntry.id}"
                data-detail-page="${validatedEntry.detailPage}"
                role="button"
                tabindex="0"
-               aria-label="阅读日志: ${validatedEntry.title}">
+               aria-label="阅读日志: ${validatedEntry.title}"
+               style="border-left: 2px solid ${moodColor};">
+        
+        <!-- Requirement 22.4, 22.5: 心情色标微妙发光效果 -->
+        <div class="absolute left-0 top-0 bottom-0 w-0.5 transition-all duration-300"
+             style="background: ${moodColor}; box-shadow: 0 0 8px ${moodColor}40;"></div>
         
         <!-- 标题 -->
         <h2 class="text-2xl font-bold tracking-tighter mb-3 group-hover:text-purple-400 transition-colors">
@@ -240,6 +267,39 @@ class JournalSystem {
         ` : ''}
       </article>
     `;
+  }
+
+  /**
+   * 获取指定日期的心情颜色
+   * Requirements: 22.2, 22.3
+   * @param {string} date - 日期字符串 (YYYY-MM-DD)
+   * @returns {Promise<string>} 心情颜色（十六进制）
+   */
+  async getMoodColorForDate(date) {
+    try {
+      // 加载心情数据
+      const moodData = await dataLoader.fetchJSON('/data/moods.json');
+      
+      if (!moodData || !moodData.moods) {
+        // Requirement 22.3: 无心情数据时使用中性灰色
+        return '#6b7280';
+      }
+      
+      // 查找匹配日期的心情
+      const mood = moodData.moods.find(m => m.date === date);
+      
+      // Requirement 22.2: 自动匹配心情颜色
+      if (mood && mood.color) {
+        return mood.color;
+      }
+      
+      // Requirement 22.3: 默认中性灰色
+      return '#6b7280';
+      
+    } catch (error) {
+      console.warn('[JournalSystem] 无法加载心情数据:', error);
+      return '#6b7280';
+    }
   }
 
   /**

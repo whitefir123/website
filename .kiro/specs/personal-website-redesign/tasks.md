@@ -469,6 +469,111 @@ This implementation plan transforms the existing Whitefir Studio website into a 
     - Ensure smooth scrolling works
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5_
 
+- [ ] 21. Implement cursor follow glow (动态光影)
+  - [ ] 21.1 Create CursorGlow class
+    - Implement cursor tracking with mousemove event
+    - Create radial gradient glow element
+    - Use rgba(139, 92, 246, 0.08) for glow color
+    - Ensure glow is subtle and doesn't interfere with readability
+    - _Requirements: 13.1, 13.2, 13.3, 13.4, 13.5_
+
+- [ ] 22. Implement Bento Grid layout (便当盒布局)
+  - [ ] 22.1 Create Bento Grid CSS
+    - Implement CSS Grid with irregular layout
+    - Define featured project spans (2x1 or 1x2)
+    - Ensure responsive behavior
+    - _Requirements: 14.1, 14.2, 14.3, 14.4, 14.5_
+  
+  - [ ] 22.2 Update ProjectShowcase to use Bento Grid
+    - Modify render method to apply Bento Grid classes
+    - Mark featured projects appropriately
+    - Test layout balance and alignment
+    - _Requirements: 14.1, 14.2, 14.3_
+
+- [ ] 23. Implement gradient border enhancement (边框美学)
+  - [ ] 23.1 Create gradient border CSS
+    - Implement conic-gradient border effect
+    - Use ::before pseudo-element for border
+    - Ensure 0.5px visual thickness
+    - Add hover enhancement
+    - _Requirements: 15.1, 15.2, 15.3, 15.4, 15.5_
+  
+  - [ ] 23.2 Apply gradient borders to glass cards
+    - Update .glass-card class with gradient border
+    - Test across different card types
+    - Verify visual refinement
+    - _Requirements: 15.1, 15.5_
+
+- [ ] 24. Implement gradient text effect (排版升级)
+  - [ ] 24.1 Create gradient text CSS
+    - Implement bg-clip-text gradient
+    - Apply to hero section h1
+    - Ensure readability and accessibility
+    - _Requirements: 16.1, 16.2, 16.3, 16.4, 16.5_
+
+- [ ] 25. Upgrade to spring physics animations (弹性物理曲线)
+  - [ ] 25.1 Replace easing curves globally
+    - Update all transitions to use cubic-bezier(0.175, 0.885, 0.32, 1.275)
+    - Apply to card hover effects
+    - Apply to entrance animations
+    - _Requirements: 17.1, 17.2, 17.3, 17.4, 17.5_
+
+- [ ] 26. Implement line reveal animation (遮罩入场)
+  - [ ] 26.1 Create LineRevealController class
+    - Implement Intersection Observer for line reveals
+    - Create CSS for line reveal effect
+    - Apply to project card titles and descriptions
+    - Add stagger delays for multiple lines
+    - _Requirements: 18.1, 18.2, 18.3, 18.4, 18.5_
+
+- [ ] 27. Implement seamless page transitions (无缝页面过渡)
+  - [ ] 27.1 Create PageTransitionController class
+    - Implement document.startViewTransition API support
+    - Create fallback fade overlay for unsupported browsers
+    - Intercept navigation links
+    - Add fade-out and fade-in effects
+    - _Requirements: 19.1, 19.2, 19.3, 19.4, 19.5_
+
+- [ ] 28. Enhance parallax scrolling (滚动视差增强)
+  - [ ] 28.1 Update ParallaxController
+    - Implement differential scroll speeds for background/foreground
+    - Apply to hero section background grid
+    - Use requestAnimationFrame for smooth performance
+    - Disable on mobile devices
+    - _Requirements: 20.1, 20.2, 20.3, 20.4, 20.5_
+
+- [ ] 29. Implement calendar-journal linking (日历与日志互通)
+  - [ ] 29.1 Add journal entry checking to MoodCalendar
+    - Implement checkJournalEntry method
+    - Update tooltip to show journal link when entry exists
+    - Style journal link button
+    - Test bidirectional navigation
+    - _Requirements: 21.1, 21.2, 21.3, 21.4, 21.5_
+
+- [ ] 30. Implement journal mood color indicator (日志心情色标)
+  - [ ] 30.1 Add mood color to journal cards
+    - Implement getMoodForDate method in JournalSystem
+    - Add 2px vertical line with mood color
+    - Use neutral gray for dates without mood
+    - Add subtle glow effect
+    - _Requirements: 22.1, 22.2, 22.3, 22.4, 22.5_
+
+- [ ] 31. Implement mood legend interactive filtering (心情图例交互)
+  - [ ] 31.1 Add filtering to mood legend
+    - Implement filterByMood method
+    - Dim non-matching dates to 20% opacity
+    - Add active state to legend buttons
+    - Support filter toggling
+    - _Requirements: 23.1, 23.2, 23.3, 23.4, 23.5_
+
+- [ ] 32. Implement empty state designs (空状态美化)
+  - [ ] 32.1 Create EmptyStateRenderer class
+    - Design glassmorphism empty state cards
+    - Create variants for journal, mood, and projects
+    - Add relevant icons and encouraging text
+    - Apply to all content areas
+    - _Requirements: 24.1, 24.2, 24.3, 24.4, 24.5_
+
 - [x] 21. Final checkpoint - Complete testing
   - Ensure all tests pass, ask the user if questions arise.
 

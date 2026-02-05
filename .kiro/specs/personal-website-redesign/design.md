@@ -934,6 +934,757 @@ class DataLoader {
 }
 ```
 
+### 8. Cursor Follow Glow Component (动态光影)
+
+**Purpose**: Create a subtle radial gradient glow that follows the cursor to add dynamic lighting to the dark background.
+
+**Implementation**:
+```javascript
+class CursorGlow {
+  constructor() {
+    this.glowElement = null;
+    this.init();
+  }
+  
+  init() {
+    // Create glow element
+    this.glowElement = document.createElement('div');
+    this.glowElement.className = 'cursor-glow';
+    document.body.appendChild(this.glowElement);
+    
+    // Track mouse movement
+    document.addEventListener('mousemove', (e) => {
+      this.updateGlowPosition(e.clientX, e.clientY);
+    });
+  }
+  
+  updateGlowPosition(x, y) {
+    this.glowElement.style.background = `radial-gradient(circle 600px at ${x}px ${y}px, rgba(139, 92, 246, 0.08) 0%, transparent 100%)`;
+  }
+}
+```
+
+**CSS Styling**:
+```css
+.cursor-glow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  transition: background 0.15s ease;
+}
+```
+
+### 9. Bento Grid Layout Component (便当盒布局)
+
+**Purpose**: Display project cards in an irregular but aligned Bento Grid layout for sophisticated visual design.
+
+**CSS Implementation**:
+```css
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  grid-auto-flow: dense;
+}
+
+.bento-grid .featured {
+  grid-column: span 2;
+  grid-row: span 1;
+}
+
+@media (max-width: 768px) {
+  .bento-grid .featured {
+    grid-column: span 1;
+  }
+}
+
+/* Alternative explicit layout for more control */
+.bento-grid-explicit {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(3, 300px);
+  gap: 1.5rem;
+}
+
+.bento-item-1 {
+  grid-column: 1 / 3;
+  grid-row: 1 / 2;
+}
+
+.bento-item-2 {
+  grid-column: 3 / 5;
+  grid-row: 1 / 3;
+}
+
+.bento-item-3 {
+  grid-column: 1 / 2;
+  grid-row: 2 / 4;
+}
+```
+
+**JavaScript Enhancement**:
+```javascript
+class BentoGrid {
+  constructor(containerId) {
+    this.container = document.getElementById(containerId);
+  }
+  
+  render(projects) {
+    this.container.className = 'bento-grid';
+    
+    projects.forEach((project, index) => {
+      const card = this.createProjectCard(project);
+      
+      // Mark featured projects
+      if (project.featured) {
+        card.classList.add('featured');
+      }
+      
+      this.container.appendChild(card);
+    });
+  }
+}
+```
+
+### 10. Gradient Border Component (边框美学)
+
+**Purpose**: Enhance glass cards with ultra-thin gradient borders simulating metallic edges.
+
+**CSS Implementation**:
+```css
+.glass-card-gradient-border {
+  position: relative;
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  border-radius: 1rem;
+  padding: 1.5rem;
+}
+
+.glass-card-gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 1rem;
+  padding: 0.5px;
+  background: conic-gradient(
+    from 180deg at 50% 50%,
+    rgba(255, 255, 255, 0) 0deg,
+    rgba(255, 255, 255, 0.1) 90deg,
+    rgba(139, 92, 246, 0.2) 180deg,
+    rgba(255, 255, 255, 0.1) 270deg,
+    rgba(255, 255, 255, 0) 360deg
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.glass-card-gradient-border:hover::before {
+  background: conic-gradient(
+    from 180deg at 50% 50%,
+    rgba(255, 255, 255, 0.1) 0deg,
+    rgba(255, 255, 255, 0.2) 90deg,
+    rgba(139, 92, 246, 0.4) 180deg,
+    rgba(255, 255, 255, 0.2) 270deg,
+    rgba(255, 255, 255, 0.1) 360deg
+  );
+}
+```
+
+### 11. Gradient Text Component (排版升级)
+
+**Purpose**: Apply dramatic gradient text effects to hero section headings.
+
+**CSS Implementation**:
+```css
+.gradient-text {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(255, 255, 255, 0.7) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.05em;
+}
+
+/* Alternative gradient with color accent */
+.gradient-text-accent {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(139, 92, 246, 0.9) 50%,
+    rgba(59, 130, 246, 0.8) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+```
+
+### 12. Spring Physics Animation System (弹性物理曲线)
+
+**Purpose**: Replace standard easing with spring physics for more natural animations.
+
+**CSS Implementation**:
+```css
+:root {
+  --spring-curve: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --spring-duration: 0.5s;
+}
+
+.spring-animation {
+  transition: transform var(--spring-duration) var(--spring-curve);
+}
+
+.spring-animation:hover {
+  transform: scale(1.05) translateY(-4px);
+}
+
+/* Card entrance with spring */
+@keyframes springEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  60% {
+    transform: translateY(-5px) scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.spring-enter {
+  animation: springEnter 0.6s var(--spring-curve) forwards;
+}
+```
+
+### 13. Line Reveal Animation Component (遮罩入场)
+
+**Purpose**: Create cinematic text reveal effects where lines slide up from hidden containers.
+
+**HTML Structure**:
+```html
+<div class="line-reveal-container">
+  <div class="line-reveal-text">First line of text</div>
+</div>
+<div class="line-reveal-container">
+  <div class="line-reveal-text">Second line of text</div>
+</div>
+```
+
+**CSS Implementation**:
+```css
+.line-reveal-container {
+  overflow: hidden;
+  display: block;
+}
+
+.line-reveal-text {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(100%);
+  transition: all 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.line-reveal-container.revealed .line-reveal-text {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Stagger delays for multiple lines */
+.line-reveal-container:nth-child(1) .line-reveal-text {
+  transition-delay: 0.1s;
+}
+
+.line-reveal-container:nth-child(2) .line-reveal-text {
+  transition-delay: 0.2s;
+}
+
+.line-reveal-container:nth-child(3) .line-reveal-text {
+  transition-delay: 0.3s;
+}
+```
+
+**JavaScript Controller**:
+```javascript
+class LineRevealController {
+  constructor() {
+    this.observer = null;
+    this.init();
+  }
+  
+  init() {
+    this.observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('revealed');
+        }
+      });
+    }, { threshold: 0.5 });
+    
+    document.querySelectorAll('.line-reveal-container').forEach(el => {
+      this.observer.observe(el);
+    });
+  }
+}
+```
+
+### 14. Page Transition System (无缝页面过渡)
+
+**Purpose**: Implement smooth fade transitions between page navigations.
+
+**JavaScript Implementation**:
+```javascript
+class PageTransitionController {
+  constructor() {
+    this.transitionOverlay = null;
+    this.init();
+  }
+  
+  init() {
+    // Create transition overlay
+    this.transitionOverlay = document.createElement('div');
+    this.transitionOverlay.className = 'page-transition-overlay';
+    document.body.appendChild(this.transitionOverlay);
+    
+    // Intercept navigation links
+    document.querySelectorAll('a[href^="/"], a[href^="./"]').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        this.transitionToPage(link.href);
+      });
+    });
+    
+    // Fade in on page load
+    this.fadeIn();
+  }
+  
+  async transitionToPage(url) {
+    // Check if View Transition API is supported
+    if (document.startViewTransition) {
+      document.startViewTransition(() => {
+        window.location.href = url;
+      });
+    } else {
+      // Fallback: manual fade transition
+      await this.fadeOut();
+      window.location.href = url;
+    }
+  }
+  
+  fadeOut() {
+    return new Promise(resolve => {
+      this.transitionOverlay.classList.add('active');
+      setTimeout(resolve, 300);
+    });
+  }
+  
+  fadeIn() {
+    setTimeout(() => {
+      this.transitionOverlay.classList.remove('active');
+    }, 100);
+  }
+}
+```
+
+**CSS Styling**:
+```css
+.page-transition-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: hsl(240 10% 3.9%);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 9999;
+  transition: opacity 0.3s ease;
+}
+
+.page-transition-overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* View Transition API styles */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.3s;
+}
+```
+
+### 15. Enhanced Parallax Controller (滚动视差增强)
+
+**Purpose**: Create depth by moving background elements slower than foreground content.
+
+**JavaScript Implementation**:
+```javascript
+class ParallaxController {
+  constructor() {
+    this.parallaxElements = [];
+    this.ticking = false;
+    this.init();
+  }
+  
+  init() {
+    // Find all parallax elements
+    document.querySelectorAll('[data-parallax]').forEach(el => {
+      const speed = parseFloat(el.dataset.parallax) || 0.5;
+      this.parallaxElements.push({ element: el, speed });
+    });
+    
+    // Disable on mobile for performance
+    if (window.innerWidth > 768) {
+      window.addEventListener('scroll', () => this.requestTick());
+    }
+  }
+  
+  requestTick() {
+    if (!this.ticking) {
+      requestAnimationFrame(() => this.update());
+      this.ticking = true;
+    }
+  }
+  
+  update() {
+    const scrollY = window.pageYOffset;
+    
+    this.parallaxElements.forEach(({ element, speed }) => {
+      const offset = scrollY * speed;
+      element.style.transform = `translateY(${offset}px)`;
+    });
+    
+    this.ticking = false;
+  }
+}
+```
+
+**HTML Usage**:
+```html
+<div class="hero-section">
+  <div class="hero-background" data-parallax="0.3">
+    <!-- Background grid or pattern -->
+  </div>
+  <div class="hero-content" data-parallax="0">
+    <!-- Foreground text -->
+  </div>
+</div>
+```
+
+### 16. Calendar-Journal Linking Component (日历与日志互通)
+
+**Purpose**: Enable bidirectional navigation between mood calendar and journal entries.
+
+**Enhanced MoodCalendar with Journal Linking**:
+```javascript
+class MoodCalendar {
+  // ... existing code ...
+  
+  async checkJournalEntry(date) {
+    // Fetch journal entries
+    const journalData = await this.dataLoader.fetchJSON('/data/journal-entries.json');
+    
+    // Find entry for this date
+    const entry = journalData.entries.find(e => e.date === date);
+    return entry;
+  }
+  
+  async showTooltip(event, mood) {
+    // ... existing tooltip code ...
+    
+    // Check for journal entry
+    const journalEntry = await this.checkJournalEntry(mood.date);
+    
+    if (journalEntry) {
+      const journalLink = document.createElement('a');
+      journalLink.href = journalEntry.detailPage;
+      journalLink.className = 'journal-link';
+      journalLink.innerHTML = '<i class="fas fa-book"></i> View Journal Entry';
+      tooltip.appendChild(journalLink);
+    }
+    
+    // ... rest of tooltip code ...
+  }
+}
+```
+
+**CSS Styling**:
+```css
+.journal-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  padding: 0.5rem 1rem;
+  background: rgba(139, 92, 246, 0.2);
+  border: 1px solid rgba(139, 92, 246, 0.4);
+  border-radius: 0.5rem;
+  color: white;
+  text-decoration: none;
+  font-size: 0.875rem;
+  transition: all 0.3s ease;
+}
+
+.journal-link:hover {
+  background: rgba(139, 92, 246, 0.3);
+  border-color: rgba(139, 92, 246, 0.6);
+  transform: translateX(4px);
+}
+```
+
+### 17. Journal Mood Color Indicator (日志心情色标)
+
+**Purpose**: Display a colored vertical line on journal cards matching the mood for that day.
+
+**Enhanced JournalSystem**:
+```javascript
+class JournalSystem {
+  // ... existing code ...
+  
+  async getMoodForDate(date) {
+    const moodData = await this.dataLoader.fetchJSON('/data/moods.json');
+    const mood = moodData.moods.find(m => m.date === date);
+    return mood ? mood.color : '#6b7280'; // Default to neutral gray
+  }
+  
+  async renderEntryCard(entry) {
+    const moodColor = await this.getMoodForDate(entry.date);
+    
+    return `
+      <article class="journal-entry-card group"
+               style="border-left: 2px solid ${moodColor};">
+        <!-- Rest of card content -->
+      </article>
+    `;
+  }
+}
+```
+
+**CSS Enhancement**:
+```css
+.journal-entry-card {
+  position: relative;
+  padding-left: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.journal-entry-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: inherit; /* Uses border-left color from inline style */
+  box-shadow: 0 0 8px currentColor;
+}
+```
+
+### 18. Mood Legend Interactive Filtering (心情图例交互)
+
+**Purpose**: Allow visitors to filter calendar dates by clicking mood types in the legend.
+
+**Enhanced MoodCalendar**:
+```javascript
+class MoodCalendar {
+  constructor(containerId, dataUrl) {
+    // ... existing properties ...
+    this.activeFilter = null;
+  }
+  
+  renderLegend() {
+    const legendHTML = Object.entries(this.moodTypes).map(([key, value]) => `
+      <button class="mood-legend-item ${this.activeFilter === key ? 'active' : ''}"
+              data-mood="${key}"
+              onclick="moodCalendar.filterByMood('${key}')">
+        <span class="mood-icon">${value.icon}</span>
+        <span class="mood-label">${key}</span>
+        <span class="mood-color-dot" style="background: ${value.color};"></span>
+      </button>
+    `).join('');
+    
+    return `
+      <div class="mood-legend">
+        <button class="mood-legend-item ${!this.activeFilter ? 'active' : ''}"
+                onclick="moodCalendar.filterByMood(null)">
+          <span class="mood-label">All</span>
+        </button>
+        ${legendHTML}
+      </div>
+    `;
+  }
+  
+  filterByMood(moodType) {
+    if (this.activeFilter === moodType) {
+      // Toggle off
+      this.activeFilter = null;
+    } else {
+      this.activeFilter = moodType;
+    }
+    
+    // Update calendar display
+    document.querySelectorAll('.calendar-day').forEach(day => {
+      const dayMood = day.dataset.mood;
+      
+      if (!this.activeFilter || dayMood === this.activeFilter) {
+        day.style.opacity = '1';
+      } else {
+        day.style.opacity = '0.2';
+      }
+    });
+    
+    // Re-render legend to update active state
+    this.renderLegend();
+  }
+}
+```
+
+**CSS Styling**:
+```css
+.mood-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 2rem;
+}
+
+.mood-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 9999px;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mood-legend-item:hover,
+.mood-legend-item.active {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: white;
+  transform: translateY(-2px);
+}
+
+.mood-color-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  box-shadow: 0 0 8px currentColor;
+}
+
+.calendar-day {
+  transition: opacity 0.3s ease;
+}
+```
+
+### 19. Empty State Component (空状态美化)
+
+**Purpose**: Display elegant empty state designs when no content is available.
+
+**HTML Structure**:
+```html
+<div class="empty-state glass-card">
+  <div class="empty-state-icon">
+    <i class="fas fa-inbox"></i>
+  </div>
+  <h3 class="empty-state-title">No Entries Yet</h3>
+  <p class="empty-state-description">Start writing to see your journal entries here.</p>
+</div>
+```
+
+**CSS Styling**:
+```css
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+  min-height: 400px;
+}
+
+.empty-state-icon {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.empty-state-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  margin-bottom: 0.5rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.empty-state-description {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.6);
+  max-width: 400px;
+}
+```
+
+**JavaScript Implementation**:
+```javascript
+class EmptyStateRenderer {
+  static render(type, container) {
+    const emptyStates = {
+      journal: {
+        icon: 'fa-book',
+        title: 'No Journal Entries Yet',
+        description: 'Start writing to see your thoughts and reflections here.'
+      },
+      mood: {
+        icon: 'fa-calendar',
+        title: 'No Mood Data',
+        description: 'Track your daily moods to see patterns over time.'
+      },
+      projects: {
+        icon: 'fa-folder-open',
+        title: 'No Projects Yet',
+        description: 'Add your projects to showcase your work.'
+      }
+    };
+    
+    const state = emptyStates[type] || emptyStates.journal;
+    
+    container.innerHTML = `
+      <div class="empty-state glass-card">
+        <div class="empty-state-icon">
+          <i class="fas ${state.icon}"></i>
+        </div>
+        <h3 class="empty-state-title">${state.title}</h3>
+        <p class="empty-state-description">${state.description}</p>
+      </div>
+    `;
+  }
+}
+```
+
 ## Data Models
 
 ### Project Model

@@ -11,11 +11,13 @@ class ProjectShowcase {
    * 构造函数
    * @param {string} containerId - 容器元素的 ID
    * @param {string} dataUrl - 项目数据 JSON 文件的 URL
+   * @param {boolean} useBentoGrid - 是否使用 Bento Grid 布局（默认 true）
    */
-  constructor(containerId, dataUrl) {
+  constructor(containerId, dataUrl, useBentoGrid = true) {
     this.container = document.getElementById(containerId);
     this.dataUrl = dataUrl;
     this.projects = [];
+    this.useBentoGrid = useBentoGrid;
     
     if (!this.container) {
       console.error(`[ProjectShowcase] 找不到容器元素: ${containerId}`);
@@ -54,7 +56,7 @@ class ProjectShowcase {
 
   /**
    * 渲染所有项目卡片
-   * Requirements: 4.1
+   * Requirements: 4.1, 14.1, 14.2, 14.3
    */
   render() {
     if (!this.container) {
@@ -64,6 +66,15 @@ class ProjectShowcase {
 
     // 清空容器
     this.container.innerHTML = '';
+    
+    // 应用 Bento Grid 布局类
+    if (this.useBentoGrid) {
+      this.container.className = 'bento-grid';
+      console.log('[ProjectShowcase] 使用 Bento Grid 布局');
+    } else {
+      this.container.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6';
+      console.log('[ProjectShowcase] 使用标准网格布局');
+    }
 
     // 如果没有项目，显示空状态
     if (this.projects.length === 0) {
@@ -77,8 +88,8 @@ class ProjectShowcase {
     }
 
     // 渲染每个项目卡片
-    this.projects.forEach(project => {
-      const cardHTML = this.renderProjectCard(project);
+    this.projects.forEach((project, index) => {
+      const cardHTML = this.renderProjectCard(project, index);
       this.container.insertAdjacentHTML('beforeend', cardHTML);
     });
 
@@ -93,11 +104,12 @@ class ProjectShowcase {
 
   /**
    * 渲染单个项目卡片的 HTML
-   * Requirements: 4.1, 4.6, 4.7, 4.8, 4.9, 4.10
+   * Requirements: 4.1, 4.6, 4.7, 4.8, 4.9, 4.10, 14.2
    * @param {Object} project - 项目数据对象
+   * @param {number} index - 项目索引（用于 Bento Grid 布局）
    * @returns {string} 项目卡片的 HTML 字符串
    */
-  renderProjectCard(project) {
+  renderProjectCard(project, index = 0) {
     // 验证项目数据
     const validatedProject = this.validateProjectData(project);
     
@@ -110,10 +122,13 @@ class ProjectShowcase {
     // 判断是否有实时链接
     const hasLiveUrl = validatedProject.liveUrl && validatedProject.liveUrl !== null;
     
+    // Requirement 14.2: 为 featured 项目添加特殊类
+    const featuredClass = validatedProject.featured ? 'featured' : '';
+    
     // 生成卡片 HTML
     // Requirement 4.10: 响应式 padding (移动端较小，桌面端宽敞)
     return `
-      <div class="project-card glass-card rounded-3xl overflow-hidden group cursor-pointer p-4 sm:p-6 lg:p-8" 
+      <div class="project-card glass-card rounded-3xl overflow-hidden group cursor-pointer p-4 sm:p-6 lg:p-8 ${featuredClass}" 
            data-project-id="${validatedProject.id}"
            data-detail-page="${validatedProject.detailPage}"
            data-live-url="${validatedProject.liveUrl || ''}">
