@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>统计条动画测试 | Whitefir Studio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="/assets/css/custom.css" rel="stylesheet">
+</head>
+<body>
+    <main class="pt-24 min-h-screen">
+        <div class="container mx-auto px-6 py-12">
+            <header class="text-center mb-12">
+                <h1 class="text-4xl font-bold tracking-tighter mb-4 gradient-text">
+                    统计条入场动画测试
+                </h1>
+                <p class="text-gray-400 text-lg leading-relaxed">
+                    向下滚动查看统计条进入视口时的动画效果
+                </p>
+            </header>
+            
+            <!-- 占位内容，用于测试滚动触发 -->
+            <div class="h-screen flex items-center justify-center">
+                <div class="glass-card rounded-2xl p-12 text-center">
+                    <i class="fas fa-arrow-down text-4xl text-purple-400 mb-4 animate-bounce"></i>
+                    <p class="text-gray-400">继续向下滚动</p>
+                </div>
+            </div>
+            
+            <!-- 情绪统计面板容器 -->
+            <div id="emotion-statistics-container" class="max-w-5xl mx-auto"></div>
+            
+            <!-- 底部占位 -->
+            <div class="h-screen"></div>
+        </div>
+    </main>
+
+    <!-- Core Scripts -->
+    <script src="/js/data-loader.js"></script>
+    <script src="/js/emotion-statistics.js"></script>
+    
+    <!-- Initialize Test -->
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            console.log('[Test] 初始化统计条动画测试...');
+            
+            // 加载心情数据
+            const data = await dataLoader.fetchJSON('/data/moods.json');
+            
+            if (!data) {
+                console.error('[Test] 无法加载心情数据');
+                return;
+            }
+            
+            // 创建 EmotionStatistics 实例
+            const emotionStatistics = new EmotionStatistics(
+                'emotion-statistics-container',
+                data.moods || [],
+                data.moodTypes || {},
+                new Date()
+            );
+            
+            // 渲染统计面板
+            emotionStatistics.render();
+            
+            console.log('[Test] 统计面板已渲染，请向下滚动查看入场动画');
+        });
+    </script>
+</body>
+</html>

@@ -111,6 +111,89 @@
             border-color: #8b5cf6;
             color: white;
         }
+        
+        /* 心情下拉菜单样式优化 */
+        #journal-mood {
+            cursor: pointer;
+        }
+        
+        #journal-mood option {
+            padding: 0.75rem;
+            transition: all 0.3s ease-in-out;
+            color: white;
+            font-weight: 500;
+        }
+        
+        #journal-mood option:hover {
+            transform: scale(1.02);
+        }
+        
+        /* 为不同心情类型添加专属样式 */
+        #journal-mood option[value="happy"] {
+            background-color: rgba(16, 185, 129, 0.1);
+        }
+        
+        #journal-mood option[value="happy"]:hover {
+            background-color: rgba(16, 185, 129, 0.2);
+        }
+        
+        #journal-mood option[value="sad"] {
+            background-color: rgba(239, 68, 68, 0.1);
+        }
+        
+        #journal-mood option[value="sad"]:hover {
+            background-color: rgba(239, 68, 68, 0.2);
+        }
+        
+        #journal-mood option[value="excited"] {
+            background-color: rgba(139, 92, 246, 0.1);
+        }
+        
+        #journal-mood option[value="excited"]:hover {
+            background-color: rgba(139, 92, 246, 0.2);
+        }
+        
+        #journal-mood option[value="neutral"] {
+            background-color: rgba(107, 114, 128, 0.1);
+        }
+        
+        #journal-mood option[value="neutral"]:hover {
+            background-color: rgba(107, 114, 128, 0.2);
+        }
+        
+        #journal-mood option[value="anxious"] {
+            background-color: rgba(245, 158, 11, 0.1);
+        }
+        
+        #journal-mood option[value="anxious"]:hover {
+            background-color: rgba(245, 158, 11, 0.2);
+        }
+        
+        #journal-mood option[value="tired"] {
+            background-color: rgba(59, 130, 246, 0.1);
+        }
+        
+        #journal-mood option[value="tired"]:hover {
+            background-color: rgba(59, 130, 246, 0.2);
+        }
+        
+        #journal-mood option[value="motivated"] {
+            background-color: rgba(236, 72, 153, 0.1);
+        }
+        
+        #journal-mood option[value="motivated"]:hover {
+            background-color: rgba(236, 72, 153, 0.2);
+        }
+        
+        /* 默认选项样式 */
+        #journal-mood option[value=""] {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        #journal-mood option[value=""]:hover {
+            background-color: rgba(255, 255, 255, 0.08);
+        }
     </style>
 </head>
 <body>
@@ -189,6 +272,17 @@
     <!-- Core Scripts -->
     <script src="/js/data-loader.js"></script>
     <script src="/js/animations.js"></script>
+    
+    <!-- 服务层脚本 -->
+    <script src="/js/services/markdown-parser.js"></script>
+    <script src="/js/services/draft-service.js"></script>
+    <script src="/js/services/export-service.js"></script>
+    
+    <!-- 工具层脚本 -->
+    <script src="/js/utils/animation-controller.js"></script>
+    <script src="/js/utils/mood-filter-controller.js"></script>
+    
+    <!-- 业务逻辑脚本 -->
     <script src="/js/journal-editor.js"></script>
     <script src="/js/navigation.js"></script>
     <script src="/js/magnetic-effect.js"></script>

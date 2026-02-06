@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>编辑器功能检查点测试</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: #050505;
+            color: white;
+            padding: 2rem;
+        }
+        .test-section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .test-result {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        .test-pass {
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid #10b981;
+        }
+        .test-fail {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid #ef4444;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="font-size: 2rem; font-weight: bold; margin-bottom: 2rem;">编辑器增强功能检查点测试</h1>
+    
+    <div id="test-results"></div>
+
+    <!-- 加载所有服务 -->
+    <script src="/js/services/markdown-parser.js"></script>
+    <script src="/js/services/draft-service.js"></script>
+    <script type="module">
+        import exportService from '/js/services/export-service.js';
+        window.exportService = exportService;
+        
+        // 等待所有脚本加载完成后运行测试
+        setTimeout(() => {
+            runTests();
+        }, 500);
+    </script>
+
+    <script>
+        function runTests() {
+            const results = document.getElementById('test-results');
+            const tests = [];
+
+            // 测试 1: MarkdownParser 类存在
+            tests.push({
+                name: '任务 1 - MarkdownParser 类已创建',
+                pass: typeof MarkdownParser !== 'undefined',
+                details: typeof MarkdownParser !== 'undefined' ? 'MarkdownParser 类可用' : 'MarkdownParser 类未找到'
+            });
+
+            // 测试 2: DraftService 类存在
+            tests.push({
+                name: '任务 1 - DraftService 类已创建',
+                pass: typeof DraftService !== 'undefined',
+                details: typeof DraftService !== 'undefined' ? 'DraftService 类可用' : 'DraftService 类未找到'
+            });
+
+            // 测试 3: ExportService 存在
+            tests.push({
+                name: '任务 1 - ExportService 已创建',
+                pass: typeof window.exportService !== 'undefined',
+                details: typeof window.exportService !== 'undefined' ? 'ExportService 实例可用' : 'ExportService 实例未找到'
+            });
+
+            // 测试 4: MarkdownParser 解析标题
+            if (typeof MarkdownParser !== 'undefined') {
+                const parser = new MarkdownParser();
+                const result = parser.parse('# 测试标题\n\n这是一段文字');
+                const hasH1 = result.includes('<h1');
+                tests.push({
+                    name: '任务 2.1 - Markdown 标题解析',
+                    pass: hasH1,
+                    details: hasH1 ? '标题解析正常' : '标题解析失败'
+                });
+
+                // 测试 5: MarkdownParser 解析加粗
+                const boldResult = parser.parse('这是**加粗文字**测试');
+                const hasBold = boldResult.includes('<strong');
+                tests.push({
+                    name: '任务 2.1 - Markdown 加粗解析',
+                    pass: hasBold,
+                    details: hasBold ? '加粗解析正常' : '加粗解析失败'
+                });
+
+                // 测试 6: MarkdownParser 解析列表
+                const listResult = parser.parse('- 项目1\n- 项目2');
+                const hasList = listResult.includes('<ul') && listResult.includes('<li');
+                tests.push({
+                    name: '任务 2.1 - Markdown 列表解析',
+                    pass: hasList,
+                    details: hasList ? '列表解析正常' : '列表解析失败'
+                });
+            }
+
+            // 测试 7: DraftService 保存和加载
+            if (typeof DraftService !== 'undefined') {
+                const draftService = new DraftService();
+                const testDraft = {
+                    title: '测试标题',
+                    content: '测试内容',
+                    moodId: 'happy',
+                    timestamp: Date.now()
+                };
+                
+                const saved = draftService.saveDraft(testDraft);
+                const loaded = draftService.loadDraft();
+                const matches = loaded && loaded.title === testDraft.title && loaded.content === testDraft.content;
+                
+                tests.push({
+                    name: '任务 3.1 - 草稿保存和加载',
+                    pass: saved && matches,
+                    details: saved && matches ? '草稿保存和加载正常' : '草稿保存或加载失败'
+                });
+
+                // 清理测试数据
+                draftService.clearDraft();
+            }
+
+            // 测试 8: ExportService 文件名生成
+            if (typeof window.exportService !== 'undefined') {
+                const filename = window.exportService.generateFilename();
+                const isValid = /^journal-\d{4}-\d{2}-\d{2}-\d{6}\.json$/.test(filename);
+                tests.push({
+                    name: '任务 4.2 - JSON 文件名格式',
+                    pass: isValid,
+                    details: isValid ? `文件名格式正确: ${filename}` : `文件名格式错误: ${filename}`
+                });
+
+                // 测试 9: ExportService 往返一致性
+                const testEntry = {
+                    id: 'test-123',
+                    title: '测试日志',
+                    content: '测试内容',
+                    timestamp: Date.now()
+                };
+                const roundTrip = window.exportService.validateRoundTrip(testEntry);
+                tests.push({
+                    name: '任务 4.2 - JSON 往返一致性',
+                    pass: roundTrip,
+                    details: roundTrip ? 'JSON 序列化和反序列化一致' : 'JSON 往返不一致'
+                });
+            }
+
+            // 测试 10: 检查 journal-editor.html 是否包含保存到本地按钮
+            fetch('/journal-editor.html')
+                .then(response => response.text())
+                .then(html => {
+                    const hasLocalSaveBtn = html.includes('id="save-local"');
+                    tests.push({
+                        name: '任务 4.1 - 保存到本地按钮已添加',
+                        pass: hasLocalSaveBtn,
+                        details: hasLocalSaveBtn ? '保存到本地按钮存在于 HTML 中' : '保存到本地按钮未找到'
+                    });
+
+                    // 测试 11: 检查心情下拉菜单样式
+                    const hasMoodStyles = html.includes('#journal-mood option');
+                    tests.push({
+                        name: '任务 5.1 - 心情下拉菜单样式已优化',
+                        pass: hasMoodStyles,
+                        details: hasMoodStyles ? '心情下拉菜单样式已定义' : '心情下拉菜单样式未找到'
+                    });
+
+                    renderResults(tests);
+                })
+                .catch(error => {
+                    console.error('加载 journal-editor.html 失败:', error);
+                    renderResults(tests);
+                });
+        }
+
+        function renderResults(tests) {
+            const results = document.getElementById('test-results');
+            const passCount = tests.filter(t => t.pass).length;
+            const totalCount = tests.length;
+            
+            let html = `
+                <div class="test-section" style="background: rgba(139, 92, 246, 0.1); border-color: #8b5cf6;">
+                    <h2 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1rem;">
+                        测试结果总览: ${passCount} / ${totalCount} 通过
+                    </h2>
+                    <div style="width: 100%; background: rgba(255,255,255,0.1); height: 8px; border-radius: 4px; overflow: hidden;">
+                        <div style="width: ${(passCount/totalCount)*100}%; background: #10b981; height: 100%; transition: width 0.3s;"></div>
+                    </div>
+                </div>
+            `;
+
+            tests.forEach((test, index) => {
+                html += `
+                    <div class="test-section">
+                        <h3 style="font-weight: 600; margin-bottom: 0.5rem;">
+                            ${index + 1}. ${test.name}
+                        </h3>
+                        <div class="test-result ${test.pass ? 'test-pass' : 'test-fail'}">
+                            <strong>${test.pass ? '✓ 通过' : '✗ 失败'}</strong>: ${test.details}
+                        </div>
+                    </div>
+                `;
+            });
+
+            if (passCount === totalCount) {
+                html += `
+                    <div class="test-section" style="background: rgba(16, 185, 129, 0.2); border-color: #10b981;">
+                        <h2 style="font-size: 1.5rem; font-weight: bold; color: #10b981;">
+                            🎉 所有测试通过！编辑器增强功能正常工作。
+                        </h2>
+                        <p style="margin-top: 0.5rem; color: rgba(255,255,255,0.7);">
+                            任务 1-5 的所有功能已成功实现并验证。
+                        </p>
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div class="test-section" style="background: rgba(239, 68, 68, 0.2); border-color: #ef4444;">
+                        <h2 style="font-size: 1.5rem; font-weight: bold; color: #ef4444;">
+                            ⚠️ 部分测试失败
+                        </h2>
+                        <p style="margin-top: 0.5rem; color: rgba(255,255,255,0.7);">
+                            请检查失败的测试项并修复问题。
+                        </p>
+                    </div>
+                `;
+            }
+
+            results.innerHTML = html;
+        }
+    </script>
+</body>
+</html>

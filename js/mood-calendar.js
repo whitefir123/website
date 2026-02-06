@@ -20,6 +20,11 @@ class MoodCalendar {
     this.moodTypes = {};
     this.emotionStatistics = null; // EmotionStatistics 组件实例
     
+    // Feature: journal-editor-enhancement, Requirements: 11.3, 11.4, 11.5
+    // 心情过滤状态
+    this.activeFilter = null; // 当前激活的过滤心情类型
+    this.moodFilterController = null; // MoodFilterController 实例引用
+    
     if (!this.container) {
       console.error(`[MoodCalendar] 找不到容器元素: ${containerId}`);
     }
@@ -91,6 +96,18 @@ class MoodCalendar {
           </h2>
           <button id="next-month" class="nav-btn glass-card px-4 py-2 rounded-lg hover:bg-white/10 transition-all duration-300" aria-label="下个月">
             <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+        
+        <!-- Feature: journal-editor-enhancement, Requirements: 11.5 - 清除过滤按钮 -->
+        <div id="filter-indicator" class="filter-indicator hidden mb-4 p-3 rounded-lg glass-card flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <i class="fas fa-filter text-purple-400"></i>
+            <span class="text-sm text-white/80">正在过滤：<span id="filter-mood-label" class="font-bold"></span></span>
+          </div>
+          <button id="clear-filter-btn" class="px-3 py-1 rounded-lg bg-white/10 hover:bg-white/20 transition-all duration-300 text-sm font-medium">
+            <i class="fas fa-times mr-1"></i>
+            清除过滤
           </button>
         </div>
         
@@ -306,6 +323,9 @@ class MoodCalendar {
    * Requirements: 5.3, 5.4
    * Feature: mood-journal-enhancement
    * Requirements: 1.1 - 点击无记录日期显示心情记录对话框
+   * Feature: journal-editor-enhancement
+   * Requirements: 7.1, 7.2, 7.3, 7.4 - 双击快捷记录功能
+   * Requirements: 11.5 - 清除过滤按钮事件
    */
   attachEventListeners() {
     // 上个月按钮
@@ -318,6 +338,16 @@ class MoodCalendar {
     const nextBtn = document.getElementById('next-month');
     if (nextBtn) {
       nextBtn.addEventListener('click', () => this.navigateMonth(1));
+    }
+
+    // Feature: journal-editor-enhancement, Requirements: 11.5
+    // 清除过滤按钮
+    const clearFilterBtn = document.getElementById('clear-filter-btn');
+    if (clearFilterBtn) {
+      clearFilterBtn.addEventListener('click', () => {
+        console.log('[MoodCalendar] 点击清除过滤按钮');
+        this.clearFilter();
+      });
     }
 
     // 为每个日期单元格添加 hover 提示 (Requirement 5.3)
@@ -343,14 +373,19 @@ class MoodCalendar {
 
     // Feature: mood-journal-enhancement
     // Requirement 1.1: 点击无心情记录的日期显示心情记录对话框
+    // Feature: journal-editor-enhancement
+    // Requirements: 7.3 - 使用事件标志确保双击不触发单击事件
     const emptyDayElements = this.container.querySelectorAll('.calendar-day:not([data-mood])');
     emptyDayElements.forEach(dayEl => {
       dayEl.addEventListener('click', (e) => {
-        const date = dayEl.dataset.date;
-        if (date) {
-          console.log('[MoodCalendar] 点击无记录日期:', date);
-          this.showMoodRecordModal(date);
-        }
+        // 延迟执行单击事件，以便检测是否为双击
+        dayEl._clickTimer = setTimeout(() => {
+          const date = dayEl.dataset.date;
+          if (date) {
+            console.log('[MoodCalendar] 点击无记录日期:', date);
+            this.showMoodRecordModal(date);
+          }
+        }, 250); // 250ms 延迟以检测双击
       });
 
       // 键盘可访问性
@@ -364,12 +399,44 @@ class MoodCalendar {
         }
       });
     });
+
+    // Feature: journal-editor-enhancement
+    // Requirements: 7.1, 7.2, 7.4 - 为所有日期单元格添加双击快捷记录功能
+    const allDayElements = this.container.querySelectorAll('.calendar-day[data-date]');
+    allDayElements.forEach(dayEl => {
+      dayEl.addEventListener('dblclick', (e) => {
+        e.preventDefault();
+        const date = dayEl.dataset.date;
+        const hasMood = dayEl.dataset.mood;
+
+        if (!date) return;
+
+        // Requirement 7.4: 如果该日期已有心情记录，打开编辑弹窗
+        if (hasMood) {
+          console.log('[MoodCalendar] 双击已有记录日期，打开编辑弹窗:', date);
+          this.showMoodRecordModal(date);
+        } else {
+          // Requirement 7.1, 7.2: 如无记录则自动创建 neutral 类型记录
+          console.log('[MoodCalendar] 双击无记录日期，快捷记录 neutral 心情:', date);
+          this.quickRecordNeutralMood(date);
+        }
+
+        // 清除单击事件的定时器
+        const clickTimer = dayEl._clickTimer;
+        if (clickTimer) {
+          clearTimeout(clickTimer);
+          dayEl._clickTimer = null;
+        }
+      });
+    });
   }
 
   /**
    * 显示心情记录对话框
    * Feature: mood-journal-enhancement
    * Requirements: 1.1, 1.4 - 显示对话框并处理保存回调
+   * Feature: journal-editor-enhancement
+   * Requirements: 5.1 - 传递日历实例引用以触发保存动效
    * @param {string} date - 日期字符串 (YYYY-MM-DD)
    */
   showMoodRecordModal(date) {
@@ -383,6 +450,7 @@ class MoodCalendar {
     const modal = new MoodRecordModal({
       date: date,
       moodTypes: this.moodTypes,
+      calendarInstance: this, // Feature: journal-editor-enhancement, Requirement 5.1
       onSave: (moodData) => {
         console.log('[MoodCalendar] 新心情记录:', moodData);
         console.log('[MoodCalendar] JSON 格式:', JSON.stringify(moodData, null, 2));
@@ -400,6 +468,53 @@ class MoodCalendar {
 
     // 显示对话框
     modal.show();
+  }
+
+  /**
+   * 快捷记录 neutral 心情
+   * Feature: journal-editor-enhancement
+   * Requirements: 7.1, 7.2 - 双击无记录日期自动创建 neutral 类型记录并执行保存动效
+   * @param {string} date - 日期字符串 (YYYY-MM-DD)
+   */
+  quickRecordNeutralMood(date) {
+    if (!date) {
+      console.warn('[MoodCalendar] 无法快捷记录：日期参数缺失');
+      return;
+    }
+
+    // 检查 neutral 心情类型是否存在
+    if (!this.moodTypes.neutral) {
+      console.warn('[MoodCalendar] 无法快捷记录：neutral 心情类型不存在');
+      // 如果 neutral 不存在，打开对话框让用户选择
+      this.showMoodRecordModal(date);
+      return;
+    }
+
+    console.log('[MoodCalendar] 快捷记录 neutral 心情，日期:', date);
+
+    // 生成 neutral 心情记录数据
+    const moodData = {
+      date: date,
+      mood: 'neutral',
+      note: '',
+      color: this.moodTypes.neutral.color,
+      timestamp: Date.now()
+    };
+
+    console.log('[MoodCalendar] 生成的心情记录数据:', moodData);
+    console.log('[MoodCalendar] JSON 格式:', JSON.stringify(moodData, null, 2));
+
+    // 将新心情记录添加到数据中
+    this.moods.push(moodData);
+
+    // Requirement 7.2: 执行相同的保存动效
+    this.triggerSaveAnimation(date);
+
+    // 重新渲染日历以显示新记录
+    // 延迟渲染以确保动画完成
+    setTimeout(() => {
+      this.render();
+    }, 700); // 等待动画完成（600ms 动画 + 100ms 缓冲）
   }
 
   /**
@@ -688,9 +803,125 @@ class MoodCalendar {
   }
 
   /**
+   * 触发保存动效
+   * Feature: journal-editor-enhancement
+   * Requirements: 5.1, 5.2, 5.3, 5.4 - 为指定日期单元格执行 spring-bounce 动画并显示成功标记
+   * @param {string} date - 日期字符串 (YYYY-MM-DD)
+   */
+  triggerSaveAnimation(date) {
+    if (!date) {
+      console.warn('[MoodCalendar] 无法触发保存动效：日期参数缺失');
+      return;
+    }
+
+    console.log('[MoodCalendar] 触发保存动效，日期:', date);
+
+    // 查找对应的日期单元格
+    const dateCell = this.container.querySelector(`[data-date="${date}"]`);
+    
+    if (!dateCell) {
+      console.warn('[MoodCalendar] 找不到日期单元格:', date);
+      return;
+    }
+
+    // Requirement 5.2: 使用 AnimationController 执行动画
+    // 检查用户是否偏好减少动画
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    
+    if (prefersReducedMotion) {
+      // 如果用户偏好减少动画，直接显示成功标记
+      this.showSuccessCheckmark(dateCell);
+      return;
+    }
+
+    // Requirement 5.3: 添加 will-change 优化性能
+    dateCell.style.willChange = 'transform';
+    
+    // 执行 spring-bounce 动画
+    // Requirement 5.3: 应用 cubic-bezier(0.34, 1.56, 0.64, 1) 曲线
+    dateCell.style.animation = 'none';
+    // 强制重排以重置动画
+    void dateCell.offsetWidth;
+    dateCell.style.animation = 'springBounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)';
+
+    // 动画完成后的处理
+    const handleAnimationEnd = () => {
+      console.log('[MoodCalendar] 保存动效完成');
+      
+      // 清理性能优化属性
+      dateCell.style.willChange = 'auto';
+      
+      // 移除事件监听器
+      dateCell.removeEventListener('animationend', handleAnimationEnd);
+      
+      // Requirement 5.4: 动画完成后显示成功勾选标记
+      this.showSuccessCheckmark(dateCell);
+    };
+
+    dateCell.addEventListener('animationend', handleAnimationEnd);
+  }
+
+  /**
+   * 显示成功勾选标记
+   * Feature: journal-editor-enhancement
+   * Requirement 5.4 - 在日期单元格上显示成功勾选标记
+   * @param {HTMLElement} dateCell - 日期单元格元素
+   */
+  showSuccessCheckmark(dateCell) {
+    if (!dateCell) {
+      console.warn('[MoodCalendar] 无法显示成功标记：单元格不存在');
+      return;
+    }
+
+    // 检查是否已经有成功标记
+    if (dateCell.querySelector('.success-checkmark')) {
+      console.log('[MoodCalendar] 成功标记已存在');
+      return;
+    }
+
+    // 创建成功勾选标记
+    const checkmark = document.createElement('div');
+    checkmark.className = 'success-checkmark absolute top-1 left-1 z-10';
+    checkmark.innerHTML = `
+      <div class="flex items-center justify-center w-5 h-5 rounded-full bg-green-500/20 backdrop-blur-sm border border-green-500/40">
+        <i class="fas fa-check text-xs text-green-400"></i>
+      </div>
+    `;
+    
+    // 初始状态：不可见
+    checkmark.style.opacity = '0';
+    checkmark.style.transform = 'scale(0.5)';
+    checkmark.style.transition = 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)';
+    
+    // 添加到日期单元格
+    dateCell.appendChild(checkmark);
+    
+    // 触发淡入和放大动画
+    setTimeout(() => {
+      checkmark.style.opacity = '1';
+      checkmark.style.transform = 'scale(1)';
+    }, 10);
+    
+    console.log('[MoodCalendar] 成功标记已显示');
+    
+    // 3秒后淡出标记
+    setTimeout(() => {
+      checkmark.style.opacity = '0';
+      checkmark.style.transform = 'scale(0.8)';
+      
+      // 动画完成后移除元素
+      setTimeout(() => {
+        checkmark.remove();
+      }, 300);
+    }, 3000);
+  }
+
+  /**
    * 初始化情绪统计组件
    * Feature: mood-journal-enhancement
    * Requirements: 3.8 - 集成 EmotionStatistics 到 MoodCalendar
+   * Feature: journal-editor-enhancement
+   * Requirements: 11.2 - 建立组件间的连接以支持过滤功能
    */
   initEmotionStatistics() {
     const statsContainer = document.getElementById('emotion-statistics-container');
@@ -713,6 +944,30 @@ class MoodCalendar {
       this.moodTypes,
       this.currentMonth
     );
+    
+    // Feature: journal-editor-enhancement, Requirements: 11.2
+    // 设置日历实例引用，以便 EmotionStatistics 可以触发过滤
+    this.emotionStatistics.setCalendarInstance(this);
+    
+    // 动态导入并设置 MoodFilterController
+    import('./utils/mood-filter-controller.js')
+      .then(module => {
+        const controller = module.default;
+        
+        // 为 EmotionStatistics 设置控制器
+        this.emotionStatistics.setMoodFilterController(controller);
+        
+        // 为 MoodCalendar 设置控制器
+        this.setMoodFilterController(controller);
+        
+        // 为控制器设置日历实例
+        controller.setCalendarInstance(this);
+        
+        console.log('[MoodCalendar] MoodFilterController 连接已建立');
+      })
+      .catch(error => {
+        console.warn('[MoodCalendar] 无法加载 MoodFilterController:', error);
+      });
     
     // 渲染统计面板
     this.emotionStatistics.render();
@@ -745,6 +1000,183 @@ class MoodCalendar {
     dataLoader.clearCache();
     // 重新加载
     await this.loadMoods();
+  }
+
+  /**
+   * 设置心情过滤控制器引用
+   * Feature: journal-editor-enhancement, Requirements: 11.2
+   * @param {Object} controller - MoodFilterController 实例
+   */
+  setMoodFilterController(controller) {
+    this.moodFilterController = controller;
+    
+    // 监听过滤事件
+    window.addEventListener('moodFilterChange', (e) => {
+      const { action, moodType } = e.detail;
+      
+      if (action === 'activated') {
+        this.highlightDates(moodType);
+      } else if (action === 'cleared') {
+        this.clearFilter();
+      }
+    });
+    
+    console.log('[MoodCalendar] MoodFilterController 已设置，过滤事件监听已启动');
+  }
+
+  /**
+   * 高亮匹配的日期
+   * Feature: journal-editor-enhancement
+   * Requirements: 11.3, 11.4 - 高亮匹配日期，降低非匹配日期透明度至 30%
+   * @param {string} moodType - 心情类型
+   */
+  highlightDates(moodType) {
+    if (!moodType) {
+      console.warn('[MoodCalendar] 无法高亮日期：心情类型参数缺失');
+      return;
+    }
+
+    console.log('[MoodCalendar] 高亮心情类型:', moodType);
+
+    // 设置当前激活的过滤
+    this.activeFilter = moodType;
+
+    // 获取所有日期单元格
+    const dateCells = this.container.querySelectorAll('.calendar-day[data-date]');
+    
+    if (dateCells.length === 0) {
+      console.warn('[MoodCalendar] 找不到日期单元格');
+      return;
+    }
+
+    // 检查用户是否偏好减少动画
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const transitionDuration = prefersReducedMotion ? '0s' : '0.3s';
+
+    dateCells.forEach(cell => {
+      const cellMood = cell.dataset.mood;
+      
+      // 设置过渡效果
+      cell.style.transition = `opacity ${transitionDuration} ease-in-out, transform ${transitionDuration} ease-in-out`;
+      
+      if (cellMood === moodType) {
+        // Requirement 11.3: 高亮匹配的日期
+        cell.style.opacity = '1';
+        cell.style.transform = 'scale(1.05)';
+        cell.classList.add('filter-highlighted');
+      } else {
+        // Requirement 11.4: 降低非匹配日期透明度至 30%
+        cell.style.opacity = '0.3';
+        cell.style.transform = 'scale(1)';
+        cell.classList.add('filter-dimmed');
+      }
+    });
+
+    // 显示过滤指示器
+    this.showFilterIndicator(moodType);
+
+    console.log('[MoodCalendar] 日期高亮完成');
+  }
+
+  /**
+   * 清除过滤
+   * Feature: journal-editor-enhancement
+   * Requirements: 11.5 - 恢复所有日期的正常显示
+   */
+  clearFilter() {
+    console.log('[MoodCalendar] 清除过滤');
+
+    // 清除激活的过滤状态
+    this.activeFilter = null;
+
+    // 获取所有日期单元格
+    const dateCells = this.container.querySelectorAll('.calendar-day[data-date]');
+    
+    if (dateCells.length === 0) {
+      console.warn('[MoodCalendar] 找不到日期单元格');
+      return;
+    }
+
+    // 检查用户是否偏好减少动画
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const transitionDuration = prefersReducedMotion ? '0s' : '0.3s';
+
+    // Requirement 11.5: 恢复所有日期的正常显示
+    dateCells.forEach(cell => {
+      cell.style.transition = `opacity ${transitionDuration} ease-in-out, transform ${transitionDuration} ease-in-out`;
+      cell.style.opacity = '1';
+      cell.style.transform = 'scale(1)';
+      cell.classList.remove('filter-highlighted', 'filter-dimmed');
+    });
+
+    // 隐藏过滤指示器
+    this.hideFilterIndicator();
+
+    // 通知 MoodFilterController 清除过滤
+    if (this.moodFilterController) {
+      // 直接更新控制器状态，不触发事件（避免循环）
+      this.moodFilterController.currentFilter = null;
+      this.moodFilterController.restoreAllDates();
+    }
+
+    console.log('[MoodCalendar] 过滤已清除');
+  }
+
+  /**
+   * 显示过滤指示器
+   * Feature: journal-editor-enhancement, Requirements: 11.5
+   * @param {string} moodType - 心情类型
+   */
+  showFilterIndicator(moodType) {
+    const indicator = document.getElementById('filter-indicator');
+    const moodLabel = document.getElementById('filter-mood-label');
+    
+    if (!indicator || !moodLabel) {
+      console.warn('[MoodCalendar] 找不到过滤指示器元素');
+      return;
+    }
+
+    // 获取心情类型标签
+    const moodTypeConfig = this.moodTypes[moodType];
+    const label = moodTypeConfig ? moodTypeConfig.label : moodType;
+    const icon = moodTypeConfig ? moodTypeConfig.icon : '😐';
+
+    // 更新标签文本
+    moodLabel.innerHTML = `${icon} ${label}`;
+
+    // 显示指示器（带淡入动画）
+    indicator.classList.remove('hidden');
+    indicator.style.opacity = '0';
+    indicator.style.transform = 'translateY(-10px)';
+    
+    // 触发动画
+    setTimeout(() => {
+      indicator.style.transition = 'all 0.3s ease-in-out';
+      indicator.style.opacity = '1';
+      indicator.style.transform = 'translateY(0)';
+    }, 10);
+  }
+
+  /**
+   * 隐藏过滤指示器
+   * Feature: journal-editor-enhancement, Requirements: 11.5
+   */
+  hideFilterIndicator() {
+    const indicator = document.getElementById('filter-indicator');
+    
+    if (!indicator) {
+      return;
+    }
+
+    // 淡出动画
+    indicator.style.transition = 'all 0.3s ease-in-out';
+    indicator.style.opacity = '0';
+    indicator.style.transform = 'translateY(-10px)';
+    
+    // 动画完成后隐藏
+    setTimeout(() => {
+      indicator.classList.add('hidden');
+    }, 300);
   }
 }
 

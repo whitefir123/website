@@ -2033,3 +2033,109 @@ html {
 .empty-state-icon {
   animation: emptyStateFloat 3s ease-in-out infinite;
 }
+
+/* ==================== Markdown 预览区域样式 ==================== */
+/* Feature: journal-editor-enhancement */
+/* Requirements: 1.5 - 预览内容保持与整体设计风格一致 */
+
+.markdown-preview {
+  /* 确保预览区域有足够的呼吸空间 */
+  padding: 1rem 0;
+}
+
+/* Markdown 预览中的标题样式 */
+.markdown-preview h1,
+.markdown-preview h2,
+.markdown-preview h3,
+.markdown-preview h4,
+.markdown-preview h5,
+.markdown-preview h6 {
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.markdown-preview h1:first-child,
+.markdown-preview h2:first-child,
+.markdown-preview h3:first-child {
+  margin-top: 0;
+}
+
+/* Markdown 预览中的段落样式 */
+.markdown-preview p {
+  margin-bottom: 1rem;
+  line-height: 1.8;
+}
+
+.markdown-preview p:last-child {
+  margin-bottom: 0;
+}
+
+/* Markdown 预览中的列表样式 */
+.markdown-preview ul {
+  margin-bottom: 1rem;
+  padding-left: 0.5rem;
+}
+
+.markdown-preview ul:last-child {
+  margin-bottom: 0;
+}
+
+.markdown-preview li {
+  margin-bottom: 0.25rem;
+}
+
+/* Markdown 预览中的加粗文本样式 */
+.markdown-preview strong {
+  font-weight: 700;
+  color: rgba(255, 255, 255, 1);
+}
+
+/* 确保预览区域的文本颜色与设计系统一致 */
+.markdown-preview {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* ==================== Modal 动画样式 ==================== */
+/* Feature: journal-editor-enhancement */
+/* Requirements: 8.1, 8.2, 8.4 - Modal 视觉优化和过渡效果 */
+
+/* Modal 容器淡入效果 */
+#mood-record-modal.modal-visible {
+  opacity: 1;
+}
+
+/* Modal 内容弹性进入效果 */
+.modal-content-visible {
+  opacity: 1 !important;
+  transform: scale(1) !important;
+}
+
+/* Modal 背景遮罩样式 */
+.modal-backdrop {
+  transition: all 0.3s ease-in-out;
+}
+
+/* 确保所有 Modal 交互元素都有平滑过渡 */
+#mood-record-modal button,
+#mood-record-modal input,
+#mood-record-modal textarea,
+#mood-record-modal select {
+  transition: all 0.3s ease-in-out;
+}
+
+/* Modal 关闭按钮悬停效果 */
+.modal-close-btn:hover {
+  transform: scale(1.1) rotate(90deg);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* Modal 心情选项悬停效果增强 */
+.mood-option:hover {
+  transform: scale(1.05);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Modal 心情选项选中状态 */
+.mood-option.selected {
+  transform: scale(1.05);
+}

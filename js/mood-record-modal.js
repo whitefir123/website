@@ -14,17 +14,31 @@ class MoodRecordModal {
    * @param {Object} config.moodTypes - 心情类型配置对象
    * @param {Function} config.onSave - 保存回调函数
    * @param {Function} config.onClose - 关闭回调函数
+   * @param {Object} config.calendarInstance - MoodCalendar 实例引用（用于触发动画）
    */
   constructor(config) {
     this.date = config.date;
     this.moodTypes = config.moodTypes || {};
     this.onSave = config.onSave || (() => {});
     this.onClose = config.onClose || (() => {});
+    this.calendarInstance = config.calendarInstance || null;
     
     this.selectedMood = null;
     this.note = '';
     this.modalElement = null;
     this.isVisible = false;
+    
+    // Feature: journal-editor-enhancement
+    // Requirements: 6.1, 6.2 - 心情类型到占位符文本的映射
+    this.placeholderConfig = {
+      happy: "分享一下你的喜悦吧...",
+      sad: "写下来会让心情好一些...",
+      neutral: "记录今天的平静时光...",
+      excited: "这份激动值得被记住！",
+      anxious: "倾诉你的担忧，我在倾听...",
+      tired: "休息一下，记录此刻的感受...",
+      motivated: "记录下这份动力的来源！"
+    };
     
     console.log('[MoodRecordModal] 初始化对话框，日期:', this.date);
   }
@@ -106,14 +120,14 @@ class MoodRecordModal {
     // 构建对话框 HTML
     modal.innerHTML = `
       <!-- 背景遮罩 -->
-      <div class="modal-backdrop absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+      <div class="modal-backdrop absolute inset-0 backdrop-blur-sm" style="background-color: hsl(240 10% 3.9% / 0.8);"></div>
       
       <!-- 对话框内容 -->
       <div class="modal-content relative glass-card rounded-2xl p-6 sm:p-8 max-w-md w-full mx-4 transform scale-95 opacity-0 transition-all duration-300 ease-out"
            style="background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.1);">
         
         <!-- 关闭按钮 -->
-        <button class="modal-close-btn absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-lg bg-white/5 hover:bg-white/10 transition-all duration-300 hover:scale-110"
+        <button class="modal-close-btn absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-lg bg-white/5 hover:bg-white/10 transition-all duration-300 ease-in-out hover:scale-110"
                 aria-label="关闭对话框">
           <i class="fas fa-times text-white/70"></i>
         </button>
@@ -134,7 +148,7 @@ class MoodRecordModal {
           </label>
           <textarea 
             id="mood-note-input"
-            class="w-full rounded-xl p-3 sm:p-4 resize-none text-sm leading-relaxed transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-500/50"
+            class="w-full rounded-xl p-3 sm:p-4 resize-none text-sm leading-relaxed transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-purple-500/50"
             style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: white;"
             placeholder="记录此刻的想法..." 
             rows="3"
@@ -146,12 +160,12 @@ class MoodRecordModal {
         
         <!-- 操作按钮 -->
         <div class="flex gap-3">
-          <button class="modal-cancel-btn flex-1 px-4 py-3 rounded-xl font-medium text-sm transition-all duration-300 hover:scale-105"
+          <button class="modal-cancel-btn flex-1 px-4 py-3 rounded-xl font-medium text-sm transition-all duration-300 ease-in-out hover:scale-105"
                   style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);">
             取消
           </button>
           <button id="mood-save-btn" 
-                  class="flex-1 px-4 py-3 rounded-xl font-bold text-sm transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                  class="flex-1 px-4 py-3 rounded-xl font-bold text-sm transition-all duration-300 ease-in-out hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                   style="background: linear-gradient(135deg, #8b5cf6, #ec4899); box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);"
                   disabled>
             <i class="fas fa-check mr-2"></i>保存
@@ -176,7 +190,7 @@ class MoodRecordModal {
     
     Object.entries(this.moodTypes).forEach(([key, moodType]) => {
       optionsHTML += `
-        <button class="mood-option p-3 sm:p-4 rounded-xl transition-all duration-300 hover:scale-105 flex flex-col items-center justify-center gap-2"
+        <button class="mood-option p-3 sm:p-4 rounded-xl transition-all duration-300 ease-in-out hover:scale-105 flex flex-col items-center justify-center gap-2"
                 style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);"
                 data-mood="${key}"
                 data-color="${moodType.color}"
@@ -265,6 +279,8 @@ class MoodRecordModal {
   /**
    * 处理心情选择
    * Requirements: 1.5 - 选中状态切换
+   * Feature: journal-editor-enhancement
+   * Requirements: 6.1, 6.2, 6.4 - 动态更新占位符并添加淡入过渡效果
    * @param {string} moodKey - 心情类型键
    */
   selectMood(moodKey) {
@@ -292,6 +308,21 @@ class MoodRecordModal {
       }
     });
 
+    // Feature: journal-editor-enhancement
+    // Requirements: 6.1, 6.2, 6.4 - 动态更新备注输入框的占位符文本
+    const noteInput = this.modalElement.querySelector('#mood-note-input');
+    if (noteInput && this.placeholderConfig[moodKey]) {
+      // 添加淡入过渡效果 (Requirement 6.4)
+      noteInput.style.opacity = '0';
+      noteInput.style.transition = 'opacity 300ms ease-in-out';
+      
+      setTimeout(() => {
+        noteInput.placeholder = this.placeholderConfig[moodKey];
+        noteInput.style.opacity = '1';
+        console.log('[MoodRecordModal] 更新占位符:', this.placeholderConfig[moodKey]);
+      }, 150);
+    }
+
     // 启用保存按钮
     const saveBtn = this.modalElement.querySelector('#mood-save-btn');
     if (saveBtn) {
@@ -312,6 +343,8 @@ class MoodRecordModal {
   /**
    * 处理保存操作
    * Requirements: 1.3, 1.4 - 生成心情记录数据并调用回调
+   * Feature: journal-editor-enhancement
+   * Requirements: 5.1, 5.5 - 保存成功后触发日历动画
    */
   handleSave() {
     if (!this.selectedMood) {
@@ -329,7 +362,16 @@ class MoodRecordModal {
     // 调用保存回调
     this.onSave(moodData);
     
-    // 关闭对话框
+    // Feature: journal-editor-enhancement
+    // Requirements: 5.1, 5.5 - 触发日历单元格的保存动效
+    if (this.calendarInstance && typeof this.calendarInstance.triggerSaveAnimation === 'function') {
+      console.log('[MoodRecordModal] 触发日历保存动效，日期:', this.date);
+      this.calendarInstance.triggerSaveAnimation(this.date);
+    } else {
+      console.warn('[MoodRecordModal] 无法触发保存动效：calendarInstance 未提供或方法不存在');
+    }
+    
+    // 关闭对话框 (Requirement 5.5)
     this.hide();
   }
 
